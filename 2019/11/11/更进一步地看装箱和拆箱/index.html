@@ -7,19 +7,19 @@
   
   <title>更进一步地看装箱和拆箱 | peiyu zou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="引入概念 有一种认识是：装箱是值类型转换为引用类型的过程；相反，拆箱是引用类型转换为值类型的过程。这种认识不够完整，比较浅显。 我们从基础理论开始讨论，引入例子和实验，一直到原理，进一步地认识一次装箱和拆箱😃。 众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子： 12345678">
+  <meta name="description" content="引入概念 有一种认识是：装箱是值类型转换为引用类型的过程；相反，拆箱是引用类型转换为值类型的过程。这种认识不够完整，比较浅显。 我们从基础理论开始讨论，引入例子和实验，一直到原理，进一步地认识一次装箱和拆箱😃。">
 <meta name="keywords" content="C#,CLR">
 <meta property="og:type" content="article">
 <meta property="og:title" content="更进一步地看装箱和拆箱">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;index.html">
 <meta property="og:site_name" content="peiyu zou的博客">
-<meta property="og:description" content="引入概念 有一种认识是：装箱是值类型转换为引用类型的过程；相反，拆箱是引用类型转换为值类型的过程。这种认识不够完整，比较浅显。 我们从基础理论开始讨论，引入例子和实验，一直到原理，进一步地认识一次装箱和拆箱😃。 众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子： 12345678">
+<meta property="og:description" content="引入概念 有一种认识是：装箱是值类型转换为引用类型的过程；相反，拆箱是引用类型转换为值类型的过程。这种认识不够完整，比较浅显。 我们从基础理论开始讨论，引入例子和实验，一直到原理，进一步地认识一次装箱和拆箱😃。">
 <meta property="og:locale" content="cn">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;157363773884.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;15736953852719.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;15737150831048.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;15737160924327.png">
-<meta property="og:updated_time" content="2019-11-15T09:12:12.622Z">
+<meta property="og:updated_time" content="2019-11-15T09:14:52.566Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;11&#x2F;%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1&#x2F;157363773884.png">
   
@@ -104,6 +104,7 @@
 <h1 id="引入概念"><a class="markdownIt-Anchor" href="#引入概念"></a> 引入概念</h1>
 <p>有一种认识是：装箱是值类型转换为引用类型的过程；相反，拆箱是引用类型转换为值类型的过程。这种认识不够完整，比较浅显。<br>
 我们从基础理论开始讨论，引入例子和实验，一直到原理，进一步地认识一次装箱和拆箱😃。</p>
+<a id="more"></a>
 <p>众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子：</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Struct Point</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Int32 x, y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        ArrayList a = <span class="keyword">new</span> ArrayList();</span><br><span class="line">        Point p;</span><br><span class="line">        <span class="keyword">for</span>(Int32 i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            p.x = p.y = i;</span><br><span class="line">            a.Add(p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>值类型Point的实例p在线程栈上被分配，每次循环字段被初始化，并且被存储到ArrayList中。<br>
@@ -210,7 +211,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" data-id="ck2zxde2j000794t6du1c1mc7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" data-id="ck2zxfv1f0007g0t63mv8dhhm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLR/" rel="tag">CLR</a></li></ul>
