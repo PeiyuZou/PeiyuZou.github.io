@@ -5,13 +5,17 @@
   
 
   
-  <title>Category: 设计类型 | peiyu zou的博客</title>
+  <title>对象哈希码 | peiyu zou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="peiyu zou的博客">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;CLR-Via-C&#x2F;%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B&#x2F;index.html">
+  <meta name="description" content="System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。 如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。 原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相">
+<meta name="keywords" content="C#,CLR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象哈希码">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81&#x2F;index.html">
 <meta property="og:site_name" content="peiyu zou的博客">
+<meta property="og:description" content="System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。 如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。 原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相">
 <meta property="og:locale" content="cn">
+<meta property="og:updated_time" content="2019-11-18T03:38:50.793Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="peiyu zou的博客" type="application/atom+xml">
@@ -65,96 +69,75 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/" class="archive-article-date">
-  <time datetime="2019-11-18T03:15:36.000Z" itemprop="datePublished">Nov 18</time>
+        <section id="main"><article id="post-对象哈希码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/" class="article-date">
+  <time datetime="2019-11-18T03:15:36.000Z" itemprop="datePublished">2019-11-18</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CLR-Via-C/">CLR Via C#</a>►<a class="article-category-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a>►<a class="article-category-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/">对象哈希码</a>
+    <h1 class="article-title" itemprop="name">
+      对象哈希码
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/" class="archive-article-date">
-  <time datetime="2019-11-15T09:57:50.000Z" itemprop="datePublished">Nov 15</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/">对象相等性和同一性</a>
-    </h1>
-  
+        <p>System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。</p>
+<p>如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。<br>
+原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相同哈希码才被视为相等。所以，重写Equals方法，还应该重写GetHashCode方法，确保相等性算法和对象哈希码算法一致。</p>
+<a id="more"></a>
+<p>对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。<br>
+集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将在其中查找与指定键对象相等的键对象。<br>
+这种流程意味着不能随意修改键对象，一旦修改，就再也找不到了。正确地修改方式是先移除原来的键值对，再修改键对象，最后将新的键值对添加回哈希表。</p>
+<p>自定义GetHashCode方法并不难。难在取决于数据类型和数据分布情况，并不容易设计出能返回良好分布值的哈希算法。<br>
+下面的哈希算法很简单，这用于Point对象也许会不错：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">Point</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Int32 m_x, m_y;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Int32 <span class="title">GetHashCode</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">return</span> m_x ^ m_y; <span class="comment">//返回m_x和m_y的XOR结果</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>选择算法来计算类型实例的哈希码时，要遵守以下规则：</p>
+<ul>
+<li>算法要提供良好的随机分布，使哈希表获得最佳性能。</li>
+<li>可在算法中调用基类的GetHashCode方法，并包含它的返回值。注意不要调用Object和ValueType的GetHashCode，两者的实现性能不好。</li>
+<li>算法至少使用一个实例字段且使用的字段应该不可变，最好是在对象构造时初始化，在生存期内不变。</li>
+<li>算法执行速度尽量快。</li>
+<li>包含相同值得不同对象应该返回相同的哈希码。例如，相同文本的两个String对象应该返回相同的哈希码。</li>
+</ul>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" class="archive-article-date">
-  <time datetime="2019-11-11T07:22:45.000Z" itemprop="datePublished">Nov 11</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/">更进一步地看装箱和拆箱</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/" class="archive-article-date">
-  <time datetime="2019-11-08T02:00:01.000Z" itemprop="datePublished">Nov 8</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/" data-id="ck33vwywm0002b8t64vtkazpr" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/">类型、对象、线程栈和托管堆在运行时的关系</a>
-    </h1>
-  
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLR/" rel="tag">CLR</a></li></ul>
 
-    </header>
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">对象相等性和同一性</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 
 </section>

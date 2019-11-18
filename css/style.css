@@ -240,6 +240,7 @@ body {
 }
 .article-entry strong,
 .widget strong {
+  color: #000;
   font-weight: bold;
 }
 .article-entry em,

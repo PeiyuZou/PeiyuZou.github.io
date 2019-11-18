@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-11-15T09:43:10.287Z</updated>
+  <updated>2019-11-18T03:38:50.793Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,74 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>对象哈希码</title>
+    <link href="http://yoursite.com/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/"/>
+    <id>http://yoursite.com/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/</id>
+    <published>2019-11-18T03:15:36.000Z</published>
+    <updated>2019-11-18T03:38:50.793Z</updated>
+    
+    <content type="html"><![CDATA[<p>System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。</p><p>如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。<br>原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相同哈希码才被视为相等。所以，重写Equals方法，还应该重写GetHashCode方法，确保相等性算法和对象哈希码算法一致。</p><a id="more"></a><p>对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。<br>集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将在其中查找与指定键对象相等的键对象。<br>这种流程意味着不能随意修改键对象，一旦修改，就再也找不到了。正确地修改方式是先移除原来的键值对，再修改键对象，最后将新的键值对添加回哈希表。</p><p>自定义GetHashCode方法并不难。难在取决于数据类型和数据分布情况，并不容易设计出能返回良好分布值的哈希算法。<br>下面的哈希算法很简单，这用于Point对象也许会不错：</p><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">Point</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Int32 m_x, m_y;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Int32 <span class="title">GetHashCode</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">return</span> m_x ^ m_y; <span class="comment">//返回m_x和m_y的XOR结果</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>选择算法来计算类型实例的哈希码时，要遵守以下规则：</p><ul><li>算法要提供良好的随机分布，使哈希表获得最佳性能。</li><li>可在算法中调用基类的GetHashCode方法，并包含它的返回值。注意不要调用Object和ValueType的GetHashCode，两者的实现性能不好。</li><li>算法至少使用一个实例字段且使用的字段应该不可变，最好是在对象构造时初始化，在生存期内不变。</li><li>算法执行速度尽量快。</li><li>包含相同值得不同对象应该返回相同的哈希码。例如，相同文本的两个String对象应该返回相同的哈希码。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。&lt;/p&gt;
+&lt;p&gt;如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。&lt;br&gt;
+原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相同哈希码才被视为相等。所以，重写Equals方法，还应该重写GetHashCode方法，确保相等性算法和对象哈希码算法一致。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CLR Via C#" scheme="http://yoursite.com/categories/CLR-Via-C/"/>
+    
+      <category term="设计类型" scheme="http://yoursite.com/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/"/>
+    
+      <category term="类型基础" scheme="http://yoursite.com/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="C#" scheme="http://yoursite.com/tags/C/"/>
+    
+      <category term="CLR" scheme="http://yoursite.com/tags/CLR/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>对象相等性和同一性</title>
+    <link href="http://yoursite.com/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/"/>
+    <id>http://yoursite.com/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/</id>
+    <published>2019-11-15T09:57:50.000Z</published>
+    <updated>2019-11-18T03:33:25.297Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="引入概念"><a class="markdownIt-Anchor" href="#引入概念"></a> 引入概念</h2><p>很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。<br>比较的基准可以分为两种：同一和相等。<br>下面解释下：</p><ul><li>同一性：两个变量都是引用同一个对象。</li><li>相等性：两个变量的各个成员和字段的值相等。</li></ul><p>同一自然相等，但是相等不一定同一</p><a id="more"></a><h2 id="c提供的方法"><a class="markdownIt-Anchor" href="#c提供的方法"></a> C#提供的方法</h2><p>在编写程序时，常常需要进行相等性或者同一性的检查，C#的System.Object类型提供了Equals虚方法：</p><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Object</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> Boolean <span class="title">Equals</span>(<span class="params">Object obj</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span> == obj) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>注意，这里仅是比较两个变量的引用相等，也就是是否是同一个对象，所以是<strong>同一性</strong>的判断。<br>显然默认的Equals方法是不够满足使用的，我们常需要重写Equals方法来判断相等性（这章只介绍相等性和同一性，关于具体的重写策略，篇幅较长，会在后面的文章补充）。也正是由于Equals方法能被重写，因此一般不再用它测试同一性，Object提供了专门的静态方法ReferenceEquals：</p><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Object</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Boolean <span class="title">ReferenceEquals</span>(<span class="params">Object objA, Object objB</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">return</span> (objA == objB);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>检查同一性务必调用ReferenceEquals，不应该使用==操作符或者Equals，后两者可能被重载或者重写。</p><p>对于值类型，它们的基类System.ValueType就重写了Equals方法，并且正确地实现了<strong>相等性</strong>的检查，实现如下：</p><div align="center">    <img width="868" src="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/15740441524963.png"></div><ol><li>如果obj实参为null，返回false</li><li>如果this和obj实参引用不同类型的对象，返回false。</li><li>针对类型定义的每个实例字段，都将this对象中的值和obj对象中的值进行比较（通过调用字段的Equals方法）。任何字段不相等，就返回false。</li><li>返回true。不用调用ValueType的基类Object的Equals方法，因为Object没有定义任何字段。</li></ol><p>对于第3步骤，ValueType的Equals方法是利用反射实现的。由于CLR反射机制慢，我们定义自己的值类型时，应该重写Equals方法来比较值相等性，从而提高性能。注意不要调用base.Equals，我们的目的就是避免调用反射实现的Equals。</p><h2 id="重写equals方法的注意点"><a class="markdownIt-Anchor" href="#重写equals方法的注意点"></a> 重写Equals方法的注意点</h2><p>定义自己的类型时，重写Equals要符合相等性的4个特征：</p><ul><li>必须自反；x.Equals(x)肯定为true。</li><li>必须对称；x.Equals(y)和y.Equals(x)结果一致。</li><li>必须可传递；x.Equals(y)和y.Equals(z)都为true，则x.Equals(z)必定为true（注意都为false则不成立）。</li><li>必须一致；比较的两个值不变，结果不能改变。</li></ul><p>重写的规范：</p><ul><li>让类型实现System.IEquatable<T>接口的Equals方法，类型安全的Equals方法在内部调用。</T></li><li>实现参数为Object类型的Equals方法，内部调用类型安全的Equals方法。</li><li>如果需要，重载==、!=等操作符，在内部调用类型安全的Equals方法。</li></ul><p>如果类型需要为排序而比较，类型还应该实现System.IComparable的CompareTo方法和System.IComparable<T>的类型安全的CompareTo方法。还可考虑重载比较操作符（&lt;、&gt;=等），在内部调用类型安全的CompareTo方法。</T></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;引入概念&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#引入概念&quot;&gt;&lt;/a&gt; 引入概念&lt;/h2&gt;
+&lt;p&gt;很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。&lt;br&gt;
+比较的基准可以分为两种：同一和相等。&lt;br&gt;
+下面解释下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同一性：两个变量都是引用同一个对象。&lt;/li&gt;
+&lt;li&gt;相等性：两个变量的各个成员和字段的值相等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;同一自然相等，但是相等不一定同一&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CLR Via C#" scheme="http://yoursite.com/categories/CLR-Via-C/"/>
+    
+      <category term="设计类型" scheme="http://yoursite.com/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/"/>
+    
+      <category term="类型基础" scheme="http://yoursite.com/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="C#" scheme="http://yoursite.com/tags/C/"/>
+    
+      <category term="CLR" scheme="http://yoursite.com/tags/CLR/"/>
+    
+  </entry>
   
   <entry>
     <title>更进一步地看装箱和拆箱</title>
@@ -87,15 +155,16 @@
     <link href="http://yoursite.com/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/"/>
     <id>http://yoursite.com/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/</id>
     <published>2019-11-07T09:51:15.000Z</published>
-    <updated>2019-11-07T09:51:57.046Z</updated>
+    <updated>2019-11-18T03:43:33.827Z</updated>
     
-    <content type="html"><![CDATA[<p>dsadsadsadada</p>]]></content>
+    <content type="html"><![CDATA[<p>dsadsadsadada<br>Equals的重写策略，GetHashCode的重写策略</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;dsadsadsadada&lt;/p&gt;
+        &lt;p&gt;dsadsadsadada&lt;br&gt;
+Equals的重写策略，GetHashCode的重写策略&lt;/p&gt;
 
       
     

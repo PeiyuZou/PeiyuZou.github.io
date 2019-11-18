@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>对象相等性和同一性 | peiyu zou的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="引入概念 很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。 比较的基准可以分为两种：同一和相等。 下面解释下：  同一性：两个变量都是引用同一个对象。 相等性：两个变量的各个成员和字段的值相等。  同一自然相等，但是相等不一定同一">
+<meta name="keywords" content="C#,CLR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象相等性和同一性">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;15&#x2F;%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7&#x2F;index.html">
+<meta property="og:site_name" content="peiyu zou的博客">
+<meta property="og:description" content="引入概念 很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。 比较的基准可以分为两种：同一和相等。 下面解释下：  同一性：两个变量都是引用同一个对象。 相等性：两个变量的各个成员和字段的值相等。  同一自然相等，但是相等不一定同一">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;15&#x2F;%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7&#x2F;15740441524963.png">
+<meta property="og:updated_time" content="2019-11-18T03:33:25.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;15&#x2F;%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7&#x2F;15740441524963.png">
+  
+    <link rel="alternate" href="/atom.xml" title="peiyu zou的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">peiyu zou的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">下滑下滑</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">主站</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="https://shuoya.github.io/" target="_blank" rel="noopener">另一个站</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="検索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-对象相等性和同一性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/" class="article-date">
+  <time datetime="2019-11-15T09:57:50.000Z" itemprop="datePublished">2019-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CLR-Via-C/">CLR Via C#</a>►<a class="article-category-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a>►<a class="article-category-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      对象相等性和同一性
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="引入概念"><a class="markdownIt-Anchor" href="#引入概念"></a> 引入概念</h2>
+<p>很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。<br>
+比较的基准可以分为两种：同一和相等。<br>
+下面解释下：</p>
+<ul>
+<li>同一性：两个变量都是引用同一个对象。</li>
+<li>相等性：两个变量的各个成员和字段的值相等。</li>
+</ul>
+<p>同一自然相等，但是相等不一定同一</p>
+<a id="more"></a>
+<h2 id="c提供的方法"><a class="markdownIt-Anchor" href="#c提供的方法"></a> C#提供的方法</h2>
+<p>在编写程序时，常常需要进行相等性或者同一性的检查，C#的System.Object类型提供了Equals虚方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Object</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> Boolean <span class="title">Equals</span>(<span class="params">Object obj</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span> == obj) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，这里仅是比较两个变量的引用相等，也就是是否是同一个对象，所以是<strong>同一性</strong>的判断。<br>
+显然默认的Equals方法是不够满足使用的，我们常需要重写Equals方法来判断相等性（这章只介绍相等性和同一性，关于具体的重写策略，篇幅较长，会在后面的文章补充）。也正是由于Equals方法能被重写，因此一般不再用它测试同一性，Object提供了专门的静态方法ReferenceEquals：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Object</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Boolean <span class="title">ReferenceEquals</span>(<span class="params">Object objA, Object objB</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">return</span> (objA == objB);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>检查同一性务必调用ReferenceEquals，不应该使用==操作符或者Equals，后两者可能被重载或者重写。</p>
+<p>对于值类型，它们的基类System.ValueType就重写了Equals方法，并且正确地实现了<strong>相等性</strong>的检查，实现如下：</p>
+<div align="center">
+    <img width="868" src="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/15740441524963.png">
+</div>
+<ol>
+<li>如果obj实参为null，返回false</li>
+<li>如果this和obj实参引用不同类型的对象，返回false。</li>
+<li>针对类型定义的每个实例字段，都将this对象中的值和obj对象中的值进行比较（通过调用字段的Equals方法）。任何字段不相等，就返回false。</li>
+<li>返回true。不用调用ValueType的基类Object的Equals方法，因为Object没有定义任何字段。</li>
+</ol>
+<p>对于第3步骤，ValueType的Equals方法是利用反射实现的。由于CLR反射机制慢，我们定义自己的值类型时，应该重写Equals方法来比较值相等性，从而提高性能。注意不要调用base.Equals，我们的目的就是避免调用反射实现的Equals。</p>
+<h2 id="重写equals方法的注意点"><a class="markdownIt-Anchor" href="#重写equals方法的注意点"></a> 重写Equals方法的注意点</h2>
+<p>定义自己的类型时，重写Equals要符合相等性的4个特征：</p>
+<ul>
+<li>必须自反；x.Equals(x)肯定为true。</li>
+<li>必须对称；x.Equals(y)和y.Equals(x)结果一致。</li>
+<li>必须可传递；x.Equals(y)和y.Equals(z)都为true，则x.Equals(z)必定为true（注意都为false则不成立）。</li>
+<li>必须一致；比较的两个值不变，结果不能改变。</li>
+</ul>
+<p>重写的规范：</p>
+<ul>
+<li>让类型实现System.IEquatable<T>接口的Equals方法，类型安全的Equals方法在内部调用。</T></li>
+<li>实现参数为Object类型的Equals方法，内部调用类型安全的Equals方法。</li>
+<li>如果需要，重载==、!=等操作符，在内部调用类型安全的Equals方法。</li>
+</ul>
+<p>如果类型需要为排序而比较，类型还应该实现System.IComparable的CompareTo方法和System.IComparable<T>的类型安全的CompareTo方法。还可考虑重载比较操作符（&lt;、&gt;=等），在内部调用类型安全的CompareTo方法。</T></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/" data-id="ck33vwywp0004b8t6hb8sge2s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLR/" rel="tag">CLR</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          对象哈希码
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">更进一步地看装箱和拆箱</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <!-- 单级分类写法 -->
+<!-- 
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/">CLR Via C#</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/">dasdad</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/gggggg/">gggggg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/jjjjjj/">jjjjjj</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+ -->
+
+<!-- 多级分类写法 -->
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/">CLR Via C#</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/">dasdad</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/gggggg/">gggggg</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/jjjjjj/">jjjjjj</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a><span class="category-list-count">4</span></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CLI/" rel="tag">CLI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CLR/" rel="tag">CLR</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 20px;">C#</a> <a href="/tags/CLI/" style="font-size: 10px;">CLI</a> <a href="/tags/CLR/" style="font-size: 15px;">CLR</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/">对象哈希码</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/">对象相等性和同一性</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/">更进一步地看装箱和拆箱</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/">类型、对象、线程栈和托管堆在运行时的关系</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/">测试用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Peiyu Zou<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">主站</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="https://shuoya.github.io/" target="_blank" rel="noopener" class="mobile-nav-link">另一个站</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
