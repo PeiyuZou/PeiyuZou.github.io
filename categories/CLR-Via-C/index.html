@@ -1,319 +1,375 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  
+	<title>Peiyu Zou的博客</title>
+	<meta charset="utf-8">
+    
+    <!-- 引入配置文件 -->
+    <link rel="stylesheet" href="/css/main.css">
 
-  
-  <title>Category: CLR Via C# | peiyu zou的博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="peiyu zou的博客">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;CLR-Via-C&#x2F;index.html">
-<meta property="og:site_name" content="peiyu zou的博客">
-<meta property="og:locale" content="cn">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="peiyu zou的博客" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+    <!-- 字体图片库 -->
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    
+    <!-- 代码高亮库 -->
+    <link rel="stylesheet" href="/lib/highlight/styles/atom-one-dark.css">
+	
+<link rel="alternate" href="/atom.xml" title="peiyu zou的博客" type="application/atom+xml">
 </head>
-
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">peiyu zou的博客</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">下滑下滑</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+
+	<div id="main">
+		<!-- 引入侧边栏 -->
+		<aside>
+			<!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+                    <ul>
+                        <li class="directory">
+                            <a href="#" class="directory">
+                                <i class="fa fa-folder"></i>
+                                Docker
+                            </a>
+                            
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/19/Docker/test/">
+                                <i class="fa fa-file"></i>
+                                test
+                            </a>
+                        </li>
+                    </ul>
+    
+                        </li>
+                        
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/07/hello-world/">
+                                <i class="fa fa-file"></i>
+                                hello-world
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/18/对象哈希码/">
+                                <i class="fa fa-file"></i>
+                                对象哈希码
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/15/对象相等性和同一性/">
+                                <i class="fa fa-file"></i>
+                                对象相等性和同一性
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/07/搬迁到github-io/">
+                                <i class="fa fa-file"></i>
+                                搬迁到github-io
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/11/更进一步地看装箱和拆箱/">
+                                <i class="fa fa-file"></i>
+                                更进一步地看装箱和拆箱
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/07/测试用/">
+                                <i class="fa fa-file"></i>
+                                测试用
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/18/混淆点记录（C-））-1/">
+                                <i class="fa fa-file"></i>
+                                混淆点记录（C-））-1
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/08/类型、对象、线程栈和托管堆在运行时的关系/">
+                                <i class="fa fa-file"></i>
+                                类型、对象、线程栈和托管堆在运行时的关系
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/19/（一）相关关键字/">
+                                <i class="fa fa-file"></i>
+                                （一）相关关键字
+                            </a>
+                        </li>
+                    </ul>
+    
+                    <ul>
+                        <li class="file">
+                            <a href="/2019/11/19/（二）CLR如何调用虚方法/">
+                                <i class="fa fa-file"></i>
+                                （二）CLR如何调用虚方法
+                            </a>
+                        </li>
+                    </ul>
+    
+</div>
+
+<div id="toc" style="display: none;"></div>
+		</aside>
+
+		<!-- 引入导航 -->
+		<nav>
+			<ul id="menu">
+    <!-- 内部链接本页面直接跳转 -->
+    
+    <li class="menu-item">
+        <a href="/" class="menu-item-link">主页</a>
+    </li>
+    
+    <li class="menu-item">
+        <a href="/about" class="menu-item-link">关于</a>
+    </li>
+    
+
+    <!-- 外部链接打开新的窗口跳转 -->
+    
+    <li class="menu-item">
+        <a href="https://github.com" class="menu-item-link" target="_blank">github</a>
+    </li>
+    
+
+</ul>
+		</nav>
+
+		<!-- 引入正文 -->
+		<div id="content">
+			<div id="articleList">
+    <ul>
         
-          <a class="main-nav-link" href="/">主站</a>
+
+            <li class="article-li">
+                <span class="article-date">2019-11-07</span>
+                <a class="article-read" href="/2019/11/07/hello-world/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/07/hello-world/">hello-world</a>
+                <div class="article-digest">
+                    Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any pro
+                    ...
+                </div>
+            </li>
+            
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+
+            <li class="article-li">
+                <span class="article-date">2019-11-18</span>
+                <a class="article-read" href="/2019/11/18/对象哈希码/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/18/对象哈希码/">对象哈希码</a>
+                <div class="article-digest">
+                    对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。
+集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将
+                    ...
+                </div>
+            </li>
+            
         
-          <a class="main-nav-link" href="https://shuoya.github.io/" target="_blank" rel="noopener">另一个站</a>
+
+            <li class="article-li">
+                <span class="article-date">2019-11-15</span>
+                <a class="article-read" href="/2019/11/15/对象相等性和同一性/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/15/对象相等性和同一性/">对象相等性和同一性</a>
+                <div class="article-digest">
+                     C#提供的方法
+在编写程序时，常常需要进行相等性或者同一性的检查，C#的System.Object类型提供了Equals虚方法：
+public class Object
+{
+    public v
+                    ...
+                </div>
+            </li>
+            
         
-      </nav>
-      <nav id="sub-nav">
+
+            <li class="article-li">
+                <span class="article-date">2019-11-07</span>
+                <a class="article-read" href="/2019/11/07/搬迁到github-io/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/07/搬迁到github-io/">搬迁到github-io</a>
+                <div class="article-digest">
+                    4.dhsajkhdkjaskhkdahsk
+5.的砂进口德哈卡较好的看
+6.大恒科技撒活动框架号是
+                    ...
+                </div>
+            </li>
+            
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+
+            <li class="article-li">
+                <span class="article-date">2019-11-11</span>
+                <a class="article-read" href="/2019/11/11/更进一步地看装箱和拆箱/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/11/更进一步地看装箱和拆箱/">更进一步地看装箱和拆箱</a>
+                <div class="article-digest">
+                    众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子：
+Struct Point
+{
+   
+                    ...
+                </div>
+            </li>
+            
         
-        <a id="nav-search-btn" class="nav-icon" title="検索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/" class="archive-article-date">
-  <time datetime="2019-11-18T03:15:36.000Z" itemprop="datePublished">Nov 18</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/">对象哈希码</a>
-    </h1>
-  
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/" class="archive-article-date">
-  <time datetime="2019-11-15T09:57:50.000Z" itemprop="datePublished">Nov 15</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/">对象相等性和同一性</a>
-    </h1>
-  
+            <li class="article-li">
+                <span class="article-date">2019-11-07</span>
+                <a class="article-read" href="/2019/11/07/测试用/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/07/测试用/">测试用</a>
+                <div class="article-digest">
+                    dsadsadsadada
+Equals的重写策略，GetHashCode的重写策略
+dynamic基元类型
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" class="archive-article-date">
-  <time datetime="2019-11-11T07:22:45.000Z" itemprop="datePublished">Nov 11</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/">更进一步地看装箱和拆箱</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/" class="archive-article-date">
-  <time datetime="2019-11-08T02:00:01.000Z" itemprop="datePublished">Nov 8</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/">类型、对象、线程栈和托管堆在运行时的关系</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/" class="archive-article-date">
-  <time datetime="2019-11-07T09:51:15.000Z" itemprop="datePublished">Nov 7</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/">测试用</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/11/07/%E6%90%AC%E8%BF%81%E5%88%B0github-io/" class="archive-article-date">
-  <time datetime="2019-11-07T08:38:07.000Z" itemprop="datePublished">Nov 7</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/07/%E6%90%AC%E8%BF%81%E5%88%B0github-io/">搬迁到github.io</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-</section>
+                    ...
+                </div>
+            </li>
+            
         
-          <aside id="sidebar">
-  
-    <!-- 单级分类写法 -->
-<!-- 
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/">CLR Via C#</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/">dasdad</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/gggggg/">gggggg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/jjjjjj/">jjjjjj</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a></li></ul></li></ul></li></ul>
-    </div>
-  </div>
- -->
 
-<!-- 多级分类写法 -->
+            <li class="article-li">
+                <span class="article-date">2019-11-08</span>
+                <a class="article-read" href="/2019/11/08/类型、对象、线程栈和托管堆在运行时的关系/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/08/类型、对象、线程栈和托管堆在运行时的关系/">类型、对象、线程栈和托管堆在运行时的关系</a>
+                <div class="article-digest">
+                    栈结构从高位内存地址向低位内存地址构建。
+ 
+ 方法执行时的栈情况
+方法包含“序幕”（prologue）代码和“尾声”（epliogue）代码，分别在方法工作前对其进行初始化和工作后对其进行清理，以便
+                    ...
+                </div>
+            </li>
+            
+        
 
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/">CLR Via C#</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/">dasdad</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/gggggg/">gggggg</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/dasdad/jjjjjj/">jjjjjj</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/">设计类型</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/CLR-Via-C/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/">类型基础</a><span class="category-list-count">4</span></li></ul></li></ul></li></ul>
-    </div>
-  </div>
+            <li class="article-li">
+                <span class="article-date">2019-11-18</span>
+                <a class="article-read" href="/2019/11/18/混淆点记录（C-））-1/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/18/混淆点记录（C-））-1/">混淆点记录（C-））-1</a>
+                <div class="article-digest">
+                     1、静态类的限制
 
-  
+只能定义静态成员
+不能实现任何接口，因为只有使用类的实例时，才可调用类的接口方法。
+
+                    ...
+                </div>
+            </li>
+            
+        
+
+            <li class="article-li">
+                <span class="article-date">2019-11-19</span>
+                <a class="article-read" href="/2019/11/19/（一）相关关键字/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/19/（一）相关关键字/">（一）相关关键字</a>
+                <div class="article-digest">
+                    
+
+
+C#关键字
+类型
+方法/属性/事件
+常量/字段
+
+
+
+
+abstract
+表示不能构造该类型的实例
+表示为了构造派生类型的实例，派生类型必须重写并实现这个成员
+（不允许）
+
+
+virtual
+（
+                    ...
+                </div>
+            </li>
+            
+        
+
+            <li class="article-li">
+                <span class="article-date">2019-11-19</span>
+                <a class="article-read" href="/2019/11/19/（二）CLR如何调用虚方法/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/19/（二）CLR如何调用虚方法/">（二）CLR如何调用虚方法</a>
+                <div class="article-digest">
+                     方法唯一性
+所有方法都包含名称、签名和返回类型。包括C#在内的大多数语言只以方法名和参数为准，来确定方法的唯一性，也就是说同名、同参数的方法，就算返回值类型不一样，编译也是通不过的。只有IL汇编语言
+                    ...
+                </div>
+            </li>
+            
+        
+
+            <li class="article-li">
+                <span class="article-date">2019-11-19</span>
+                <a class="article-read" href="/2019/11/19/Docker/test/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/19/Docker/test/">test</a>
+                <div class="article-digest">
+                    
+                    ...
+                </div>
+            </li>
+            
+        
+    </ul>
+</div>
+		</div>
+		
+	</div>
+
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.pack.js"></script>
+
+    <!-- 引入 jquery -->
+    <script src="/lib/jquery-3.4.1.min.js"></script>
+
+    <!-- 引入 pjax -->
+    <script src="/lib/jquery-pjax-master/jquery.pjax.js"></script>
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CLI/" rel="tag">CLI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CLR/" rel="tag">CLR</a></li></ul>
-    </div>
-  </div>
+    <!-- 引入 js 文件 -->
+    <script src="/js/main.js"></script>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 20px;">C#</a> <a href="/tags/CLI/" style="font-size: 10px;">CLI</a> <a href="/tags/CLR/" style="font-size: 15px;">CLR</a>
-    </div>
-  </div>
+	<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.0.4/lib/L2Dwidget.min.js"></script>
+	<script type="text/javascript">
+	L2Dwidget.init();
+	</script>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最近の投稿</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/11/18/%E5%AF%B9%E8%B1%A1%E5%93%88%E5%B8%8C%E7%A0%81/">对象哈希码</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/15/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/">对象相等性和同一性</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%9C%B0%E7%9C%8B%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/">更进一步地看装箱和拆箱</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/08/%E7%B1%BB%E5%9E%8B%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BA%BF%E7%A8%8B%E6%A0%88%E5%92%8C%E6%89%98%E7%AE%A1%E5%A0%86%E5%9C%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E5%85%B3%E7%B3%BB/">类型、对象、线程栈和托管堆在运行时的关系</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/">测试用</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 Peiyu Zou<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">主站</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="https://shuoya.github.io/" target="_blank" rel="noopener" class="mobile-nav-link">另一个站</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
 </body>
 </html>
+
