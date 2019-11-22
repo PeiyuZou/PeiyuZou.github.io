@@ -60,7 +60,7 @@
                             </a>
                             
                     <ul>
-                        <li class="file">
+                        <li class="file active">
                             <a href="/2019/11/19/CLRviaCSharp/设计类型/类型基础/CSharp组件版本控制/（一）相关关键字/">
                                 <i class="fa fa-file"></i>
                                 （一）相关关键字
@@ -211,11 +211,53 @@
 		<div id="content">
 			<div>
     <span id="post-author">作者: Peiyu Zou</span>
-    <span id="post-date">2019-11-07 16:59:40</span>
+    <span id="post-date">2019-11-19 10:14:46</span>
 </div>
 
 <div id="article">
-    
+    <table>
+<thead>
+<tr>
+<th style="text-align:center">C#关键字</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">方法/属性/事件</th>
+<th style="text-align:center">常量/字段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">abstract</td>
+<td style="text-align:center">表示不能构造该类型的实例</td>
+<td style="text-align:center">表示为了构造派生类型的实例，派生类型必须重写并实现这个成员</td>
+<td style="text-align:center">（不允许）</td>
+</tr>
+<tr>
+<td style="text-align:center">virtual</td>
+<td style="text-align:center">（不允许）</td>
+<td style="text-align:center">表示这个成员可由派生类型重写</td>
+<td style="text-align:center">（不允许）</td>
+</tr>
+<tr>
+<td style="text-align:center">override</td>
+<td style="text-align:center">（不允许）</td>
+<td style="text-align:center">表示派生类型正在重写基类型的成员</td>
+<td style="text-align:center">（不允许）</td>
+</tr>
+<tr>
+<td style="text-align:center">sealed</td>
+<td style="text-align:center">表示该类型不能用作基类型</td>
+<td style="text-align:center">表示这个成员不能被派生类型重写（只能用于重写虚方法的方法）</td>
+<td style="text-align:center">（不允许）</td>
+</tr>
+<tr>
+<td style="text-align:center">new</td>
+<td style="text-align:center">应用于嵌套类型、方法、属性、事件、常量或字段时，表示该成员与基类中相似的成员无任何关系</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+
 </div>
 		</div>
 		

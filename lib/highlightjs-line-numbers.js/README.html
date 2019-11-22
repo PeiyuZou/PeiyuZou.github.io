@@ -1,0 +1,124 @@
+<h1 id="highlightjs-line-numbersjs-npm-npm"><a class="markdownIt-Anchor" href="#highlightjs-line-numbersjs-npm-npm"></a> highlightjs-line-numbers.js <a href="https://www.npmjs.com/package/highlightjs-line-numbers.js" target="_blank" rel="noopener"><img src="https://img.shields.io/npm/v/highlightjs-line-numbers.js.svg" alt="npm" /></a> <img src="https://img.shields.io/npm/dw/highlightjs-line-numbers.js.svg" alt="npm" /></h1>
+<p>Highlight.js line numbers plugin.</p>
+<p><a href="http://wcoder.github.io/highlightjs-line-numbers.js/" target="_blank" rel="noopener">DEMO</a> | <a href="https://github.com/wcoder/highlightjs-line-numbers.js/issues/5" target="_blank" rel="noopener">SСREENSHOTS</a></p>
+<h2 id="install"><a class="markdownIt-Anchor" href="#install"></a> Install</h2>
+<h4 id="bower"><a class="markdownIt-Anchor" href="#bower"></a> Bower</h4>
+<pre class="highlight"><code class="">bower install highlightjs-line-numbers.js
+</code></pre>
+<h4 id="npm"><a class="markdownIt-Anchor" href="#npm"></a> Npm</h4>
+<pre class="highlight"><code class="">npm install highlightjs-line-numbers.js
+</code></pre>
+<h4 id="getting-the-library-from-cdn"><a class="markdownIt-Anchor" href="#getting-the-library-from-cdn"></a> Getting the library from CDN</h4>
+<pre class="highlight"><code class="html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.7.0/highlightjs-line-numbers.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<pre class="highlight"><code class="html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"//cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.7.0/dist/highlightjs-line-numbers.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h2 id="usage"><a class="markdownIt-Anchor" href="#usage"></a> Usage</h2>
+<p>Download plugin and include file after highlight.js:</p>
+<pre class="highlight"><code class="html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"path/to/highlight.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"path/to/highlightjs-line-numbers.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<p>Initialize plugin after highlight.js:</p>
+<pre class="highlight"><code class="js">hljs.initHighlightingOnLoad();
+
+hljs.initLineNumbersOnLoad();
+</code></pre>
+<p>Here’s an equivalent way to calling <code>initLineNumbersOnLoad</code> using jQuery:</p>
+<pre class="highlight"><code class="js">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'code.hljs'</span>).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">i, block</span>) </span>{
+        hljs.lineNumbersBlock(block);
+    });
+});
+</code></pre>
+<p>If your needs cool style, add styles by taste:</p>
+<pre class="highlight"><code class="css"><span class="hljs-comment">/* for block of numbers */</span>
+<span class="hljs-selector-class">.hljs-ln-numbers</span> {
+    <span class="hljs-attribute">-webkit-touch-callout</span>: none;
+    <span class="hljs-attribute">-webkit-user-select</span>: none;
+    <span class="hljs-attribute">-khtml-user-select</span>: none;
+    <span class="hljs-attribute">-moz-user-select</span>: none;
+    <span class="hljs-attribute">-ms-user-select</span>: none;
+    <span class="hljs-attribute">user-select</span>: none;
+
+    <span class="hljs-attribute">text-align</span>: center;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#ccc</span>;
+    <span class="hljs-attribute">border-right</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#CCC</span>;
+    <span class="hljs-attribute">vertical-align</span>: top;
+    <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">5px</span>;
+
+    <span class="hljs-comment">/* your custom style here */</span>
+}
+
+<span class="hljs-comment">/* for block of code */</span>
+<span class="hljs-selector-class">.hljs-ln-code</span> {
+    <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">10px</span>;
+}
+</code></pre>
+<h2 id="options"><a class="markdownIt-Anchor" href="#options"></a> Options</h2>
+<p>After version 2.1 plugin has optional parameter <code>options</code> - for custom setup.</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>default value</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>singleLine</td>
+<td>boolean</td>
+<td>false</td>
+<td>enable plugin for code block with one line</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-of-using"><a class="markdownIt-Anchor" href="#examples-of-using"></a> Examples of using</h4>
+<pre class="highlight"><code class="js">hljs.initLineNumbersOnLoad({
+    <span class="hljs-attr">singleLine</span>: <span class="hljs-literal">true</span>
+});
+</code></pre>
+<pre class="highlight"><code class="js">hljs.lineNumbersBlock(myCodeBlock, myOptions);
+</code></pre>
+<h2 id="css-selectors"><a class="markdownIt-Anchor" href="#css-selectors"></a> CSS selectors</h2>
+<p>You may need to select some lines of code after rendering. For instance, you may want<br />
+to highlight a range of lines, selected by users, by changing their background color.<br />
+The CSS selectors below can be used to perform these selection operations.</p>
+<table>
+<thead>
+<tr>
+<th>CSS selector</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.hljs-ln-line</code></td>
+<td>Select all lines, including line numbers</td>
+</tr>
+<tr>
+<td><code>.hljs-ln-numbers</code></td>
+<td>Select all line numbers, excluding lines of code</td>
+</tr>
+<tr>
+<td><code>.hljs-ln-code</code></td>
+<td>Select all lines of code, excluding line numbers</td>
+</tr>
+<tr>
+<td><code>.hljs-ln-line[data-line-number=&quot;i&quot;]</code></td>
+<td>Select the ith line, including line number</td>
+</tr>
+<tr>
+<td><code>.hljs-ln-numbers[data-line-number=&quot;i&quot;]</code></td>
+<td>Select the ith line number, excluding the line of code</td>
+</tr>
+<tr>
+<td><code>.hljs-ln-code[data-line-number=&quot;i&quot;]</code></td>
+<td>Select the ith line of code, excluding the line number</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>© 2018 Yauheni Pakala | MIT License</p>

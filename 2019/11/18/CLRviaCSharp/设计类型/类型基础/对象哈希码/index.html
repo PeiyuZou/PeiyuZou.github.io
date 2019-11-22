@@ -82,7 +82,7 @@
                     </ul>
     
                     <ul>
-                        <li class="file">
+                        <li class="file active">
                             <a href="/2019/11/18/CLRviaCSharp/设计类型/类型基础/对象哈希码/">
                                 <i class="fa fa-file"></i>
                                 对象哈希码
@@ -211,11 +211,38 @@
 		<div id="content">
 			<div>
     <span id="post-author">作者: Peiyu Zou</span>
-    <span id="post-date">2019-11-07 16:59:40</span>
+    <span id="post-date">2019-11-18 11:15:36</span>
 </div>
 
 <div id="article">
-    
+    <p>System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。</p>
+<p>如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。<br>
+原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相同哈希码才被视为相等。所以，重写Equals方法，还应该重写GetHashCode方法，确保相等性算法和对象哈希码算法一致。</p>
+<a id="more"></a>
+<p>对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。<br>
+集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将在其中查找与指定键对象相等的键对象。<br>
+这种流程意味着不能随意修改键对象，一旦修改，就再也找不到了。正确地修改方式是先移除原来的键值对，再修改键对象，最后将新的键值对添加回哈希表。</p>
+<p>自定义GetHashCode方法并不难。难在取决于数据类型和数据分布情况，并不容易设计出能返回良好分布值的哈希算法。<br>
+下面的哈希算法很简单，这用于Point对象也许会不错：</p>
+<pre class="highlight"><code class="C#"><span class="hljs-keyword">internal</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Point</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Int32 m_x, m_y;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> Int32 <span class="hljs-title">GetHashCode</span>(<span class="hljs-params"></span>)</span>
+    {
+        <span class="hljs-keyword">return</span> m_x ^ m_y; <span class="hljs-comment">//返回m_x和m_y的XOR结果</span>
+    } 
+}
+</code></pre>
+<p>选择算法来计算类型实例的哈希码时，要遵守以下规则：</p>
+<ul>
+<li>算法要提供良好的随机分布，使哈希表获得最佳性能。</li>
+<li>可在算法中调用基类的GetHashCode方法，并包含它的返回值。注意不要调用Object和ValueType的GetHashCode，两者的实现性能不好。</li>
+<li>算法至少使用一个实例字段且使用的字段应该不可变，最好是在对象构造时初始化，在生存期内不变。</li>
+<li>算法执行速度尽量快。</li>
+<li>包含相同值得不同对象应该返回相同的哈希码。例如，相同文本的两个String对象应该返回相同的哈希码。</li>
+</ul>
+
 </div>
 		</div>
 		
