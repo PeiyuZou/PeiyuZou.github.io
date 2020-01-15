@@ -215,10 +215,13 @@
 
             <li class="article-li">
                 <span class="article-date">2019-11-07</span>
-                <a class="article-read" href="/2019/11/07/hello-world/"> 阅读全文 </span>
-                <a class="article-title" href="/2019/11/07/hello-world/">hello-world</a>
+                <a class="article-read" href="/2019/11/07/测试用/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/07/测试用/">测试用</a>
                 <div class="article-digest">
-                    Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any pro
+                    dsadsadsadada
+Equals的重写策略，GetHashCode的重写策略
+dynamic基元类型
+
                     ...
                 </div>
             </li>
@@ -227,13 +230,10 @@
 
             <li class="article-li">
                 <span class="article-date">2019-11-07</span>
-                <a class="article-read" href="/2019/11/07/测试用/"> 阅读全文 </span>
-                <a class="article-title" href="/2019/11/07/测试用/">测试用</a>
+                <a class="article-read" href="/2019/11/07/hello-world/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/07/hello-world/">hello-world</a>
                 <div class="article-digest">
-                    dsadsadsadada
-Equals的重写策略，GetHashCode的重写策略
-dynamic基元类型
-
+                    Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any pro
                     ...
                 </div>
             </li>
@@ -257,14 +257,12 @@ dynamic基元类型
         
 
             <li class="article-li">
-                <span class="article-date">2019-11-11</span>
-                <a class="article-read" href="/2019/11/11/CLRviaCSharp/设计类型/类型基础/更进一步地看装箱和拆箱/"> 阅读全文 </span>
-                <a class="article-title" href="/2019/11/11/CLRviaCSharp/设计类型/类型基础/更进一步地看装箱和拆箱/">更进一步地看装箱和拆箱</a>
+                <span class="article-date">2019-11-18</span>
+                <a class="article-read" href="/2019/11/18/CLRviaCSharp/设计类型/类型基础/对象哈希码/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/18/CLRviaCSharp/设计类型/类型基础/对象哈希码/">对象哈希码</a>
                 <div class="article-digest">
-                    众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子：
-Struct Point
-{
-   
+                    对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。
+集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将
                     ...
                 </div>
             </li>
@@ -288,12 +286,14 @@ public class Object
         
 
             <li class="article-li">
-                <span class="article-date">2019-11-18</span>
-                <a class="article-read" href="/2019/11/18/CLRviaCSharp/设计类型/类型基础/对象哈希码/"> 阅读全文 </span>
-                <a class="article-title" href="/2019/11/18/CLRviaCSharp/设计类型/类型基础/对象哈希码/">对象哈希码</a>
+                <span class="article-date">2019-11-11</span>
+                <a class="article-read" href="/2019/11/11/CLRviaCSharp/设计类型/类型基础/更进一步地看装箱和拆箱/"> 阅读全文 </span>
+                <a class="article-title" href="/2019/11/11/CLRviaCSharp/设计类型/类型基础/更进一步地看装箱和拆箱/">更进一步地看装箱和拆箱</a>
                 <div class="article-digest">
-                    对于集合来说，向其中添加键值对，首先要获取键对象的哈希码，该哈希码指出键值对要存储在哪个哈希桶（bucket）中。
-集合需要查找键时，会获取指定键对象的哈希码，这标识了当前要以顺序方式搜索的哈希桶，将
+                    众所周知，值类型比引用类型“轻”，原因是它们不作为对象在托管堆上分配，不被垃圾回收，也不通过指针进行引用。但有时，我们又需要获取到对值类型实例的引用，看下面例子：
+Struct Point
+{
+   
                     ...
                 </div>
             </li>
