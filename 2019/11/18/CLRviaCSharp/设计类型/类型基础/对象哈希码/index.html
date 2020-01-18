@@ -178,6 +178,26 @@
                         
                     </ul>
     
+                    <ul>
+                        <li class="directory">
+                            <a href="#" class="directory">
+                                <i class="fa fa-folder"></i>
+                                过错
+                            </a>
+                            
+                    <ul>
+                        <li class="file">
+                            <a href="/2020/01/15/过错/先删后增or先增后删/">
+                                <i class="fa fa-file"></i>
+                                先删后增or先增后删
+                            </a>
+                        </li>
+                    </ul>
+    
+                        </li>
+                        
+                    </ul>
+    
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -213,8 +233,10 @@
     <span id="post-author">作者: Peiyu Zou</span>
     <span id="post-date">2019-11-18 11:15:36</span>
 </div>
-
-<div id="article">
+<div style="font-size: 40px;font-weight: bold;margin-left: 30px;">
+    对象哈希码
+</div>
+<div id="article"> 
     <p>System.Object提供了虚方法GetHashCode，它能获取任意对象的Int32哈希码。</p>
 <p>如果你定义的类型重写了Equals方法，还应该重写GetHashCode方法，这也是常被问及的一个问题。<br>
 原因是：在System.Collections.Hashtable、System.Collections.Generic.Dictionary类型以及一些其他集合的实现中，要求两个对象必须具有相同哈希码才被视为相等。所以，重写Equals方法，还应该重写GetHashCode方法，确保相等性算法和对象哈希码算法一致。</p>

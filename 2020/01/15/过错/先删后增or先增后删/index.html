@@ -139,7 +139,7 @@
                     </ul>
     
                     <ul>
-                        <li class="file active">
+                        <li class="file">
                             <a href="/2019/11/07/测试用/">
                                 <i class="fa fa-file"></i>
                                 测试用
@@ -186,7 +186,7 @@
                             </a>
                             
                     <ul>
-                        <li class="file">
+                        <li class="file active">
                             <a href="/2020/01/15/过错/先删后增or先增后删/">
                                 <i class="fa fa-file"></i>
                                 先删后增or先增后删
@@ -231,15 +231,15 @@
 		<div id="content">
 			<div>
     <span id="post-author">作者: Peiyu Zou</span>
-    <span id="post-date">2019-11-07 17:51:15</span>
+    <span id="post-date">2020-01-15 20:25:06</span>
 </div>
 <div style="font-size: 40px;font-weight: bold;margin-left: 30px;">
-    测试用
+    先删后增or先增后删
 </div>
 <div id="article"> 
-    <p>dsadsadsadada<br>
-Equals的重写策略，GetHashCode的重写策略<br>
-dynamic基元类型</p>
+    <p>情况大致描述下：需要发送两条请求（假设A和B）对服务器的同一个列表分别进行“删除某些数据”和“增加某些数据”两个操作。由于后台明确表明无法直接更新列表，也无法处理异步请求，所以必须处理下AB同步，问题在于先A后B还是先B后A。<br>
+结果：答案很简单，先删后增比较好，可以避免列表先增导致容量不够而引起异常。特别是以下情况：<br>
+假设A操作是删，B操作是增，列表容量为10个单位，列表中目前有7个单位；我们的目的是变化列表中的一些单位，这需要我们同时从列表中移除4个单位并加入5个单位，结果是8个单位，很好，并没有超过容量。由于我们无法直接更新列表，需要将这个操作拆解为删和增（A和B），现在情况不同了，我们如果无法保证删除操作先到达服务器的话，那么先增5个单位将导致7+5，这会导致异常。因此选择使用异步也是危险的，正确的选择是同步处理，先删后增</p>
 
 </div>
 		</div>
