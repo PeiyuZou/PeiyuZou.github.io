@@ -69,7 +69,7 @@
                     </ul>
     
                     <ul>
-                        <li class="file active">
+                        <li class="file">
                             <a href="/2019/11/19/CLRviaCSharp/设计类型/类型基础/CSharp组件版本控制/（二）CLR如何调用虚方法/">
                                 <i class="fa fa-file"></i>
                                 （二）CLR如何调用虚方法
@@ -144,7 +144,7 @@
                             </a>
                             
                     <ul>
-                        <li class="file">
+                        <li class="file active">
                             <a href="/2019/11/08/SCIP/构造过程抽象/递归和迭代/">
                                 <i class="fa fa-file"></i>
                                 递归和迭代
@@ -293,105 +293,52 @@
 		<div id="content">
 			<div>
     <span id="post-author">作者: Peiyu Zou</span>
-    <span id="post-date">2019-11-19 10:51:24</span>
+    <span id="post-date">2019-11-08 10:00:01</span>
 </div>
 <div style="font-size: 40px;font-weight: bold;margin-left: 30px;">
-    （二）CLR如何调用虚方法
+    递归和迭代
 </div>
 <div id="article"> 
-    <h2 id="方法唯一性"><a class="markdownIt-Anchor" href="#方法唯一性"></a> 方法唯一性</h2>
-<p>所有方法都包含名称、签名和返回类型。包括C#在内的大多数语言只以方法名和参数为准，来确定方法的唯一性，也就是说同名、同参数的方法，就算返回值类型不一样，编译也是通不过的。只有IL汇编语言，才可以通过返回值类型来区分。</p>
-<div align="center">
-    <img width="592" src="/2019/11/19/CLRviaCSharp/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/CSharp%E7%BB%84%E4%BB%B6%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/%EF%BC%88%E4%BA%8C%EF%BC%89CLR%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8%E8%99%9A%E6%96%B9%E6%B3%95/15741322611458.png">
-</div>
-<h2 id="方法的分类"><a class="markdownIt-Anchor" href="#方法的分类"></a> 方法的分类</h2>
-<p>方法：</p>
-<ul>
-<li>静态方法</li>
-<li>实例方法
-<ul>
-<li>虚实例方法</li>
-<li>非虚实例方法</li>
-</ul>
-</li>
-</ul>
-<p>在类型上执行操作的方法，称为静态方法；在类型的实例上执行操作的，称为实例方法（非静态方法）；实例方法是参与到继承层次结构中的成员，因此又可分为虚实例方法（虚方法）和非虚实例方法。</p>
-<h2 id="方法调用指令call-callvirt"><a class="markdownIt-Anchor" href="#方法调用指令call-callvirt"></a> 方法调用指令（call &amp;&amp; callvirt）</h2>
-<pre class="highlight"><code class="C#"><span class="hljs-keyword">internal</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Employee</span>
-{
-    <span class="hljs-comment">//非虚实例方法</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> Int32 <span class="hljs-title">GetYearsEmployed</span>(<span class="hljs-params"></span>)</span> { ... }
-    <span class="hljs-comment">//虚方法</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">virtual</span> String <span class="hljs-title">GetProgressReport</span>(<span class="hljs-params"></span>)</span> { ... }
-    <span class="hljs-comment">//静态方法</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Employee <span class="hljs-title">Lookup</span>(<span class="hljs-params">String name</span>)</span> { ... }
-}
+    <p> </p>
+<h2 id="计算过程的形状"><a class="markdownIt-Anchor" href="#计算过程的形状"></a> 计算过程的“形状”</h2>
+<p>从线性递归举例子开始，这里使用Lisp语言描述6的阶乘（6!）：</p>
+<pre class="highlight"><code class="Lisp">(<span class="hljs-name">define</span> (<span class="hljs-name">factorial</span> n)
+    (<span class="hljs-name">if</span> (<span class="hljs-name">=</span> n <span class="hljs-number">1</span>)
+        <span class="hljs-number">1</span>
+        (<span class="hljs-name">*</span> n (<span class="hljs-name">factorial</span> (<span class="hljs-name">-</span> n <span class="hljs-number">1</span>)))))
 </code></pre>
-<p>编译上面代码时，编译器在程序集的方法定义表中写入3个记录项，每个记录项用一组标志（flag）指明该方法是哪种方法（静态、虚、非虚实例）。标志（flag）是编译器判断如何正确生成IL代码的依据。</p>
-<p>CLR提供的两个方法调用指令：</p>
-<ul>
-<li><strong>call</strong>：可用于静态、实例、虚方法。
-<ul>
-<li>调用静态方法，必须指定定义方法的类型。</li>
-<li>调用实例方法，必须指定引用了对象的变量。该变量本身的类型指明了定义方法的类型。如果变量的类型没有定义此方法，则检查基类型。</li>
-<li>call指令是在编译时检查的（静态绑定），因此指定的变量为字面调用的变量（编译时类型），并非线程栈当前栈顶的发出调用的变量。由于是静态绑定的，无法检查变量是否为null，都假定不为null，因此call指令可能会引发NullReferenceException。</li>
-</ul>
-</li>
-<li><strong>callvirt</strong>：可用于实例方法和虚方法，不能用于静态方法。
-<ul>
-<li>调用非虚实例方法，变量的类型指明了方法的定义类型</li>
-<li>调用虚实例方法，CLR调查发出调用的对象的实际类型，然后以多态方式调用方法。</li>
-<li>callvirt是后期绑定的（在运行时检查类型），注意调用非虚和虚实例方法的区别，前者是变量的编译时类型用作检查的类型（同call），后者是发出调用的对象的实际类型（也就是当前线程栈上栈顶发出调用的变量指向的对象），本文后面会讨论这一重要的区别。另外，不管虚或非虚，callvirt都会执行变量的null检查，因此执行速度会稍慢于call指令（太小以至于可以忽略）。</li>
-</ul>
-</li>
-</ul>
-<p>无论用call还是callvirt调用实例方法或者虚方法，这些方法通常接受隐藏的this实参作为方法第一个参数，引用要操作的对象。</p>
-<p>下面我们对3种方法分别调用，并反汇编出IL代码查看C#编译器是如何工作的：</p>
-<pre class="highlight"><code class="C#"><span class="hljs-keyword">class</span> <span class="hljs-title">Program</span>
-{
-    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args</span>)</span>
-    {
-        Console.WriteLine();   <span class="hljs-comment">//调用静态方法</span>
+<p>利用代换模型，可以得出下例计算过程：</p>
+<div align="center">
+    <img width="372" src="/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/15914619578073.png">
+</div>
+<p>另外一种计算的方式，是利用计数器，先乘起1和2，结果再乘以3，以此类推，直到n：</p>
+<pre class="highlight"><code class="Lisp">(<span class="hljs-name">define</span> (<span class="hljs-name">factorial</span> n)
+    (<span class="hljs-name">fact-iter</span> <span class="hljs-number">1</span> <span class="hljs-number">1</span> n))
 
-        Object o = <span class="hljs-keyword">new</span> Object();
-        o.GetHashCode();       <span class="hljs-comment">//调用虚实例方法</span>
-        o.GetType();           <span class="hljs-comment">//调用非虚实例方法</span>
-    }
-}
+(<span class="hljs-name">define</span> (<span class="hljs-name">fact-iter</span> product counter max-count)
+    (<span class="hljs-name">if</span> (<span class="hljs-name">&gt;</span> counter max-count)
+        product
+        (<span class="hljs-name">fact-iter</span> (<span class="hljs-name">*</span> counter product)
+            (<span class="hljs-name">+</span> counter <span class="hljs-number">1</span>)
+            max-count)))
 </code></pre>
-<p>反汇编如下：</p>
+<p>同样用代换模型，得到计算过程：</p>
 <div align="center">
-    <img width="769" src="/2019/11/19/CLRviaCSharp/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/CSharp%E7%BB%84%E4%BB%B6%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/%EF%BC%88%E4%BA%8C%EF%BC%89CLR%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8%E8%99%9A%E6%96%B9%E6%B3%95/15741347503598.png">
+    <img width="380" src="/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/15914626024716.png">
 </div>
-<p>可以看到C#编译对静态方法、虚实例方法、非虚实例方法分别使用了call、callvirt、callvirt。前两者都在预料之中。唯独最后一次调用，以callvirt调用了非虚实例方法。<br>
-这虽然古怪，但是是可行的。对代码执行JIT编译时，CLR知道GetType不是虚方法，在JIT编译完成后，会非虚地调用GetType。至于为什么不直接生成call来调用非虚实例方法，是因为C#团队觉得需要对发出调用的对象执行null检查。</p>
-<p>但是在某些情况下，编译器不得不选择使用call而不是callvirt：</p>
-<pre class="highlight"><code class="C#"><span class="hljs-keyword">internal</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SomeClass</span>
-{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> String <span class="hljs-title">ToString</span>(<span class="hljs-params"></span>)</span>
-    {
-        ...
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">base</span>.ToString();
-    }
-}
+<p>前者是一个推迟执行的过程，它是先展开后收缩的形状，仅在“收缩”阶段执行实际的计算。前者称为递归，递归计算需要解释器维护好“展开”的轨迹，图中的曲线表示实时保存的信息量，这要求的空间复杂度为O(n);<br>
+后者在计算过程中，需要保存的信息数量固定。这类仅用固定数量的状态变量描述的嵌套计算过程称为迭代，要求的空间复杂度仅为常数（O(1)）;</p>
+<h2 id="尾递归"><a class="markdownIt-Anchor" href="#尾递归"></a> 尾递归</h2>
+<p>迭代相较于递归有着明显的优势，但递归仍有适用的场景：比如当我们无法确定执行的规模n时。<br>
+一般递归的劣势在于随着问题规模n的扩大，需求的空间成线性增长。使用尾递归，可以将内存开销维持在常量的水平。</p>
+<pre class="highlight"><code class="Python"><span class="hljs-keyword">return</span> x + tailrec(x + <span class="hljs-number">1</span>);
+
+//改为
+
+<span class="hljs-keyword">return</span> tailrec(x + <span class="hljs-number">1</span>);
 </code></pre>
-<p>这里调用虚方法base.ToString()时，C#编译器生成的是call指令。如果使用callvirt指令，编译器会查找实际发出调用的对象，base是SomeClass类型的成员，用来代指基类型，但是调用时不会入栈；所以发出调用的实际类型是SomeClass，现在会在SomeClass的类型对象的方法表中查找ToString方法并调用，没错，这样会导致递归执行，直到栈溢出。因此这里C#编译器会自动处理为使用call指令调用。</p>
-<h2 id="调用值类型的方法"><a class="markdownIt-Anchor" href="#调用值类型的方法"></a> 调用值类型的方法</h2>
-<p>C#编译器调用值类型的方法时使用call指令。原因有下：</p>
-<ul>
-<li>值类型密封（sealed），即使值类型含有虚方法，也不用考虑多态性，这样调用会更快。</li>
-<li>值类型永不为null，无需null检查</li>
-<li>如果以虚方式调用值类型中的虚方法，CLR要获取对值类型的类型对象的引用（因为要使用类型对象中的方法表），这会造成值类型装箱，性能受损。</li>
-</ul>
-<h2 id="设计类型时关于虚方法的注意事项"><a class="markdownIt-Anchor" href="#设计类型时关于虚方法的注意事项"></a> 设计类型时关于虚方法的注意事项</h2>
-<p>尽量减少虚方法，原因有下：</p>
-<ul>
-<li>调用虚方法速度比非虚方法慢</li>
-<li>JIT编译器不能内嵌虚方法，进一步影响性能</li>
-<li>使组件版本控制变得更脆弱（一旦某非密封类发生改变，新类必须保持虚方法调用顺序，以避免中断派生）</li>
-</ul>
-<p> <br>
-在定义基类型时，如果需要一个方法有许多多态版本，重载出多个方法，那么应该将最复杂（参数最多）的那个定义为虚方法，其他的为非虚方法，并且在内部可以调用虚版本的那个方法。这样可以改善版本控制，也不影响派生类。</p>
+<p>这样解释器不必存储每一次嵌套的x变量。<br>
+尾递归优化主要是对栈内存空间的优化，这个优化是O(n)到O(1)的；至于时间的优化，其实是由于对空间的优化导致内存分配的工作减少所产生的，是一个常数优化，不会带来质的变化。</p>
 
 </div>
 		</div>

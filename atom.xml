@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-01-15T12:41:21.312Z</updated>
+  <updated>2020-12-07T06:53:07.173Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>脚本编译</title>
+    <link href="http://yoursite.com/2020/12/07/Unity/%E6%B8%B8%E6%88%8F%E8%84%9A%E6%9C%AC/%E8%84%9A%E6%9C%AC%E7%BC%96%E8%AF%91/"/>
+    <id>http://yoursite.com/2020/12/07/Unity/%E6%B8%B8%E6%88%8F%E8%84%9A%E6%9C%AC/%E8%84%9A%E6%9C%AC%E7%BC%96%E8%AF%91/</id>
+    <published>2020-12-07T05:57:01.000Z</published>
+    <updated>2020-12-07T06:53:07.173Z</updated>
+    
+    <content type="html"><![CDATA[<p> </p><h2 id="编译规则"><a class="markdownIt-Anchor" href="#编译规则"></a> 编译规则</h2><p>在编辑器下，每次修改完代码后，会自动开始编译。本质上所有代码都将编译成DLL文件，位置在<strong>Project/Library/ScriptAssemblies</strong>目录下，如下图：</p><div align="center">    <img width="646" src="/2020/12/07/Unity/%E6%B8%B8%E6%88%8F%E8%84%9A%E6%9C%AC/%E8%84%9A%E6%9C%AC%E7%BC%96%E8%AF%91/4C888FF5-66B6-4a55-A63D-652773971003.png"></div><p>关注图中前4个DLL，脚本存放的目录决定了它将被编译进哪个DLL中。这里我们关注两个关键词：<strong>Editor</strong>和<strong>firstpass</strong></p><h4 id="editor"><a class="markdownIt-Anchor" href="#editor"></a> Editor</h4><p>游戏脚本可以分为运行时脚本和编辑时脚本两类，编辑时脚本仅作用于编辑器，不会被打进游戏包。Unity默认将Editor文件夹下的脚本视为编辑时脚本（只要名为Editor，无关乎位置），Assembly-CSharp-Editor.dll和Assembly-CSharp-Editor-firstpass.dll都是由编辑时脚本编译出来的。</p><h4 id="firstpass"><a class="markdownIt-Anchor" href="#firstpass"></a> firstpass</h4><p>firstpass表示先编译，根据官方的解释，所有在Standard Assets、Pro Standard Assets或者Plugins文件夹中的脚本，将会优先编译，然后才编译其他目录。一般来说，Assembly-CSharp-firstpass.dll由Plugins目录下的脚本编译而来。Assembly-CSharp-Editor-firstpass.dll则是Plugins/Editor目录下的脚本编译而来。<br> </p><p>脚本的编译顺序：优先Plugins，然后其他目录，最后Editor。<br>因此Assembly-CSharp-firstpass.dll &gt; Assembly-CSharp-Editor-firstpass.dll &gt; Assembly-CSharp.dll &gt; Assembly-CSharp-Editor.dll<br>注意先编译的脚本无法访问后编译的脚本。<br> </p><h2 id="优化编译"><a class="markdownIt-Anchor" href="#优化编译"></a> 优化编译</h2><p>项目工作中的代码可以分类为框架类代码和逻辑性的代码。框架类的代码由于改动频率极低，我们可以选择将它们放在Plugins下面，这样我们在修改逻辑性代码的时候可以减少编译的时间。<br>如果逻辑性代码过多导致编译缓慢，也可以考虑将部分CS代码预先编译成DLL。<br> </p><h2 id="脚本跨平台"><a class="markdownIt-Anchor" href="#脚本跨平台"></a> 脚本跨平台</h2><p>Unity自己提供两个核心的DLL库：UnityEditor.dll和UnityEngine.dll<br>Unity编辑器只支持三个平台：Windows、macOS和Linux，所以UnityEditor.dll中的代码都是由C#编写，通过Mono实现跨平台。<br>运行时Unity兼容的平台目前多达20多个，并非所有都能运行DLL，加上底层渲染方法等无法使用C#调用。因此，运行时所需要的的库UnityEngine.dll只是封装了C#接口，更底层的实现则是由UnityEngine.dll调用 C++ 来完成的。<br>由于不同平台编译 C++ 的方式不同，Unity使用不同的编译方式来编译UnityEngine.dll（比如安卓平台编译成*.so，iOS则编译成*.a），从而实现跨平台。</p><p>Unity目前支持IL2CPP，可以将DLL转化成 C++ 来执行，这在效率上提高了一个台阶。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&quot;编译规则&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#编译规则&quot;&gt;&lt;/a&gt; 编译规则&lt;/h2&gt;
+&lt;p&gt;在编辑器下，每次修改完代码后，会自动开始编译。本质上所有代码都将编译成DLL文件，位置在&lt;strong&gt;Proje
+      
+    
+    </summary>
+    
+    
+      <category term="Unity" scheme="http://yoursite.com/categories/Unity/"/>
+    
+    
+      <category term="Unity" scheme="http://yoursite.com/tags/Unity/"/>
+    
+  </entry>
   
   <entry>
     <title>先删后增or先增后删</title>
@@ -237,6 +265,35 @@
       <category term="C#" scheme="http://yoursite.com/tags/C/"/>
     
       <category term="CLR" scheme="http://yoursite.com/tags/CLR/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>递归和迭代</title>
+    <link href="http://yoursite.com/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/"/>
+    <id>http://yoursite.com/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/</id>
+    <published>2019-11-08T02:00:01.000Z</published>
+    <updated>2020-06-06T17:21:35.785Z</updated>
+    
+    <content type="html"><![CDATA[<p> </p><h2 id="计算过程的形状"><a class="markdownIt-Anchor" href="#计算过程的形状"></a> 计算过程的“形状”</h2><p>从线性递归举例子开始，这里使用Lisp语言描述6的阶乘（6!）：</p><pre class="highlight"><code class="Lisp">(<span class="hljs-name">define</span> (<span class="hljs-name">factorial</span> n)    (<span class="hljs-name">if</span> (<span class="hljs-name">=</span> n <span class="hljs-number">1</span>)        <span class="hljs-number">1</span>        (<span class="hljs-name">*</span> n (<span class="hljs-name">factorial</span> (<span class="hljs-name">-</span> n <span class="hljs-number">1</span>)))))</code></pre><p>利用代换模型，可以得出下例计算过程：</p><div align="center">    <img width="372" src="/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/15914619578073.png"></div><p>另外一种计算的方式，是利用计数器，先乘起1和2，结果再乘以3，以此类推，直到n：</p><pre class="highlight"><code class="Lisp">(<span class="hljs-name">define</span> (<span class="hljs-name">factorial</span> n)    (<span class="hljs-name">fact-iter</span> <span class="hljs-number">1</span> <span class="hljs-number">1</span> n))(<span class="hljs-name">define</span> (<span class="hljs-name">fact-iter</span> product counter max-count)    (<span class="hljs-name">if</span> (<span class="hljs-name">&gt;</span> counter max-count)        product        (<span class="hljs-name">fact-iter</span> (<span class="hljs-name">*</span> counter product)            (<span class="hljs-name">+</span> counter <span class="hljs-number">1</span>)            max-count)))</code></pre><p>同样用代换模型，得到计算过程：</p><div align="center">    <img width="380" src="/2019/11/08/SCIP/%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B%E6%8A%BD%E8%B1%A1/%E9%80%92%E5%BD%92%E5%92%8C%E8%BF%AD%E4%BB%A3/15914626024716.png"></div><p>前者是一个推迟执行的过程，它是先展开后收缩的形状，仅在“收缩”阶段执行实际的计算。前者称为递归，递归计算需要解释器维护好“展开”的轨迹，图中的曲线表示实时保存的信息量，这要求的空间复杂度为O(n);<br>后者在计算过程中，需要保存的信息数量固定。这类仅用固定数量的状态变量描述的嵌套计算过程称为迭代，要求的空间复杂度仅为常数（O(1)）;</p><h2 id="尾递归"><a class="markdownIt-Anchor" href="#尾递归"></a> 尾递归</h2><p>迭代相较于递归有着明显的优势，但递归仍有适用的场景：比如当我们无法确定执行的规模n时。<br>一般递归的劣势在于随着问题规模n的扩大，需求的空间成线性增长。使用尾递归，可以将内存开销维持在常量的水平。</p><pre class="highlight"><code class="Python"><span class="hljs-keyword">return</span> x + tailrec(x + <span class="hljs-number">1</span>);//改为<span class="hljs-keyword">return</span> tailrec(x + <span class="hljs-number">1</span>);</code></pre><p>这样解释器不必存储每一次嵌套的x变量。<br>尾递归优化主要是对栈内存空间的优化，这个优化是O(n)到O(1)的；至于时间的优化，其实是由于对空间的优化导致内存分配的工作减少所产生的，是一个常数优化，不会带来质的变化。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&quot;计算过程的形状&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#计算过程的形状&quot;&gt;&lt;/a&gt; 计算过程的“形状”&lt;/h2&gt;
+&lt;p&gt;从线性递归举例子开始，这里使用Lisp语言描述6的阶乘（6!）：&lt;/p&gt;
+&lt;pre clas
+      
+    
+    </summary>
+    
+    
+      <category term="SCIP" scheme="http://yoursite.com/categories/SCIP/"/>
+    
+    
+      <category term="SCIP" scheme="http://yoursite.com/tags/SCIP/"/>
     
   </entry>
   
