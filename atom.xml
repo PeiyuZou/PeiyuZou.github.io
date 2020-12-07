@@ -282,41 +282,6 @@
   </entry>
   
   <entry>
-    <title>测试用</title>
-    <link href="http://yoursite.com/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/"/>
-    <id>http://yoursite.com/2019/11/07/%E6%B5%8B%E8%AF%95%E7%94%A8/</id>
-    <published>2019-11-07T09:51:15.000Z</published>
-    <updated>2019-11-18T06:39:44.141Z</updated>
-    
-    <content type="html"><![CDATA[<p>dsadsadsadada<br>Equals的重写策略，GetHashCode的重写策略<br>dynamic基元类型</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;dsadsadsadada&lt;br&gt;
-Equals的重写策略，GetHashCode的重写策略&lt;br&gt;
-dynamic基元类型&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-    
-      <category term="CLR Via C#" scheme="http://yoursite.com/categories/CLR-Via-C/"/>
-    
-      <category term="dasdad" scheme="http://yoursite.com/categories/CLR-Via-C/dasdad/"/>
-    
-      <category term="gggggg" scheme="http://yoursite.com/categories/CLR-Via-C/dasdad/gggggg/"/>
-    
-    
-      <category term="C#" scheme="http://yoursite.com/tags/C/"/>
-    
-      <category term="CLI" scheme="http://yoursite.com/tags/CLI/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Hello World</title>
     <link href="http://yoursite.com/2019/11/07/hello-world/"/>
     <id>http://yoursite.com/2019/11/07/hello-world/</id>
