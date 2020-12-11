@@ -91,7 +91,7 @@
                     </ul>
     
                     <ul>
-                        <li class="file active">
+                        <li class="file">
                             <a href="/2019/11/15/CLRviaCSharp/设计类型/类型基础/对象相等性和同一性/">
                                 <i class="fa fa-file"></i>
                                 对象相等性和同一性
@@ -208,7 +208,7 @@
                             </a>
                             
                     <ul>
-                        <li class="file">
+                        <li class="file active">
                             <a href="/2020/12/11/踩坑记录/获取不到UI实际宽度/">
                                 <i class="fa fa-file"></i>
                                 获取不到UI实际宽度
@@ -253,70 +253,17 @@
 		<div id="content">
 			<div>
     <span id="post-author">作者: Peiyu Zou</span>
-    <span id="post-date">2019-11-15 17:57:50</span>
+    <span id="post-date">2020-12-11 11:08:01</span>
 </div>
 <div style="font-size: 40px;font-weight: bold;margin-left: 30px;">
-    对象相等性和同一性
+    获取不到UI实际宽度
 </div>
 <div id="article"> 
-    <h2 id="引入概念"><a class="markdownIt-Anchor" href="#引入概念"></a> 引入概念</h2>
-<p>很多时候我们写程序会比较两个变量，用作搜索、排序或者其他。<br>
-比较的基准可以分为两种：同一和相等。<br>
-下面解释下：</p>
-<ul>
-<li>同一性：两个变量都是引用同一个对象。</li>
-<li>相等性：两个变量的各个成员和字段的值相等。</li>
-</ul>
-<p>同一自然相等，但是相等不一定同一</p>
-<a id="more"></a>
-<h2 id="c提供的方法"><a class="markdownIt-Anchor" href="#c提供的方法"></a> C#提供的方法</h2>
-<p>在编写程序时，常常需要进行相等性或者同一性的检查，C#的System.Object类型提供了Equals虚方法：</p>
-<pre class="highlight"><code class="C#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Object</span>
-{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">virtual</span> Boolean <span class="hljs-title">Equals</span>(<span class="hljs-params">Object obj</span>)</span>
-    {
-        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == obj) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-    }
-}
-</code></pre>
-<p>注意，这里仅是比较两个变量的引用相等，也就是是否是同一个对象，所以是<strong>同一性</strong>的判断。<br>
-显然默认的Equals方法是不够满足使用的，我们常需要重写Equals方法来判断相等性（这章只介绍相等性和同一性，关于具体的重写策略，篇幅较长，会在后面的文章补充）。也正是由于Equals方法能被重写，因此一般不再用它测试同一性，Object提供了专门的静态方法ReferenceEquals：</p>
-<pre class="highlight"><code class="C#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Object</span>
-{
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Boolean <span class="hljs-title">ReferenceEquals</span>(<span class="hljs-params">Object objA, Object objB</span>)</span>
-    {
-        <span class="hljs-keyword">return</span> (objA == objB);
-    }
-}
-</code></pre>
-<p>检查同一性务必调用ReferenceEquals，不应该使用==操作符或者Equals，后两者可能被重载或者重写。</p>
-<p>对于值类型，它们的基类System.ValueType就重写了Equals方法，并且正确地实现了<strong>相等性</strong>的检查，实现如下：</p>
-<div align="center">
-    <img width="868" src="/2019/11/15/CLRviaCSharp/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%9E%8B/%E7%B1%BB%E5%9E%8B%E5%9F%BA%E7%A1%80/%E5%AF%B9%E8%B1%A1%E7%9B%B8%E7%AD%89%E6%80%A7%E5%92%8C%E5%90%8C%E4%B8%80%E6%80%A7/15740441524963.png">
-</div>
-<ol>
-<li>如果obj实参为null，返回false</li>
-<li>如果this和obj实参引用不同类型的对象，返回false。</li>
-<li>针对类型定义的每个实例字段，都将this对象中的值和obj对象中的值进行比较（通过调用字段的Equals方法）。任何字段不相等，就返回false。</li>
-<li>返回true。不用调用ValueType的基类Object的Equals方法，因为Object没有定义任何字段。</li>
-</ol>
-<p>对于第3步骤，ValueType的Equals方法是利用反射实现的。由于CLR反射机制慢，我们定义自己的值类型时，应该重写Equals方法来比较值相等性，从而提高性能。注意不要调用base.Equals，我们的目的就是避免调用反射实现的Equals。</p>
-<h2 id="重写equals方法的注意点"><a class="markdownIt-Anchor" href="#重写equals方法的注意点"></a> 重写Equals方法的注意点</h2>
-<p>定义自己的类型时，重写Equals要符合相等性的4个特征：</p>
-<ul>
-<li>必须自反；x.Equals(x)肯定为true。</li>
-<li>必须对称；x.Equals(y)和y.Equals(x)结果一致。</li>
-<li>必须可传递；x.Equals(y)和y.Equals(z)都为true，则x.Equals(z)必定为true（注意都为false则不成立）。</li>
-<li>必须一致；比较的两个值不变，结果不能改变。</li>
-</ul>
-<p>重写的规范：</p>
-<ul>
-<li>让类型实现System.IEquatable<T>接口的Equals方法，类型安全的Equals方法在内部调用。</T></li>
-<li>实现参数为Object类型的Equals方法，内部调用类型安全的Equals方法。</li>
-<li>如果需要，重载==、!=等操作符，在内部调用类型安全的Equals方法。</li>
-</ul>
-<p>如果类型需要为排序而比较，类型还应该实现System.IComparable的CompareTo方法和System.IComparable<T>的类型安全的CompareTo方法。还可考虑重载比较操作符（&lt;、&gt;=等），在内部调用类型安全的CompareTo方法。</T></p>
+    <p> </p>
+<p>一般来说，使用rectTransform.sizeDelta.x可以获取UI实际宽度。这仅适用于中心对齐锚点的情况。<br>
+要不受锚点影响，应该使用rectTransform.rect.width或者rectTransform.rect.size.x来获取。<br>
+但是做屏幕适配时，发现后两者获取出来的宽度怎么都是0，拿不到实际宽度。<br>
+探查原因，在脚本Awake时无法获取到实际宽度，此时UI正在执行绘制。放到该帧之后执行，可以拿到准确值，比如在Start中获取。</p>
 
 </div>
 		</div>
