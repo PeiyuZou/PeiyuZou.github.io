@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>UnityYAML | PeiyuZou&#39;s Blog</title>
+    
+    
+        <meta name="keywords" content="Unity">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="在Unity中，序列化文件和meta文件本质上都是UnityYAML格式的文件，可以直接使用文本编辑器查看其内容。 一、序列化文件这里以一个prefab为例，它的Inspector面板长这样：  使用文本方式打开它，所有内容如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UnityYAML">
+<meta property="og:url" content="http://example.com/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/index.html">
+<meta property="og:site_name" content="PeiyuZou&#39;s Blog">
+<meta property="og:description" content="在Unity中，序列化文件和meta文件本质上都是UnityYAML格式的文件，可以直接使用文本编辑器查看其内容。 一、序列化文件这里以一个prefab为例，它的Inspector面板长这样：  使用文本方式打开它，所有内容如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/2022-11-20T145903.png">
+<meta property="article:published_time" content="2022-11-19T14:50:15.000Z">
+<meta property="article:modified_time" content="2022-11-20T06:59:05.664Z">
+<meta property="article:author" content="PeiyuZou">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/2022-11-20T145903.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="PeiyuZou's Blog" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">PeiyuZou&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file active"><a href="/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>最新文章</span></h3>
+        <div class="widget">
+            <ul id="recent-post" class>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Unity/">Unity</a></p>
+                            <p class="item-title"><a href="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/" class="title">Unity中的GUID、FileID、InstanceID</a></p>
+                            <p class="item-date"><time datetime="2022-11-19T14:52:15.000Z" itemprop="datePublished">2022-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Unity/">Unity</a></p>
+                            <p class="item-title"><a href="/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/" class="title">UnityYAML</a></p>
+                            <p class="item-date"><time datetime="2022-11-19T14:50:15.000Z" itemprop="datePublished">2022-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Unity/">Unity</a></p>
+                            <p class="item-title"><a href="/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/" class="title">Unity中的文件</a></p>
+                            <p class="item-date"><time datetime="2022-11-19T09:33:17.000Z" itemprop="datePublished">2022-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Lua/">Lua</a></p>
+                            <p class="item-title"><a href="/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/" class="title">Lua函数</a></p>
+                            <p class="item-date"><time datetime="2021-11-19T21:30:17.000Z" itemprop="datePublished">2021-11-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Lua/">Lua</a></p>
+                            <p class="item-title"><a href="/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="title">Lua字符串</a></p>
+                            <p class="item-date"><time datetime="2021-11-19T21:29:03.000Z" itemprop="datePublished">2021-11-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>归档</span></h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-Unity/基础/02.UnityYAML" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Unity/">Unity</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Unity/" rel="tag">Unity</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">
+            <time datetime="2022-11-19T14:50:15.000Z" itemprop="datePublished">2022-11-19</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/PeiyuZou.github.io/raw/master/source/_posts/Unity/基础/02.UnityYAML.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/PeiyuZou.github.io/edit/master/source/_posts/Unity/基础/02.UnityYAML.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/PeiyuZou.github.io/commits/master/source/_posts/Unity/基础/02.UnityYAML.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            UnityYAML
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BA%8F%E5%88%97%E5%8C%96%E6%96%87%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">一、序列化文件</span></a></li></ol>
+                </div>
+            
+        
+        
+            <p>在Unity中，序列化文件和meta文件本质上都是UnityYAML格式的文件，可以直接使用文本编辑器查看其内容。</p>
+<h2 id="一、序列化文件"><a href="#一、序列化文件" class="headerlink" title="一、序列化文件"></a>一、序列化文件</h2><p>这里以一个prefab为例，它的Inspector面板长这样：</p>
+<p><img src="/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/2022-11-20T145903.png" alt="2022-11-20T145903"></p>
+<p>使用文本方式打开它，所有内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.1</span></span><br><span class="line"><span class="string">%TAG</span> <span class="type">!u</span><span class="string">!</span> <span class="string">tag:unity3d.com,2011:</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!1</span> <span class="string">&amp;2548996960861856832</span></span><br><span class="line"><span class="attr">GameObject:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">serializedVersion:</span> <span class="number">6</span></span><br><span class="line">  <span class="attr">m_Component:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">5130387460885348626</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">7740301192594792805</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">7973370026506665244</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">5618074904614505148</span>&#125;</span><br><span class="line">  <span class="attr">m_Layer:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">m_Name:</span> <span class="string">ZpyUi</span></span><br><span class="line">  <span class="attr">m_TagString:</span> <span class="string">Untagged</span></span><br><span class="line">  <span class="attr">m_Icon:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_NavMeshLayer:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_StaticEditorFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_IsActive:</span> <span class="number">1</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!224</span> <span class="string">&amp;5130387460885348626</span></span><br><span class="line"><span class="attr">RectTransform:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalRotation:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>, <span class="attr">w:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalPosition:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalScale:</span> &#123;<span class="attr">x:</span> <span class="number">1</span>, <span class="attr">y:</span> <span class="number">1</span>, <span class="attr">z:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_Children:</span> []</span><br><span class="line">  <span class="attr">m_Father:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_RootOrder:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_LocalEulerAnglesHint:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchorMin:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchorMax:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchoredPosition:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_SizeDelta:</span> &#123;<span class="attr">x:</span> <span class="number">1920</span>, <span class="attr">y:</span> <span class="number">1080</span>&#125;</span><br><span class="line">  <span class="attr">m_Pivot:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line"><span class="string">---</span> <span class="type">!u!222</span> <span class="string">&amp;7740301192594792805</span></span><br><span class="line"><span class="attr">CanvasRenderer:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_CullTransparentMesh:</span> <span class="number">0</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!114</span> <span class="string">&amp;7973370026506665244</span></span><br><span class="line"><span class="attr">MonoBehaviour:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_Enabled:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_EditorHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Script:</span> &#123;<span class="attr">fileID:</span> <span class="number">388327683</span>, <span class="attr">guid:</span> <span class="string">d05c7b2176348a9478b32514c46e03a0</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Name:</span> </span><br><span class="line">  <span class="attr">m_EditorClassIdentifier:</span> </span><br><span class="line">  <span class="attr">m_Material:</span> &#123;<span class="attr">fileID:</span> <span class="number">2100000</span>, <span class="attr">guid:</span> <span class="string">ba842e0c46768474d8443c764dea963d</span>, <span class="attr">type:</span> <span class="number">2</span>&#125;</span><br><span class="line">  <span class="attr">m_Color:</span> &#123;<span class="attr">r:</span> <span class="number">1</span>, <span class="attr">g:</span> <span class="number">1</span>, <span class="attr">b:</span> <span class="number">1</span>, <span class="attr">a:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_RaycastTarget:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Maskable:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_OnCullStateChanged:</span></span><br><span class="line">    <span class="attr">m_PersistentCalls:</span></span><br><span class="line">      <span class="attr">m_Calls:</span> []</span><br><span class="line">  <span class="attr">m_Sprite:</span> &#123;<span class="attr">fileID:</span> <span class="number">21300000</span>, <span class="attr">guid:</span> <span class="string">fbe29152a48370345ac058d64760fc81</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Type:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_PreserveAspect:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_FillCenter:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillMethod:</span> <span class="number">4</span></span><br><span class="line">  <span class="attr">m_FillAmount:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillClockwise:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillOrigin:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_UseSpriteMesh:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_PixelsPerUnitMultiplier:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">mSpritePath:</span> </span><br><span class="line"><span class="string">---</span> <span class="type">!u!114</span> <span class="string">&amp;5618074904614505148</span></span><br><span class="line"><span class="attr">MonoBehaviour:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_Enabled:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_EditorHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Script:</span> &#123;<span class="attr">fileID:</span> <span class="number">11500000</span>, <span class="attr">guid:</span> <span class="string">b9baae69706a4c9d9868410df9b79855</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Name:</span> </span><br><span class="line">  <span class="attr">m_EditorClassIdentifier:</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Unity中的GUID、FileID、InstanceID
+                
+            </div>
+        </a>
+    
+    
+        <a href="/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Unity中的文件</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            PeiyuZou &copy; 2022 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
