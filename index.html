@@ -464,8 +464,8 @@
                 
                 
                     
-                    <p></p><h2 id="GUID"><a href="#GUID" class="headerlink" title="GUID"></a>GUID</h2><p>GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。<br>无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p>
-<h2 id="FileID"><a href="#FileID" class="headerlink" title="FileID"></a>FileID</h2><p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p>
+                    <p></p><h2 id="一、GUID"><a href="#一、GUID" class="headerlink" title="一、GUID"></a>一、GUID</h2><p>GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。<br>无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p>
+<h2 id="二、FileID"><a href="#二、FileID" class="headerlink" title="二、FileID"></a>二、FileID</h2><p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p>
 <p><img src="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T223430.png" alt="2022-11-19T223430"></p>
 <p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p>
 <p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p>

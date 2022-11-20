@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2022-11-20T07:00:43.535Z</updated>
+  <updated>2022-11-20T09:40:14.294Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -21,14 +21,14 @@
     <link href="https://peiyuzou.github.io/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/"/>
     <id>https://peiyuzou.github.io/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/</id>
     <published>2022-11-19T14:52:15.000Z</published>
-    <updated>2022-11-20T07:00:43.535Z</updated>
+    <updated>2022-11-20T09:40:14.294Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="GUID"><a href="#GUID" class="headerlink" title="GUID"></a>GUID</h2><p>GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。<br>无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p><h2 id="FileID"><a href="#FileID" class="headerlink" title="FileID"></a>FileID</h2><p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p><p><img src="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T223430.png" alt="2022-11-19T223430"></p><p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p><p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p><p><img src="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T224032.png" alt="2022-11-19T224032"></p><p>首先红框部分，标明了当前整个图集文件的GUID。其次蓝色部分存储了整个图片的导入设置，internalIDToNameTable指明了每张子图的名称和FileID的映射关系</p><blockquote><p>需要注意的是，FileID前缀的213是UnityYAML中定义的类型ID，这里213指Sprite。具体参阅<a href="https://docs.unity3d.com/Manual/ClassIDReference.html">https://docs.unity3d.com/Manual/ClassIDReference.html</a></p></blockquote>]]></content>
+    <content type="html"><![CDATA[<h2 id="一、GUID"><a href="#一、GUID" class="headerlink" title="一、GUID"></a>一、GUID</h2><p>GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。<br>无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p><h2 id="二、FileID"><a href="#二、FileID" class="headerlink" title="二、FileID"></a>二、FileID</h2><p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p><p><img src="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T223430.png" alt="2022-11-19T223430"></p><p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p><p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p><p><img src="/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T224032.png" alt="2022-11-19T224032"></p><p>首先红框部分，标明了当前整个图集文件的GUID。其次蓝色部分存储了整个图片的导入设置，internalIDToNameTable指明了每张子图的名称和FileID的映射关系</p><blockquote><p>需要注意的是，FileID前缀的213是UnityYAML中定义的类型ID，这里213指Sprite。具体参阅<a href="https://docs.unity3d.com/Manual/ClassIDReference.html">https://docs.unity3d.com/Manual/ClassIDReference.html</a></p></blockquote><p>FileID在Inspector面板中称Local Identfier In File，所以也叫LocalID</p><h2 id="三、InstanceID"><a href="#三、InstanceID" class="headerlink" title="三、InstanceID"></a>三、InstanceID</h2><p>InstanceID代表实例ID，在Unity中每有一个改文件的副本被创建时，都会自动分配一个值。InstanceID的值不像GUID和FileID，这俩的值在资源导入工程后就确认不变了，实例ID则是动态的值，每次运行游戏或者打开编辑器都可能不一样。</p>]]></content>
     
     
       
       
-    <summary type="html">&lt;h2 id=&quot;GUID&quot;&gt;&lt;a href=&quot;#GUID&quot; class=&quot;headerlink&quot; title=&quot;GUID&quot;&gt;&lt;/a&gt;GUID&lt;/h2&gt;&lt;p&gt;GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。&lt;br&gt;无论文件在工程中的何处，都可以通过Ass</summary>
+    <summary type="html">&lt;h2 id=&quot;一、GUID&quot;&gt;&lt;a href=&quot;#一、GUID&quot; class=&quot;headerlink&quot; title=&quot;一、GUID&quot;&gt;&lt;/a&gt;一、GUID&lt;/h2&gt;&lt;p&gt;GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。&lt;br&gt;无论文件在工程中的何处，</summary>
       
     
     
