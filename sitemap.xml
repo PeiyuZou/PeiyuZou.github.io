@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://peiyuzou.github.io/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/</loc>
+    
+    <lastmod>2022-11-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://peiyuzou.github.io/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/</loc>
     
     <lastmod>2022-11-20</lastmod>
@@ -85,22 +94,29 @@
 
   <url>
     <loc>https://peiyuzou.github.io/</loc>
-    <lastmod>2022-11-20</lastmod>
+    <lastmod>2022-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://peiyuzou.github.io/tags/Unity/</loc>
-    <lastmod>2022-11-20</lastmod>
+    <loc>https://peiyuzou.github.io/tags/EditorExtend/</loc>
+    <lastmod>2022-11-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://peiyuzou.github.io/tags/Lua/</loc>
-    <lastmod>2022-11-20</lastmod>
+    <lastmod>2022-11-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/tags/Unity/</loc>
+    <lastmod>2022-11-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -109,14 +125,14 @@
   
   <url>
     <loc>https://peiyuzou.github.io/categories/Unity/</loc>
-    <lastmod>2022-11-20</lastmod>
+    <lastmod>2022-11-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://peiyuzou.github.io/categories/Lua/</loc>
-    <lastmod>2022-11-20</lastmod>
+    <lastmod>2022-11-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
