@@ -3,21 +3,25 @@
 <head>
     <meta charset="utf-8">
     
-    <title>（二）技术拆解——VisualTree | PeiyuZou&#39;s Blog</title>
+    <title>（二）技术拆解——VisualTree | Blog By Z.P.Y.</title>
     
     
         <meta name="keywords" content="（二）技术拆解——VisualTree">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="article">
+    <meta name="description" content="一、VisualTree仅仅只是一个概念，UIElements的显示单元是VisualElement，若干VisualElement组成整个UI窗口，由于是树状结构，所以称为视觉树 二、VisualElement又称视觉元素，Unity提供了VisualElement类作为所有显示节点的基类，包含样式、布局数据、本地变换、事件处理程序等的属性，可以派生该类来定义一些控件，Unity内置了一些控件，">
+<meta property="og:type" content="article">
 <meta property="og:title" content="（二）技术拆解——VisualTree">
 <meta property="og:url" content="https://peiyuzou.github.io/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/index.html">
-<meta property="og:site_name" content="PeiyuZou&#39;s Blog">
+<meta property="og:site_name" content="Blog By Z.P.Y.">
+<meta property="og:description" content="一、VisualTree仅仅只是一个概念，UIElements的显示单元是VisualElement，若干VisualElement组成整个UI窗口，由于是树状结构，所以称为视觉树 二、VisualElement又称视觉元素，Unity提供了VisualElement类作为所有显示节点的基类，包含样式、布局数据、本地变换、事件处理程序等的属性，可以派生该类来定义一些控件，Unity内置了一些控件，">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/2023-02-05T003049.png">
 <meta property="article:published_time" content="2023-02-04T01:10:57.000Z">
-<meta property="article:modified_time" content="2023-02-04T09:10:57.171Z">
+<meta property="article:modified_time" content="2023-02-04T16:30:50.329Z">
 <meta property="article:author" content="PeiyuZou">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/2023-02-05T003049.png">
     
 
     
@@ -64,7 +68,7 @@
     
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     
-<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="PeiyuZou's Blog" type="application/atom+xml">
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Blog By Z.P.Y." type="application/atom+xml">
 </head>
 
 <body>
@@ -74,7 +78,7 @@
         <div class="outer">
             <a href="/" id="logo">
                 <i class="logo"></i>
-                <span class="site-title">PeiyuZou&#39;s Blog</span>
+                <span class="site-title">Blog By Z.P.Y.</span>
             </a>
             <nav id="main-nav">
                 
@@ -497,7 +501,31 @@
             
         
         
-            
+            <h1 id="一、VisualTree"><a href="#一、VisualTree" class="headerlink" title="一、VisualTree"></a>一、VisualTree</h1><p>仅仅只是一个概念，UIElements的显示单元是VisualElement，若干VisualElement组成整个UI窗口，由于是树状结构，所以称为视觉树</p>
+<h1 id="二、VisualElement"><a href="#二、VisualElement" class="headerlink" title="二、VisualElement"></a>二、VisualElement</h1><p>又称视觉元素，Unity提供了VisualElement类作为所有显示节点的基类，包含样式、布局数据、本地变换、事件处理程序等的属性，可以派生该类来定义一些控件，Unity内置了一些控件，比如Label等等。</p>
+<h2 id="1-创建一个VisualElement"><a href="#1-创建一个VisualElement" class="headerlink" title="1. 创建一个VisualElement"></a>1. 创建一个VisualElement</h2><p>VisualElement有两种创建方式：</p>
+<ul>
+<li>手动分配：</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VisualElement label = <span class="keyword">new</span> Label(<span class="string">&quot;Create From C#&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从UXML模板文件加载：</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> visualTree = AssetDatabase.LoadAssetAtPath&lt;VisualTreeAsset&gt;(<span class="string">&quot;Assets/Editor/Tutorials/01VisualTree/VisualTreeWindow.uxml&quot;</span>);</span><br><span class="line">VisualElement labelFromUXML = visualTree.CloneTree();</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-VisualElement连接形成VisualTree"><a href="#2-VisualElement连接形成VisualTree" class="headerlink" title="2. VisualElement连接形成VisualTree"></a>2. VisualElement连接形成VisualTree</h2><p>视觉树（一个视觉树也就是一个EditorWindow）都包含一个默认的根节点，称为panel（EditorWindow.rootVisualElement），根节点本身也是一个VisualElement。</p>
+<p>通过调用VisualElement对象的Add函数，将一个VisualElement作为另一个VisualElement的子节点，由此形成树状结构。</p>
+<p>例子：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UIElements;</span><br><span class="line"><span class="keyword">using</span> UnityEditor.UIElements;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">VisualTreeWindow</span> : <span class="title">EditorWindow</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="string">&quot;Window/UIElements/VisualTreeWindow&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowExample</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        VisualTreeWindow wnd = GetWindow&lt;VisualTreeWindow&gt;();</span><br><span class="line">        wnd.titleContent = <span class="keyword">new</span> GUIContent(<span class="string">&quot;VisualTreeWindow&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">CreateGUI</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Each editor window contains a root VisualElement object</span></span><br><span class="line">        VisualElement root = rootVisualElement;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Import UXML</span></span><br><span class="line">        <span class="keyword">var</span> visualTree = AssetDatabase.LoadAssetAtPath&lt;VisualTreeAsset&gt;(<span class="string">&quot;Assets/Editor/Tutorials/01VisualTree/VisualTreeWindow.uxml&quot;</span>);</span><br><span class="line">        visualTree.CloneTree(root);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Import USS</span></span><br><span class="line">        <span class="keyword">var</span> styleSheet = AssetDatabase.LoadAssetAtPath&lt;StyleSheet&gt;(<span class="string">&quot;Assets/Editor/Tutorials/01VisualTree/VisualTreeWindow.uss&quot;</span>);</span><br><span class="line">        root.styleSheets.Add(styleSheet);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">engine:UXML</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:engine</span>=<span class="string">&quot;UnityEngine.UIElements&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:editor</span>=<span class="string">&quot;UnityEditor.UIElements&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:noNamespaceSchemaLocation</span>=<span class="string">&quot;../../../../UIElementsSchema/UIElements.xsd&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">engine:VisualElement</span> <span class="attr">name</span>=<span class="string">&quot;TopPanel&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">engine:VisualElement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">engine:VisualElement</span> <span class="attr">name</span>=<span class="string">&quot;BottomPanel&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">engine:VisualElement</span> <span class="attr">name</span>=<span class="string">&quot;LeftPanel&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">engine:VisualElement</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">engine:VisualElement</span> <span class="attr">name</span>=<span class="string">&quot;RightPanel&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">engine:VisualElement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">engine:VisualElement</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">engine:UXML</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#TopPanel</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#F00</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#BottomPanel</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#0F0</span>;</span><br><span class="line">    <span class="attribute">flex-grow</span>: <span class="number">1</span>;</span><br><span class="line">    <span class="attribute">flex-direction</span>: row;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#LeftPanel</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#00F</span>;</span><br><span class="line">    <span class="attribute">flex-grow</span>: <span class="number">1</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#RightPanel</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#FFFF00</span>;</span><br><span class="line">    <span class="attribute">flex-grow</span>: <span class="number">1</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码将形成下图所示的树状结构：</p>
+<p><img src="/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/2023-02-05T003049.png" alt="2023-02-05T003049"></p>
+
             </div>
         
         <footer class="article-footer">
