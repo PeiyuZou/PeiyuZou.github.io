@@ -191,6 +191,13 @@
 
   
   <url>
+    <loc>https://peiyuzou.github.io/tags/EditorExtend/</loc>
+    <lastmod>2023-03-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://peiyuzou.github.io/tags/Issues/</loc>
     <lastmod>2023-03-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -206,13 +213,6 @@
   
   <url>
     <loc>https://peiyuzou.github.io/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/</loc>
-    <lastmod>2023-03-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://peiyuzou.github.io/tags/EditorExtend/</loc>
     <lastmod>2023-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -235,13 +235,6 @@
 
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/Lua/</loc>
-    <lastmod>2023-03-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://peiyuzou.github.io/categories/Unity/</loc>
     <lastmod>2023-03-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -249,7 +242,7 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/Lua/Lua%E5%9F%BA%E7%A1%80/</loc>
+    <loc>https://peiyuzou.github.io/categories/Lua/</loc>
     <lastmod>2023-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -271,6 +264,13 @@
   
   <url>
     <loc>https://peiyuzou.github.io/categories/Unity/%E5%9F%BA%E7%A1%80/</loc>
+    <lastmod>2023-03-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/categories/Lua/Lua%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2023-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
