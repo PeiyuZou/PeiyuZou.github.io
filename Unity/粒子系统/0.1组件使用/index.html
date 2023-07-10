@@ -33,8 +33,19 @@
 <meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-09T212255.png">
 <meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-09T212724.png">
 <meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-09T212925.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220009.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220039.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220141.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220246.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220559.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220717.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220838.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220845.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220900.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220909.png">
+<meta property="og:image" content="https://peiyuzou.github.io/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T221508.png">
 <meta property="article:published_time" content="2023-07-09T07:23:32.000Z">
-<meta property="article:modified_time" content="2023-07-09T13:42:08.443Z">
+<meta property="article:modified_time" content="2023-07-10T14:15:09.133Z">
 <meta property="article:author" content="PeiyuZou">
 <meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary">
@@ -756,6 +767,131 @@
 </li>
 <li><p>Size Amount：粒子受到的缩放影响</p>
 </li>
+</ul>
+<h2 id="十六、collision（碰撞）"><a href="#十六、collision（碰撞）" class="headerlink" title="十六、collision（碰撞）"></a>十六、collision（碰撞）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220009.png" alt="2023-07-10T220009"></p>
+<ul>
+<li>Type（类型）：提供了两种plan和world类型。World主要针对场景中有collider组件的物体（包含terrain）会产生碰撞。Plan是指定一个的物体的transform，作为一个面产生碰撞</li>
+<li>Planes（面）：指定物体的transform为面。这个物体可以是场景中的也可以是资源中的。主要是用他的变换值。一版是和场景中的物体互动是有意义的，如果只是想得到一个碰撞可以使用空物体，会剩一点</li>
+<li>Visualization（形象）：有Grid（网格）和Solid（固体）两种。只是便于查看的显示方式</li>
+<li>Scale Plane（缩放片）:就是缩放Visualization这个片，还是为了便于观察</li>
+<li>Dampen（抑制力）：碰撞后，粒子的速度被抑制多少，1是抑制到速度为0，粒子会停留在片上，0是没有抑制</li>
+<li>Bounce（弹力）：碰撞后弹起的情况。1跟初始速度一样的速度反弹。0是不反弹，粒子会朝平面方向运动</li>
+<li>Lifetime Loss（生命损耗）：碰撞后，粒子生命所短的数量。1是缩短到最大。碰撞后粒子生命结束。0是没有损耗</li>
+<li>Min Kill Speed（速度小于值消灭粒子）：碰撞后的粒子速度小于这个值被摧毁</li>
+<li>Max Kill Speed（速度大于值消灭粒子）：碰撞后的粒子速度大于这个值被摧毁</li>
+<li>Radius Scale（半径的尺寸）：其实粒子的碰撞是和场景中其他碰撞是一个原理的，每个粒子都有一个圆的碰撞组件。计算碰撞就是计算这个组件和其他物体的碰撞的。这里调节半径尺寸是调的每个粒子碰撞大小</li>
+<li>Send Collision Messages（发送碰撞信息）：程序相关，程序会得到相关信息作出处理</li>
+<li>Visualize Bounds（显示界限）：就是显示出碰撞框</li>
+</ul>
+<h2 id="十七、Triggers（触发）"><a href="#十七、Triggers（触发）" class="headerlink" title="十七、Triggers（触发）"></a>十七、Triggers（触发）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220039.png" alt="2023-07-10T220039"></p>
+<p>设置了Inside（内部）Outside（外部）Enter（进入）Exit（出去）四种状态的Ignore（忽略）、kill（消灭）、callback（回调）三种情况。回调的含义是给程序返回一个内容。<br>Colliders（碰撞的物体）：应该是个模型才有意义。真正起作用的是物体上面的collider组件。<br>Radius Scale（半径的尺寸）和Visualize Bounds（显示界限）碰撞功能一样</p>
+<h2 id="十八、Sub-Emitters（子发射器）"><a href="#十八、Sub-Emitters（子发射器）" class="headerlink" title="十八、Sub Emitters（子发射器）"></a>十八、Sub Emitters（子发射器）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220141.png" alt="2023-07-10T220141"></p>
+<p>指定什么时候触发一个子粒子系统，这个子粒子系统会继承哪些属性，并且有多少概率触发</p>
+<h2 id="十九、Texture-Sheet-Animation（纹理片动画）"><a href="#十九、Texture-Sheet-Animation（纹理片动画）" class="headerlink" title="十九、Texture Sheet Animation（纹理片动画）"></a>十九、Texture Sheet Animation（纹理片动画）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220246.png" alt="2023-07-10T220246"></p>
+<p>分为两种模式：Grid和Sprites</p>
+<ul>
+<li>Tiles（平铺数）：一张图标被切割的数量。x是横轴的数量，y是纵轴数量。</li>
+<li>Animation（动画）：有两种形式，<ul>
+<li>Whole Sheet（全部小片）：从左至右、从上至下播放整个图片里的小方框。</li>
+<li>Single Row（单排）：只播一横排，因为可能会有很多排。当勾选了Random Row（随机行）时，随机选中一行播放。不够时，有一个Row值供手选使用哪一行。</li>
+</ul>
+</li>
+<li>Frame over Time（时间内的帧数）：通常设置曲线是有意义的，设置数值只会显示固定的一帧（并非是帧，而是第几个小图）。注意的是小图片的第一张的序号是0。</li>
+<li>Start Frame（开始帧）：从第几帧开始播放，仍会完整读取序列。</li>
+<li>Cycles（循环）：正常图片的整个循环是在粒子的生命时间内循环一次。这里可以改变循环几次</li>
+</ul>
+<h2 id="二十、Light（光照）"><a href="#二十、Light（光照）" class="headerlink" title="二十、Light（光照）"></a>二十、Light（光照）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220559.png" alt="2023-07-10T220559"></p>
+<ul>
+<li>Light（灯）：设置一盏灯，使粒子出生时同时有实时光照的效果，实质上就一个粒子一盏灯。<br>Ratio（比率）：产生的粒子会有多大比例有灯照，0是一个也没有，1是全部粒子都有。</li>
+<li>Random Distribution（随机分布）：当Ratio不是1时，设置产生灯照的粒子的分布情况，随机就是随机分布，勾掉则会根据粒子情况每隔多少秒出现一个灯照。</li>
+<li>Use Particle Color（使用粒子颜色）：灯照颜色使用粒子的颜色。</li>
+<li>Size Affect Range（尺寸作用与范围）：粒子的尺寸会影响灯照的范围。</li>
+<li>Alpha Affect Intensity（透明度作用于亮度）：粒子的透明度会影响灯照的亮度，调整粒子的生命颜色时就可以实现控制灯照的亮度了。</li>
+<li>Range multiplier（范围乘值）：增大灯照的范围。</li>
+<li>Intensity Multiplier（亮度乘值）：增大灯照的亮度。</li>
+<li>Maximum Lights（最大灯数）：因为是实时光照。灯的数量可能会根据粒子数量产生非常多，消耗会非常巨大。这里的值控制最多可以有多少个灯照被创建</li>
+</ul>
+<h2 id="二十一、Trails（拖尾）"><a href="#二十一、Trails（拖尾）" class="headerlink" title="二十一、Trails（拖尾）"></a>二十一、Trails（拖尾）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220717.png" alt="2023-07-10T220717"></p>
+<ul>
+<li>Particle（粒子）：使用这个模式使粒子产生一个拖尾。</li>
+<li>Ratio（比例）：粒子会产生拖尾的比例。1是全部粒子都会有拖尾。</li>
+<li>Lifetime（生命）：拖尾的生命值。就是拖尾开始消失的时间。1是和粒子生命一样长。注意的是，默认Die with particle勾上时，粒子消失后拖尾也会消失，这个消失跟拖尾的Lifetime没有关系，只是被摧毁了。拖尾的生命时间就是开始消失的时间。</li>
+<li>Minimum Vertex Distance(最小顶点距离)：mesh的两个顶点的距离。也就是细节程度，值越小，效果越好。实质上是产生一次mesh的时间。当然时间越小整个生命里产生的网格越多了。早先版本trail的产生是按每多少帧产生mesh的数量算的，所以会造成一旦卡了，trail就完全没法看了，这里是按时间算的，不用担心掉帧了。</li>
+<li>World Space（世界空间）：勾上时，这个拖尾会受到空间位移的影响。不勾是，只会相对于自身粒子系统进行拖尾。</li>
+<li>Die with particle（跟随粒子消亡）：勾上时，粒子消失后，拖尾一起消失。</li>
+<li>Texture Mode(图片模式)：<ul>
+<li>Stretch(拉伸):在整个mesh上拉伸整张图的U</li>
+<li>Tile（平铺）：U不会被拉伸，超出部分是重复平铺</li>
+<li>Distribute Per Segment（每段都分配）：和Stretch效果差不多，但计算的切入点不一样，Stretch是先计算出trail的长度，在拉伸图片。这个是先计算又多少个网格，每个网格上应该分配多少图片的信息。理论上应该更精细</li>
+<li>Repeat Per Segment（每段重复）：每一个网格上分配一个图片</li>
+</ul>
+</li>
+</ul>
+<p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220838.png" alt="2023-07-10T220838"></p>
+<p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220845.png" alt="2023-07-10T220845"></p>
+<p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220900.png" alt="2023-07-10T220900"></p>
+<p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T220909.png" alt="2023-07-10T220909"></p>
+<ul>
+<li><p>Size affects width（尺寸影响宽度）：勾上时，默认宽度和粒子大小一致。而且宽度也随粒子大小变化了。</p>
+</li>
+<li><p>Size affects lifetime（尺寸影响寿命）：勾上时，生命时间（也就是开始消失的时间）会受到尺寸的影响。 当粒子变的巨大和很小时，智能的缩减拖尾时间很有必要。</p>
+</li>
+<li><p>Inherit particle color（继承粒子颜色）：勾上时，拖尾颜色会受到粒子颜色的影响。</p>
+</li>
+<li><p>Color over lifetime（生命期内颜色）：拖尾生命时间内的颜色情况，是时间层面的，使用Gradient模式可以设置随时间变化颜色，开始是什么色，后面是什么色。跟粒子生命时间内颜色类似。</p>
+</li>
+<li><p>Color over trail（拖尾颜色的情况）：拖尾自身的颜色变化情况。是空间层面。使用Gradient模式可以设前段是什么色，后段是什么色。注意和Color over lifetime区别。</p>
+</li>
+<li><p>Width over trail（拖尾的宽度情况）：重要调节，来真正影响拖尾的宽度的值。曲线模式下可调节拖尾的前后宽度，横轴是整体长度，竖轴是宽度。</p>
+</li>
+<li><p>Generate Lighting Data（生成光照信息）：让trail可以收到光照</p>
+</li>
+<li><p>Ribbon（丝带）：让产生的粒子链接起来。目前来说功能很匮乏，效果很尴尬。</p>
+</li>
+<li><p>Ribbon count（丝带数量）：就是使用几条丝带来将所有粒子链接起来。1就是只有一条。当丝带数大于场景中的粒子数时，就不在会产生粒子。多说下粒子系的事情，每个粒子系统的粒子都是有序号的，假设一个序号为1的粒子2秒后消失，内存上说但他并不是真的消失了，它会从新回到发射器原点，模拟一个新的粒子出生，拥有新的生命和速度大小等。而这里的丝带链接目标是和序号有紧密关系的（坑深不挖）。所以当你看到条带数是粒子数的一半时，是两两链接的。</p>
+</li>
+<li><p>Split Sub Emitter Ribbons（分离子发射器的丝带）：就是如果当期粒子系统是一个子发射器。让每个粒子产生的新的发射器和其他产生的发射器不关联</p>
+</li>
+</ul>
+<h2 id="二十二、Renderer（渲染器）"><a href="#二十二、Renderer（渲染器）" class="headerlink" title="二十二、Renderer（渲染器）"></a>二十二、Renderer（渲染器）</h2><p><img src="/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/2023-07-10T221508.png" alt="2023-07-10T221508"></p>
+<ul>
+<li>Normal Direction（法线方向）：改变粒子片的法线方向。当粒子受到光照时（关键是shader要支持），将一个片模拟成一个受光照的体积</li>
+<li>Material（材质）：粒子的材质。图片通过shader生成一个材质。</li>
+<li>Trail Material（拖尾材质）：拖尾材质。</li>
+<li>Sort Mode（排序模式）：给粒子排列先后顺序，它是针对粒子系统自身发出的粒子进行排序。而且粒子材质球是可排序的才有意义。就是材质要是透明材质才行。<ul>
+<li>None（无）：不排序，混乱的。</li>
+<li>By Distance（依据距离）：根据粒子距离摄像机的远近排序。比较常用。</li>
+<li>Oldest in Front（最早在前）：谁先出生排列在前，后出生排列早后。平面上可能有用。</li>
+<li>Youngest in Front（最新的在前）：谁后出生排列在前、后出生排列在后。</li>
+</ul>
+</li>
+<li>Sorting Fudge（排序欺骗）：作者的意思大概是说这是一个欺骗性的排序，它让粒子假装往前或者往后移动的多少距离。负值是原理镜头、正值是靠近镜头，靠近镜头的肯定会在前面。当然材质球也必须是可排序的材质球才行。例如相加、相乘、透明混合等。</li>
+<li>Min particle Size（最小粒子尺寸）：简单说小于这个值的粒子都会被放大到这个值这么大。这个值是屏幕大小，值1就是一个平面那么大。做屏幕特效时有用，不必去把粒子设的很大，用这个就能准确设定大小</li>
+<li>Max particle Size（最大粒子尺寸）：这个值同样只屏幕大小。当粒子显示大于这个值时，会被缩小。避免细小的粒子冲向摄像机时变的巨大。</li>
+<li>Render Alignment（显示队列）：指定粒子朝向方向，也就是z轴朝向。<ul>
+<li>View（视野）：粒子片z轴朝向你观察的方向。</li>
+<li>World（时间）：粒子片z轴朝向世界的z轴。</li>
+<li>Local（自身）：粒子片z轴朝向粒子系统自身的z轴。这时就可以旋转它了，就是真实粒子片的状态。</li>
+<li>Facing（面朝）：粒子片z轴朝向摄像机位置。和view效果很像，但是却不并不一样。这里朝向时，会去掉透视关系，只是拿z这个面朝向你。Mesh状态下能看的更清楚。</li>
+<li>Velocity（速率）：粒子片z轴朝向自身运动的方向</li>
+</ul>
+</li>
+<li>Pivot（中心点）：设置了三个方向可以调节中心点。在Stretched Billboard会有大用</li>
+<li>Visualize pivot（可视化中心点）：使粒子的中心点显示出来。粒子真正的运行位置，调节pivot时有用</li>
+<li>Masking（遮挡）：是关于sprite遮挡的功能。简而言之，sprite有个组件可以把图片做成一个遮照放到场景中。处理超出这个遮照范围外就会消失，或者只在范围外显示。通常用于平面类型特效上面</li>
+<li>No Masking（无遮挡）：不会有遮挡<ul>
+<li>Visible Inside Mask（遮照内部可见）：只在Sprite Mask内部显示粒子。超出不显示</li>
+<li>Visible Outside Mask（遮照外部可见）：只在Sprite Mask外部显示粒子。内部不显示</li>
+</ul>
+</li>
+<li>Custom Vertex Streams（自定义顶点流）：程序相关，脚本调用。主要处理顶点色。</li>
+<li>Cast Shadows（投射阴影）：可以投射阴影。但材质必须是不透明类型的。Off（关）On（开）Two Sided（双面）shadows Only（只有阴影。-）</li>
+<li>Receive Shadow（接收阴影）：公共版模式下意义不大因为是一个片接收到阴影并不舒服，建议mesh模型下使用。</li>
+<li>Motion Vectors（移动向量）：和摄像机的运动向量有关。不太明白意义是什么。可以确定的是和特效制作没关系了。</li>
+<li>Sorting Layer（排序层）：设置一个层处理前后关系，越早创建的层越靠后，越新创建的层越靠前。</li>
+<li>Order in Layer（层中排序）：在这里可以在同一个Sorting Layer层里设置前后关系。值越大越靠前。<br>要注意这两个功能和Sorting Fudge是有区别的。Sorting Fudge是假设他在场景中的位置，负值是离镜头较远、正值是离镜头较近。近的肯定是会覆盖掉远的，从而调节先后关系。而这里是真正更改渲染顺序的。在unity中整个排序是这样的，先计算shader上面的顺序，然后是Sorting layer的前后，然后是Order in layer大小，最后才是Sorting Fudge的影响。</li>
+<li>Light Probes（光照探针）：</li>
+<li>Reflection Probes（反射探针）：<br>这两项和其拓展出的功能都和灯光探测有关，坑深不挖。特效制作基本不用</li>
 </ul>
 
             </div>
