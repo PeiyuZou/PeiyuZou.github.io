@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2024-07-02T05:52:42.306Z</updated>
+  <updated>2024-11-22T03:36:32.116Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -17,13 +17,43 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>01.总览</title>
+    <link href="https://peiyuzou.github.io/wiki/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/"/>
+    <id>https://peiyuzou.github.io/wiki/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/</id>
+    <published>2024-08-06T11:33:10.000Z</published>
+    <updated>2024-11-22T03:36:32.116Z</updated>
+    
+    <content type="html"><![CDATA[<p>这个章节的绝大部分内容来自对Robert Nystrom的《Game ProgrammingPatterns》一书的个人提炼。</p><p>和原书一致，将全部内容分为三个部分：</p><ul><li>第一个部分是对设计模式的客观评价、它并不是百利无害的。在游戏领域中，它对架构、性能会造成多种影响，这些影响有正面的也有负面的</li><li>第二个部分是对GoF合著的《设计模式：可复用面向对象软件要素》一书的经典设计模式的解读</li><li>第三个部分被分为四类，共十三种有用的设计模式（对游戏开发而言至少是有用）<ul><li>序列模式</li><li>行为模式</li><li>解耦模式</li><li>优化模式</li></ul></li></ul><blockquote><p>GoF：四人组的英文简写，《Design Patterns: Elements of ReusableObject-Oriented Software》（即后述《设计模式》一书），由 ErichGamma、Richard Helm、Ralph Johnson 和 John Vlissides合著（Addison-Wesley，1995）。这几位作者常被称为四人组（Gang ofFour）。</p></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;这个章节的绝大部分内容来自对Robert Nystrom的《Game Programming
+Patterns》一书的个人提炼。&lt;/p&gt;
+&lt;p&gt;和原书一致，将全部内容分为三个部分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一个部分是对设计模式的客观评价、它并不是百利无害的。在游</summary>
+      
+    
+    
+    
+    <category term="通用技术" scheme="https://peiyuzou.github.io/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/"/>
+    
+    <category term="游戏编程设计模式" scheme="https://peiyuzou.github.io/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="游戏编程设计模式" scheme="https://peiyuzou.github.io/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
     <title></title>
     <link href="https://peiyuzou.github.io/wiki/index/"/>
     <id>https://peiyuzou.github.io/wiki/index/</id>
     <published>2024-04-15T07:00:24.267Z</published>
-    <updated>2024-07-02T05:52:42.306Z</updated>
+    <updated>2024-11-22T03:25:05.428Z</updated>
     
-    <content type="html"><![CDATA[<!-- <div><image src="images/pixel03.gif"></div> --><p>Don’t be depressed, everything is insignificant.</p><div style="position: relative; padding: 30% 45%;"><iframe style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;" src="https://stars.chromeexperiments.com/" frameborder="1" scrolling="yes" width="320" height="240" ></div>]]></content>
+    <content type="html"><![CDATA[<!-- <div><image src="images/pixel03.gif"></div> --><p>一些有关游戏开发和数学的话题、教程、记录</p>]]></content>
     
     
       
@@ -31,37 +61,12 @@
     <summary type="html">&lt;!-- &lt;div&gt;
 &lt;image src=&quot;images/pixel03.gif&quot;&gt;
 &lt;/div&gt; --&gt;
-&lt;p&gt;Don’t be depressed, everything is insignificant.&lt;/p&gt;
-&lt;div style=&quot;position: rel</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>hello</title>
-    <link href="https://peiyuzou.github.io/wiki/hello/"/>
-    <id>https://peiyuzou.github.io/wiki/hello/</id>
-    <published>2024-04-13T18:29:02.000Z</published>
-    <updated>2024-04-14T02:42:23.122Z</updated>
-    
-    <content type="html"><![CDATA[<p>hello</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;hello&lt;/p&gt;
+&lt;p&gt;一些有关游戏开发和数学的话题、教程、记录&lt;/p&gt;
 </summary>
       
     
     
     
-    <category term="Hello" scheme="https://peiyuzou.github.io/categories/Hello/"/>
-    
-    
-    <category term="C#" scheme="https://peiyuzou.github.io/tags/C/"/>
     
   </entry>
   
@@ -126,7 +131,7 @@
     <link href="https://peiyuzou.github.io/wiki/Issues/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/"/>
     <id>https://peiyuzou.github.io/wiki/Issues/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/</id>
     <published>2023-03-11T12:10:10.000Z</published>
-    <updated>2023-03-11T15:00:41.761Z</updated>
+    <updated>2024-08-06T06:00:04.065Z</updated>
     
     <content type="html"><![CDATA[<h2 id="一问题">一、问题</h2><p>最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：</p><figure><img src="2023-03-11T202841.png" alt="2023-03-11T202841" /><figcaption aria-hidden="true">2023-03-11T202841</figcaption></figure><p>第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。</p><h2 id="二运算">二、运算</h2><p>首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：</p><figure><img src="2023-03-11T203934.png" alt="2023-03-11T203934" /><figcaption aria-hidden="true">2023-03-11T203934</figcaption></figure><p>第一种写法，vectorX和scale加载到寄存器后，执行的第一个操作是conv.r4，也就是将int32类型的scale转换为了float。然后再执行乘法，紧接着将结果强转int64，最后输出。从IL看没有什么问题，下面我们按照IL的步骤手动运算一下。</p><h3id="得到两个变量在机器中的真实值">1、得到两个变量在机器中的真实值</h3><p>整个问题运算的核心是1.3f和10.0f这两个单精度浮点数运算：</p><p>十进制数1.3转换为二进制数为<spanclass="math inline">\(1.01001100110011..._{(2)}\)</span></p><p>由浮点数存储规则：V = <span class="math inline">\((-1)^S\)</span> x Mx <span class="math inline">\(2^E\)</span></p><ol type="1"><li>符号位S，因为是正数，所以为0</li><li>阶数E = $log_2$1 = 0，float的偏置量bias是<spanclass="math inline">\(2^k\)</span> - 1 = <span class="math inline">\(2^8- 1\)</span> = 127，所以exponent = E + bias =127，得到8位阶码01111111</li><li>fraction直接等于二进制小数位，由于float的尾数位有23个，所以保留前23，得到尾数二进制01001100110011001100110</li></ol><p>拼起来就是如下：</p><h3 id="section">0<font color='red'>01111111</font><font color='blue'>0100110 01100110 01100110</font></h3><p>我们再从这个值推算阶数E和fraction（这里需要注意：这个二进制值不是由E和fraction计算得到的吗，什么又要推算回去？答：因为在计算实际的存储中，fraction由于只有23位，可能发生截断，如果截断后最低位是1，那么还会发生进位舍入，导致机器存储的实际值和数学意义上的值不一致）</p><p>E = <span class="math inline">\(2^6\)</span> + <spanclass="math inline">\(2^5\)</span> + <spanclass="math inline">\(2^4\)</span> + <spanclass="math inline">\(2^3\)</span> + <spanclass="math inline">\(2^2\)</span> + <spanclass="math inline">\(2^1\)</span> - 127 = 0 fraction =0.01001100110011001100110 M = 1 + fraction = 1.01001100110011001100110 =1.0100110011001100110011（最低位的0对于数学计算来说没有用，可以忽略）</p><p>所以1.3可以表示为：<span class="math inline">\((-1)^S\)</span> x M x<span class="math inline">\(2^E\)</span> = <spanclass="math inline">\(2^0\)</span> x <spanclass="math inline">\(1.0100110011001100110011_{(2)}\)</span></p><p>同理，10.0表示为：<span class="math inline">\(2^3\)</span> x <spanclass="math inline">\(1.01_{(2)}\)</span></p><h3 id="二进制乘法">2、二进制乘法</h3><p>由上面得到的机器值结果：</p><p>1.3 x 10.0 = <span class="math inline">\(2^0\)</span> x <spanclass="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <spanclass="math inline">\(2^3\)</span> x <spanclass="math inline">\(1.01_{(2)}\)</span> = <spanclass="math inline">\(2^3\)</span> x <spanclass="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <spanclass="math inline">\(1.01_{(2)}\)</span></p><p><span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x<spanclass="math inline">\(1.01_{(2)}\)</span>的二进制乘法结果如下：</p><figure><img src="2023-03-11T214038.png" alt="2023-03-11T214038" /><figcaption aria-hidden="true">2023-03-11T214038</figcaption></figure><p>取小数点后23位10011111111111111111111</p><p>所以最终，ALU计算得到的值是<span class="math inline">\(2^3\)</span> x<span class="math inline">\(1.10011111111111111111111_{(2)}\)</span></p><h2 id="三存储">三、存储</h2><p>ALU已经得到了值<span class="math inline">\(2^3\)</span> x <spanclass="math inline">\(1.10011111111111111111111_{(2)}\)</span></p><p>E = 3，所以exponent = 3 + 127 = 130，阶码为1000001 0</p><h3id="整个结果表示为-01000001-01001111-11111111-11111111">整个结果表示为：0<font color='red'>1000001 0</font><font color='blue'>1001111 1111111111111111</font></h3><p>在现代CPU架构中，乘法和除法乘法和除法运算是使用两个累加器（主累加器EAX 与从累加器 EDX）进行临时存储（例如，MUL ECX 将把两个 32 位寄存器 ECX与 EAX 相乘，64 位结果放入 EAX 与 EDX）</p><p>所以，累加器中的二进制值如下：</p><h3 id="eax">EAX：</h3><h3 id="section-1">01000001 01001111 11111111 11111111</h3><h3 id="edx">EDX：</h3><h3 id="section-2">00000000 00000000 00000000 00000000</h3><p>这里存储的实际值是12.99999904632568359375接下来的处理是关键的地方，这个值被不同类型的变量去存，会有不同的二进制表现：</p><h3 id="存储在float中">1、存储在float中</h3><p>EAX中的32位值会被加载给栈上float变量的32位，这里由于最低位是1，会发生进位舍入，所以float变量的存储是：### 01000001 01010000 00000000 00000000 这个值是最终程序用到的值：<spanclass="math inline">\(2^3\)</span> x (1 + <spanclass="math inline">\(2^{-1}\)</span> + <spanclass="math inline">\(2^{-3}\)</span>) = 8 * 1.625 = 13这也是为什么第二种写法得到正确结果的原因，12.99999904632568359375先存入float变量，发生了进位舍入变为了13，再强转long时，小数截断完仍然是13</p><h3 id="存储在int或者long中">2、存储在int或者long中</h3><p>浮点数转整型，会直接发生小数截断，也就是直接舍弃所有小数点后的值，12.99999904632568359375直接截断为12，这也是第一种写法发生精度丢失的原因</p><h3 id="存储在double中">3、存储在double中</h3><p>由于double和float的阶码位和尾数位不一样，所以8位的阶码会重新计算成11位阶码，然后23位fraction会存储在52位fraction中，不足的低位用0布满，所以double变量的存储是这样：### 01000000 00101001 11111111 11111111 ### 11111100 00000000 0000000000000000 这个值是：12.99999988079071044921875</p><p>所以理论上，如果我们在强转long之前不是用float去存而是用double存，也会被截断为12，我们验证下：</p><figure><img src="2023-03-11T223026.png" alt="2023-03-11T223026" /><figcaption aria-hidden="true">2023-03-11T223026</figcaption></figure><p>需要注意的是，第一种写法和第三种写法导致精度丢失的原因并不一样。第一种是因为累加器的值直接截断了；第三种是因为double存储，没有发生进位，同时也被截断了。</p><h2 id="四总结">四、总结</h2><p>个人认为，其实从浮点数的设计来看，精度丢失无法避免。如果程序对精度有要求，最好是通过整型存储一个放大的值来处理。</p><p>如果无法使用整型来处理，尽量选择float，虽然也无法完全准确地表述一个真实值，但是对于强转整型发生时来说，float的表现更好，因为进位舍入能一定程度上中和掉小数截断导致的严重精度丢失，double存储位太多了，通常更容易形成一个我们不期望的近似值。</p><p>最后，如果精度要求过高，float无法完成任务，这时还是选择使用double</p>]]></content>
     
