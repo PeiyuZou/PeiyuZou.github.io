@@ -9,17 +9,17 @@
         <meta name="keywords" content="Unity">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   2022-">
+    <meta name="description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   有时候我们">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity中的GUID、FileID、InstanceID">
 <meta property="og:url" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/index.html">
 <meta property="og:site_name" content="Per-Fragment">
-<meta property="og:description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   2022-">
+<meta property="og:description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   有时候我们">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T223430.png">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T224032.png">
 <meta property="article:published_time" content="2022-11-19T14:52:15.000Z">
-<meta property="article:modified_time" content="2022-11-23T13:21:07.022Z">
+<meta property="article:modified_time" content="2024-12-06T02:46:03.925Z">
 <meta property="article:author" content="Z.P.Y">
 <meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary">
@@ -443,16 +443,12 @@
 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p>
 <h2 id="二fileid">二、FileID</h2>
 <p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p>
-<figure>
-<img src="2022-11-19T223430.png" alt="2022-11-19T223430">
-<figcaption aria-hidden="true">2022-11-19T223430</figcaption>
-</figure>
+<p><img src="2022-11-19T223430.png" alt="2022-11-19T223430"><br>
+</p>
 <p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p>
 <p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p>
-<figure>
-<img src="2022-11-19T224032.png" alt="2022-11-19T224032">
-<figcaption aria-hidden="true">2022-11-19T224032</figcaption>
-</figure>
+<p><img src="2022-11-19T224032.png" alt="2022-11-19T224032"><br>
+</p>
 <p>首先红框部分，标明了当前整个图集文件的GUID。其次蓝色部分存储了整个图片的导入设置，internalIDToNameTable指明了每张子图的名称和FileID的映射关系</p>
 <blockquote>
 <p>需要注意的是，FileID前缀的213是UnityYAML中定义的类型ID，这里213指Sprite。具体参阅https://docs.unity3d.com/Manual/ClassIDReference.html</p>

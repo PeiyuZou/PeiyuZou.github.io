@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/2023-02-05T224611.png">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/2023-02-05T224909.png">
 <meta property="article:published_time" content="2023-02-05T06:36:59.000Z">
-<meta property="article:modified_time" content="2023-02-05T14:50:46.157Z">
+<meta property="article:modified_time" content="2024-12-06T02:45:37.966Z">
 <meta property="article:author" content="Z.P.Y">
 <meta property="article:tag" content="UIElements">
 <meta name="twitter:card" content="summary">
@@ -445,17 +445,13 @@
 更离谱的是，打印root的layout信息，root的高度和宽度都是正常的。但是全屏元素打印layout，高宽永远都是0和0</p>
 <p>最后利用可视化调试工具Window——Analysis——UIElements
 Debuger发现了端倪：</p>
-<figure>
-<img src="2023-02-05T224611.png" alt="2023-02-05T224611">
-<figcaption aria-hidden="true">2023-02-05T224611</figcaption>
-</figure>
+<p><img src="2023-02-05T224611.png" alt="2023-02-05T224611"><br>
+</p>
 <p>这里夹了一层TemplateContainer，这其实由于写法导致的，上面代码中我们得到的labelFromUXML对象会默认形成这一个节点，如果要正确地附加UXML的内容给root，需要这样写：</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Import UXML</span></span><br><span class="line"><span class="keyword">var</span> visualTree = AssetDatabase.LoadAssetAtPath&lt;VisualTreeAsset&gt;(<span class="string">&quot;Assets/Editor/Tutorials/01VisualTree/VisualTreeWindow.uxml&quot;</span>);</span><br><span class="line">visualTree.CloneTree(root);</span><br></pre></td></tr></table></figure>
 <p>这样TemplateContainer就消失了：</p>
-<figure>
-<img src="2023-02-05T224909.png" alt="2023-02-05T224909">
-<figcaption aria-hidden="true">2023-02-05T224909</figcaption>
-</figure>
+<p><img src="2023-02-05T224909.png" alt="2023-02-05T224909"><br>
+</p>
 
             </div>
         

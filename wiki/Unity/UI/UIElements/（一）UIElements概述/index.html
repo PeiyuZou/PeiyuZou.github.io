@@ -9,17 +9,17 @@
         <meta name="keywords" content="UIElements">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="一、Unity的UI系统   2023-02-04T152246  目前官方提供了三套UI系统： - IMGUI - Unity UI（UGUI） - UIToolKit 1. IMGUI IMGUI通常称“即时模式GUI”，这是完全面向程序员使用的UI系统，显示界面的代码每帧执行一次来绘制显示元素（OnGUI函数），这种UI系统一般没有持久化的游戏对象，所以一般用于编辑器拓展和工具">
+    <meta name="description" content="一、Unity的UI系统   目前官方提供了三套UI系统： - IMGUI - Unity UI（UGUI） - UIToolKit 1. IMGUI IMGUI通常称“即时模式GUI”，这是完全面向程序员使用的UI系统，显示界面的代码每帧执行一次来绘制显示元素（OnGUI函数），这种UI系统一般没有持久化的游戏对象，所以一般用于编辑器拓展和工具开发。 总结特征： - 每帧执行绘制 -">
 <meta property="og:type" content="article">
 <meta property="og:title" content="（一）UIElements概述">
 <meta property="og:url" content="https://peiyuzou.github.io/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/index.html">
 <meta property="og:site_name" content="Per-Fragment">
-<meta property="og:description" content="一、Unity的UI系统   2023-02-04T152246  目前官方提供了三套UI系统： - IMGUI - Unity UI（UGUI） - UIToolKit 1. IMGUI IMGUI通常称“即时模式GUI”，这是完全面向程序员使用的UI系统，显示界面的代码每帧执行一次来绘制显示元素（OnGUI函数），这种UI系统一般没有持久化的游戏对象，所以一般用于编辑器拓展和工具">
+<meta property="og:description" content="一、Unity的UI系统   目前官方提供了三套UI系统： - IMGUI - Unity UI（UGUI） - UIToolKit 1. IMGUI IMGUI通常称“即时模式GUI”，这是完全面向程序员使用的UI系统，显示界面的代码每帧执行一次来绘制显示元素（OnGUI函数），这种UI系统一般没有持久化的游戏对象，所以一般用于编辑器拓展和工具开发。 总结特征： - 每帧执行绘制 -">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/2023-02-04T152246.png">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/2023-02-04T164212.png">
 <meta property="article:published_time" content="2023-02-03T22:21:38.000Z">
-<meta property="article:modified_time" content="2023-02-05T14:50:28.149Z">
+<meta property="article:modified_time" content="2024-12-06T02:44:19.903Z">
 <meta property="article:author" content="Z.P.Y">
 <meta property="article:tag" content="UIElements">
 <meta name="twitter:card" content="summary">
@@ -439,10 +439,8 @@
         
         
             <h1 id="一unity的ui系统">一、Unity的UI系统</h1>
-<figure>
-<img src="2023-02-04T152246.png" alt="2023-02-04T152246">
-<figcaption aria-hidden="true">2023-02-04T152246</figcaption>
-</figure>
+<p><img src="2023-02-04T152246.png" alt="2023-02-04T152246"><br>
+</p>
 <p>目前官方提供了三套UI系统： - IMGUI - Unity UI（UGUI） - UIToolKit</p>
 <h2 id="imgui">1. IMGUI</h2>
 <p>IMGUI通常称“即时模式GUI”，这是完全面向程序员使用的UI系统，显示界面的代码每帧执行一次来绘制显示元素（OnGUI函数），这种UI系统一般没有持久化的游戏对象，所以一般用于编辑器拓展和工具开发。</p>
@@ -465,10 +463,8 @@ https://docs.unity3d.com/2023.1/Documentation/Manual/UI-system-compare.html</p>
 <h1 id="二uielements整体使用概述">二、UIElements整体使用概述</h1>
 <h2 id="创建流程">1. 创建流程</h2>
 <p>Project视图——右键create——UIElements——EditorWindow开始创建窗体：</p>
-<figure>
-<img src="2023-02-04T164212.png" alt="2023-02-04T164212">
-<figcaption aria-hidden="true">2023-02-04T164212</figcaption>
-</figure>
+<p><img src="2023-02-04T164212.png" alt="2023-02-04T164212"><br>
+</p>
 <p>需要注意的是，创建目录需要位于Editor文件夹下任意深度，创建完成后，生成三个同名文件：<em>.cs、</em>.uxml以及*.uss</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FirstWindow.cs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UIElements;</span><br><span class="line"><span class="keyword">using</span> UnityEditor.UIElements;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FirstWindow</span> : <span class="title">EditorWindow</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="string">&quot;Window/UIElements/FirstWindow&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowExample</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        FirstWindow wnd = GetWindow&lt;FirstWindow&gt;();</span><br><span class="line">        wnd.titleContent = <span class="keyword">new</span> GUIContent(<span class="string">&quot;FirstWindow&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">CreateGUI</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Each editor window contains a root VisualElement object</span></span><br><span class="line">        VisualElement root = rootVisualElement;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// VisualElements objects can contain other VisualElement following a tree hierarchy.</span></span><br><span class="line">        VisualElement label = <span class="keyword">new</span> Label(<span class="string">&quot;Hello World! From C#&quot;</span>);</span><br><span class="line">        root.Add(label);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Import UXML</span></span><br><span class="line">        <span class="keyword">var</span> visualTree = AssetDatabase.LoadAssetAtPath&lt;VisualTreeAsset&gt;(<span class="string">&quot;Assets/Editor/FirstWindow/FirstWindow.uxml&quot;</span>);</span><br><span class="line">        VisualElement labelFromUXML = visualTree.CloneTree();</span><br><span class="line">        root.Add(labelFromUXML);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// A stylesheet can be added to a VisualElement.</span></span><br><span class="line">        <span class="comment">// The style will be applied to the VisualElement and all of its children.</span></span><br><span class="line">        <span class="keyword">var</span> styleSheet = AssetDatabase.LoadAssetAtPath&lt;StyleSheet&gt;(<span class="string">&quot;Assets/Editor/FirstWindow/FirstWindow.uss&quot;</span>);</span><br><span class="line">        VisualElement labelWithStyle = <span class="keyword">new</span> Label(<span class="string">&quot;Hello World! With Style&quot;</span>);</span><br><span class="line">        labelWithStyle.styleSheets.Add(styleSheet);</span><br><span class="line">        root.Add(labelWithStyle);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* FirstWindow.uss */</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">Label</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">    -unity-<span class="attribute">font-style</span>: bold;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">68</span>, <span class="number">138</span>, <span class="number">255</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

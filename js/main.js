@@ -58,7 +58,7 @@
             $('body, html').animate({ scrollTop: 0 }, 600);
         });
     }
-    
+
     // Task lists in markdown
     $('.article-entry ul > li').each(function() {
         var taskList = {
