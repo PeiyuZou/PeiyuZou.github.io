@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2024-12-05T08:55:30.387Z</updated>
+  <updated>2024-12-06T02:50:36.997Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -15,6 +15,65 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>02-全局状态机及内存管理</title>
+    <link href="https://peiyuzou.github.io/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
+    <id>https://peiyuzou.github.io/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</id>
+    <published>2024-12-05T09:05:55.000Z</published>
+    <updated>2024-12-06T02:50:36.997Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="lual_newstate">luaL_newstate</h1><p>从创建Lua虚拟机的函数 <code>luaL_newstate</code>入手，这个函数可能是外部最常见的函数之一，它无需参数，返回一个指向lua_State 类型内存地址的指针，在xLua中，它对应如下接口声明：</p><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LuaDLL.cs</span></span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">extern</span> IntPtr <span class="title">luaL_newstate</span>()</span>;</span><br></pre></td></tr></table></figure><p><code>luaL_newstate</code>的源码片段如下，注意它的函数签名，和C#中声明动态链接库时的签名是一致的：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* lauxlib.c */</span></span><br><span class="line"></span><br><span class="line">LUALIB_API lua_State *<span class="title function_">luaL_newstate</span> <span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  lua_State *L = lua_newstate(l_alloc, <span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">if</span> (l_likely(L)) &#123;</span><br><span class="line">    lua_atpanic(L, &amp;panic);</span><br><span class="line">    lua_setwarnf(L, warnfoff, L);  <span class="comment">/* default is warnings off */</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>分析这段源码：</p><h3 id="lualib_api">LUALIB_API</h3>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;lual_newstate&quot;&gt;luaL_newstate&lt;/h1&gt;
+&lt;p&gt;从创建Lua虚拟机的函数 &lt;code&gt;luaL_newstate&lt;/code&gt;
+入手，这个函数可能是外部最常见的函数之一，它无需参数，返回一个指向
+lua_State 类型内存地址的指</summary>
+      
+    
+    
+    
+    <category term="Lua" scheme="https://peiyuzou.github.io/categories/Lua/"/>
+    
+    <category term="源码阅读" scheme="https://peiyuzou.github.io/categories/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+    
+    <category term="Lua" scheme="https://peiyuzou.github.io/tags/Lua/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>01-概览</title>
+    <link href="https://peiyuzou.github.io/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/"/>
+    <id>https://peiyuzou.github.io/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/</id>
+    <published>2024-12-05T09:02:48.000Z</published>
+    <updated>2024-12-06T02:50:23.842Z</updated>
+    
+    <content type="html"><![CDATA[<p>参考：云风的《Lua源码欣赏》</p><p>他在书中将源码分为四个部分： - 核心 - 代码翻译及预编译字节码 - 内嵌库- 独立解析器及字节码编译器</p><p>并提供了一个建议阅读顺序（来自LuaJIT的作者Mike Pall）： -阅读外围的库是如何实现功能扩展的 - 阅读 API 的具体实现 - 了解 Lua VM的实现 - 分别理解函数调用、返回，string 、table 、metatable 等如何实现 -debug 模块 - parser 等等编译相关的部分 - 垃圾收集</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;参考：云风的《Lua源码欣赏》&lt;/p&gt;
+&lt;p&gt;他在书中将源码分为四个部分： - 核心 - 代码翻译及预编译字节码 - 内嵌库
+- 独立解析器及字节码编译器&lt;/p&gt;
+&lt;p&gt;并提供了一个建议阅读顺序（来自LuaJIT的作者Mike Pall）： -
+阅读外围的库是如何实</summary>
+      
+    
+    
+    
+    <category term="Lua" scheme="https://peiyuzou.github.io/categories/Lua/"/>
+    
+    <category term="源码阅读" scheme="https://peiyuzou.github.io/categories/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+    
+    <category term="Lua" scheme="https://peiyuzou.github.io/tags/Lua/"/>
+    
+  </entry>
   
   <entry>
     <title>01.总览</title>
@@ -538,62 +597,6 @@ href=&quot;https://css-tricks.com/snippets/css/a-guide-to-flexbox</summary>
     
     
     <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Lua函数</title>
-    <link href="https://peiyuzou.github.io/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/"/>
-    <id>https://peiyuzou.github.io/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/</id>
-    <published>2021-11-20T05:30:17.000Z</published>
-    <updated>2022-11-23T13:21:34.293Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="一可变长参数">一、可变长参数</h2><p>用符号…表示</p><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--表示用a和b存储...参数的前两个元素</span></span><br><span class="line"><span class="keyword">local</span> a, b = ...</span><br><span class="line"></span><br><span class="line"><span class="comment">--select函数</span></span><br><span class="line"><span class="comment">--第一个参数为selector，表示返回参数列表第n个参数后的所有元素</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">select</span>(<span class="number">2</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>))    <span class="comment">--&gt; b    c</span></span><br><span class="line"><span class="comment">--selector为字符串&quot;#&quot;时，表示返回参数个数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">select</span>(<span class="string">&quot;#&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>))  <span class="comment">--&gt; 3</span></span><br><span class="line"><span class="comment">--可用于取可变长参数个数</span></span><br><span class="line"><span class="built_in">select</span>(<span class="string">&quot;#&quot;</span>, ...)</span><br></pre></td></tr></table></figure><h2 id="二正确的尾调用">二、正确的尾调用</h2><p>形如下方： <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(x)</span></span></span><br><span class="line">    x = x + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> g(x)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p><p>当函数最后一个动作是返回调用另外一个函数而没有再进行其他工作时，就形成了尾调用。在g返回时，程序的执行路径会直接返回到调用f的位置。所以在进行尾调用时，不使用任何额外的栈空间，所以一个程序中能嵌套的尾调用数量是无限的，这样调用永远不会发生栈溢出。</p><p>不是尾调用的情况： <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--相当于 return nil，并没有尾调用</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(x)</span></span></span><br><span class="line">    g(x)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--[[</span></span><br><span class="line"><span class="comment">相当于:</span></span><br><span class="line"><span class="comment">local y = g(x)</span></span><br><span class="line"><span class="comment">return y + 1</span></span><br><span class="line"><span class="comment">]]</span></span><br><span class="line"><span class="keyword">return</span> g(x) + <span class="number">1</span>    </span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> x <span class="keyword">or</span> g(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> (g(x))</span><br></pre></td></tr></table></figure></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;一可变长参数&quot;&gt;一、可变长参数&lt;/h2&gt;
-&lt;p&gt;用符号…表示&lt;/p&gt;
-&lt;figure class=&quot;highlight lua&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br</summary>
-      
-    
-    
-    
-    <category term="Lua" scheme="https://peiyuzou.github.io/categories/Lua/"/>
-    
-    <category term="Lua基础" scheme="https://peiyuzou.github.io/categories/Lua/Lua%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Lua" scheme="https://peiyuzou.github.io/tags/Lua/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Lua字符串</title>
-    <link href="https://peiyuzou.github.io/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
-    <id>https://peiyuzou.github.io/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/</id>
-    <published>2021-11-20T05:29:03.000Z</published>
-    <updated>2022-11-23T13:21:23.477Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="一字符">一、字符</h2><p>Lua中单个字符使用8个比特位（1个Byte）来存储，所以#号取的是字符串的个数，同时也是字符串占用的字节数</p><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(#<span class="string">&quot;good bye&quot;</span>)    <span class="comment">--&gt; 8</span></span><br></pre></td></tr></table></figure><h2 id="二字符串转number">二、字符串转number</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--第二个参数标明按x进制来转换</span></span><br><span class="line"><span class="built_in">tonumber</span>(<span class="string">&quot;fff&quot;</span>, <span class="number">16</span>)    <span class="comment">--&gt; 4095</span></span><br></pre></td></tr></table></figure><h2 id="三string.format">三、string.format</h2><p>一个指示符的结构：%加上一个字母</p><ul><li>%d：一个十进制整数</li><li>%x：一个十六进制整数</li><li>%f：一个浮点数</li><li>%s：一个字符串</li></ul><h2 id="四其他字符串库函数">四、其他字符串库函数</h2><p>参阅：https://www.lua.org/manual/5.4/manual.html#6.4</p><blockquote><p>注意：有的函数不适用于UTF-8编码的字符串，因为UTF-8编码的一个字符不是单个字节，而是多个字节，或者说字节序列。</p></blockquote>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;一字符&quot;&gt;一、字符&lt;/h2&gt;
-&lt;p&gt;Lua中单个字符使用8个比特位（1个Byte）来存储，所以#号取的是字符串的个数，同时也是字符串占用的字节数&lt;/p&gt;
-&lt;figure class=&quot;highlight lua&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g</summary>
-      
-    
-    
-    
-    <category term="Lua" scheme="https://peiyuzou.github.io/categories/Lua/"/>
-    
-    <category term="Lua基础" scheme="https://peiyuzou.github.io/categories/Lua/Lua%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Lua" scheme="https://peiyuzou.github.io/tags/Lua/"/>
     
   </entry>
   

@@ -3,18 +3,23 @@
 <head>
     <meta charset="utf-8">
     
-    <title>分类: Unity | Per-Fragment</title>
+    <title>01-概览 | Per-Fragment</title>
     
     
-        <meta name="keywords" content="Per-Fragment">
+        <meta name="keywords" content="Lua">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Per-Fragment">
-<meta property="og:url" content="https://peiyuzou.github.io/categories/Unity/index.html">
+    <meta name="description" content="参考：云风的《Lua源码欣赏》 他在书中将源码分为四个部分： - 核心 - 代码翻译及预编译字节码 - 内嵌库 - 独立解析器及字节码编译器 并提供了一个建议阅读顺序（来自LuaJIT的作者Mike Pall）： - 阅读外围的库是如何实现功能扩展的 - 阅读 API 的具体实现 - 了解 Lua VM 的实现 - 分别理解函数调用、返回，string 、table 、metatable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01-概览">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/index.html">
 <meta property="og:site_name" content="Per-Fragment">
+<meta property="og:description" content="参考：云风的《Lua源码欣赏》 他在书中将源码分为四个部分： - 核心 - 代码翻译及预编译字节码 - 内嵌库 - 独立解析器及字节码编译器 并提供了一个建议阅读顺序（来自LuaJIT的作者Mike Pall）： - 阅读外围的库是如何实现功能扩展的 - 阅读 API 的具体实现 - 了解 Lua VM 的实现 - 分别理解函数调用、返回，string 、table 、metatable">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-05T09:02:48.000Z">
+<meta property="article:modified_time" content="2024-12-06T02:50:23.842Z">
 <meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="Lua">
 <meta name="twitter:card" content="summary">
     
 
@@ -191,9 +196,9 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/Issues/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             Lua
                         </a>
@@ -207,13 +212,13 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             源码阅读
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/">01-概览</a></li>  <li class="file"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">02-全局状态机及内存管理</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/">01-概览</a></li>  <li class="file"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">02-全局状态机及内存管理</a></li>  </ul> 
                     </li> 
                      </ul> 
                     </li> 
@@ -378,378 +383,117 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-folder"></i></span>
-        <h1 class="title">Unity</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-Lua/源码阅读/01-概览" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a>
-        </h1>
-    
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Lua/">Lua</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
+    </div>
 
-                <div class="article-meta">
-                    
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Lua/" rel="tag">Lua</a>
+    </div>
+
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">
-            <time datetime="2023-07-09T07:23:32.000Z" itemprop="datePublished">2023-07-09</time>
+        <a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/">
+            <time datetime="2024-12-05T09:02:48.000Z" itemprop="datePublished">2024-12-05</time>
         </a>
     </div>
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/">粒子系统</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/Unity/" rel="tag">Unity</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/Lua/源码阅读/01-概览.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/Lua/源码阅读/01-概览.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/Lua/源码阅读/01-概览.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a>
+        <h1 class="article-title" itemprop="name">
+            01-概览
         </h1>
     
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">
-            <time datetime="2023-02-05T06:36:59.000Z" itemprop="datePublished">2023-02-05</time>
-        </a>
-    </div>
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <p>参考：云风的《Lua源码欣赏》</p>
+<p>他在书中将源码分为四个部分： - 核心 - 代码翻译及预编译字节码 - 内嵌库
+- 独立解析器及字节码编译器</p>
+<p>并提供了一个建议阅读顺序（来自LuaJIT的作者Mike Pall）： -
+阅读外围的库是如何实现功能扩展的 - 阅读 API 的具体实现 - 了解 Lua VM
+的实现 - 分别理解函数调用、返回，string 、table 、metatable 等如何实现 -
+debug 模块 - parser 等等编译相关的部分 - 垃圾收集</p>
 
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
             </div>
-        </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
     
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+<nav id="article-nav">
+    
+        <a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">
-            <time datetime="2023-02-05T06:30:21.000Z" itemprop="datePublished">2023-02-05</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    02-全局状态机及内存管理
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-            <time datetime="2023-02-05T05:25:06.000Z" itemprop="datePublished">2023-02-05</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
             </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">
-            <time datetime="2023-02-05T01:24:53.000Z" itemprop="datePublished">2023-02-05</time>
         </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
     
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">
-            <time datetime="2023-02-04T20:15:13.000Z" itemprop="datePublished">2023-02-05</time>
+        <a href="/wiki/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">01.总览</div>
         </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
     
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
+</nav>
+
+
+
+
+
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a>
-        </h1>
     
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">
-            <time datetime="2023-02-04T18:21:02.000Z" itemprop="datePublished">2023-02-05</time>
-        </a>
-    </div>
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
 
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">
-            <time datetime="2023-02-04T01:10:57.000Z" itemprop="datePublished">2023-02-04</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">
-            <time datetime="2023-02-03T22:21:38.000Z" itemprop="datePublished">2023-02-04</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/UI/UIElements/">UIElements</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">
-            <time datetime="2022-11-23T05:23:14.000Z" itemprop="datePublished">2022-11-23</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/">功能实例</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-</div>
-
-    <nav id="page-nav">
-        <span class="page-number current">1</span><a class="page-number" href="/categories/Unity/page/2/">2</a><a class="extend next" rel="next" href="/categories/Unity/page/2/">下一页 &raquo;</a>
-    </nav>
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
 </section>
         </div>
         <footer id="footer">
