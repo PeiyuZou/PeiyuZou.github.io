@@ -9,17 +9,17 @@
         <meta name="keywords" content="Unity">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   2022-">
+    <meta name="description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   有时候我们">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity中的GUID、FileID、InstanceID">
 <meta property="og:url" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/index.html">
 <meta property="og:site_name" content="Per-Fragment">
-<meta property="og:description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   2022-">
+<meta property="og:description" content="一、GUID GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。 二、FileID 在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：   有时候我们">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T223430.png">
 <meta property="og:image" content="https://peiyuzou.github.io/wiki/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/2022-11-19T224032.png">
 <meta property="article:published_time" content="2022-11-19T14:52:15.000Z">
-<meta property="article:modified_time" content="2024-04-15T14:01:29.553Z">
+<meta property="article:modified_time" content="2024-12-07T05:13:22.820Z">
 <meta property="article:author" content="Z.P.Y">
 <meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary">
@@ -214,6 +214,15 @@
                         </a>
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
                     </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/">01-概览</a></li>  <li class="file"><a href="/wiki/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">02-全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
                      </ul> 
                     </li> 
                     
@@ -369,7 +378,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title"><span>标签</span></h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -443,16 +452,12 @@
 无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p>
 <h2 id="二fileid">二、FileID</h2>
 <p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p>
-<figure>
-<img src="2022-11-19T223430.png" alt="2022-11-19T223430">
-<figcaption aria-hidden="true">2022-11-19T223430</figcaption>
-</figure>
+<p><img src="2022-11-19T223430.png" alt="2022-11-19T223430"><br>
+</p>
 <p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p>
 <p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p>
-<figure>
-<img src="2022-11-19T224032.png" alt="2022-11-19T224032">
-<figcaption aria-hidden="true">2022-11-19T224032</figcaption>
-</figure>
+<p><img src="2022-11-19T224032.png" alt="2022-11-19T224032"><br>
+</p>
 <p>首先红框部分，标明了当前整个图集文件的GUID。其次蓝色部分存储了整个图片的导入设置，internalIDToNameTable指明了每张子图的名称和FileID的映射关系</p>
 <blockquote>
 <p>需要注意的是，FileID前缀的213是UnityYAML中定义的类型ID，这里213指Sprite。具体参阅https://docs.unity3d.com/Manual/ClassIDReference.html</p>
