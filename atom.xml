@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2024-12-05T13:31:38.662Z</updated>
+  <updated>2024-12-07T07:23:09.320Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -15,6 +15,98 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://peiyuzou.github.io/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"/>
+    <id>https://peiyuzou.github.io/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/</id>
+    <published>2024-12-07T07:23:40.333Z</published>
+    <updated>2024-12-07T07:23:09.320Z</updated>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+      
+      
+    <summary type="html">
+</summary>
+      
+    
+    
+    
+    <category term="07-图形学" scheme="https://peiyuzou.github.io/categories/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://peiyuzou.github.io/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"/>
+    <id>https://peiyuzou.github.io/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/</id>
+    <published>2024-12-07T07:23:38.205Z</published>
+    <updated>2024-12-07T07:23:09.320Z</updated>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+      
+      
+    <summary type="html">
+</summary>
+      
+    
+    
+    
+    <category term="06-引擎开发" scheme="https://peiyuzou.github.io/categories/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://peiyuzou.github.io/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"/>
+    <id>https://peiyuzou.github.io/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/</id>
+    <published>2024-12-07T07:23:33.669Z</published>
+    <updated>2024-12-07T07:23:09.320Z</updated>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+      
+      
+    <summary type="html">
+</summary>
+      
+    
+    
+    
+    <category term="04-程序数学" scheme="https://peiyuzou.github.io/categories/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/</id>
+    <published>2024-12-07T07:23:09.320Z</published>
+    <updated>2024-12-07T07:23:09.320Z</updated>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+      
+      
+    <summary type="html">
+</summary>
+      
+    
+    
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    
+  </entry>
   
   <entry>
     <title></title>
@@ -511,130 +603,6 @@ href=&quot;https://css-tricks.com/snippets/css/a-guide-to-flexbox</summary>
     
     
     <category term="Unity功能实例" scheme="https://peiyuzou.github.io/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>EditorWindow监听键盘事件</title>
-    <link href="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/"/>
-    <id>https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/</id>
-    <published>2022-11-21T06:41:13.000Z</published>
-    <updated>2024-04-15T14:01:29.533Z</updated>
-    
-    <content type="html"><![CDATA[<p>UnityEngine.Input在EditorWindow中是无法正常响应的，如果要在EditorWindow中监听键盘按下，可以在OnGUI中使用UnityEngine.Event.current</p><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ZpyEditorWindow</span> : <span class="title">EditorWindow</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="string">&quot;Tools/ZpyWindow&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowWindow</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> window = GetWindow&lt;ZpyEditorWindow&gt;();</span><br><span class="line">        window.titleContent = <span class="keyword">new</span> GUIContent(<span class="string">&quot;ZpyWindow&quot;</span>);</span><br><span class="line">        window.Show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnGUI</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> e = UnityEngine.Event.current;</span><br><span class="line">        <span class="keyword">if</span> (e.type != EventType.KeyDown)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//事件类型</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (e.control)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//组合Ctrl按键+某按键</span></span><br><span class="line">            <span class="keyword">switch</span> (e.keyCode)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">case</span> KeyCode.LeftArrow:</span><br><span class="line">                    <span class="comment">// Ctrl + LeftArrow</span></span><br><span class="line">                    Debug.LogError(<span class="string">&quot;Ctrl + Left&quot;</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="literal">default</span>:</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//单个按键</span></span><br><span class="line">            <span class="keyword">switch</span> (e.keyCode)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">case</span> KeyCode.RightArrow:</span><br><span class="line">                    <span class="comment">// RightArrow</span></span><br><span class="line">                    Debug.LogError(<span class="string">&quot;right&quot;</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="literal">default</span>:</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用按键后如果需要刷新窗口记得调用重绘</span></span><br><span class="line">        Repaint();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;UnityEngine.Input在EditorWindow中是无法正常响应的，如果要在EditorWindow中监听键盘按下，可以在OnGUI中使用UnityEngine.Event.current&lt;/p&gt;
-&lt;figure class=&quot;highlight csharp</summary>
-      
-    
-    
-    
-    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
-    
-    <category term="EditorExtend" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/"/>
-    
-    
-    <category term="EditorExtend" scheme="https://peiyuzou.github.io/tags/EditorExtend/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity中的GUID、FileID、InstanceID</title>
-    <link href="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/"/>
-    <id>https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/</id>
-    <published>2022-11-19T14:52:15.000Z</published>
-    <updated>2024-12-07T05:13:22.820Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="一guid">一、GUID</h2><p>GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPathToGUID在文件路径和GUID之间互相转换。</p><h2 id="二fileid">二、FileID</h2><p>在Unity中，有的文件会产生若干子文件，比如图集、FBX等等，如下图：</p><p><img src="2022-11-19T223430.png" alt="2022-11-19T223430" /><br /></p><p>有时候我们需要直接引用子文件的其中之一，这时候GUID无法满足需求，这时候就用到FileID。</p><p>对每一个子文件，Unity都生成了唯一的一个FileID，我们观察下图集的meta文件内容：</p><p><img src="2022-11-19T224032.png" alt="2022-11-19T224032" /><br /></p><p>首先红框部分，标明了当前整个图集文件的GUID。其次蓝色部分存储了整个图片的导入设置，internalIDToNameTable指明了每张子图的名称和FileID的映射关系</p><blockquote><p>需要注意的是，FileID前缀的213是UnityYAML中定义的类型ID，这里213指Sprite。具体参阅https://docs.unity3d.com/Manual/ClassIDReference.html</p></blockquote><p>FileID在Inspector面板中称Local Identfier In File，所以也叫LocalID</p><h2 id="三instanceid">三、InstanceID</h2><p>InstanceID代表实例ID，在Unity中每有一个改文件的副本被创建时，都会自动分配一个值。InstanceID的值不像GUID和FileID，这俩的值在资源导入工程后就确认不变了，实例ID则是动态的值，每次运行游戏或者打开编辑器都可能不一样。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;一guid&quot;&gt;一、GUID&lt;/h2&gt;
-&lt;p&gt;GUID是存储在meta文件中的一个值，代表的是对应文件在工程中的唯一ID。
-无论文件在工程中的何处，都可以通过AssetDatabase.GUIDToAssetPath和AssetDatabase.AssetPat</summary>
-      
-    
-    
-    
-    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
-    
-    <category term="基础" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>UnityYAML</title>
-    <link href="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/"/>
-    <id>https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/</id>
-    <published>2022-11-19T14:50:15.000Z</published>
-    <updated>2024-12-07T05:13:22.815Z</updated>
-    
-    <content type="html"><![CDATA[<p>在Unity中，序列化文件和meta文件本质上都是UnityYAML格式的文件，可以直接使用文本编辑器查看其内容。</p><h2 id="一meta文件">一、Meta文件</h2><p><img src="2022-11-20T165622.png" alt="2022-11-20T165622" /><br /></p><p>meta文件第二行指明了该meta对应的原始文件在工程中的唯一ID：GUID从第三行开始，根据不同的文件类型，有不同的内容：</p><ul><li>对于Unity需要处理导入的文件，有对应的Importer信息。比如预制件对应了一个PrefabImporter，dll文件对应了一个PluginImporter等，文件夹等非文件或者无法识别的文件也对应了一个DefaultImporter</li><li>松散脚本文件本质上没有导入，而是编译，所以没有Importer</li></ul><h2 id="二序列化文件">二、序列化文件</h2><p>这里以一个prefab为例，它的Inspector面板长这样：</p><p><img src="2022-11-20T145903.png" alt="2022-11-20T145903" /><br /></p><p>使用文本方式打开它，所有内容如下：</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.1</span></span><br><span class="line"><span class="string">%TAG</span> <span class="type">!u</span><span class="string">!</span> <span class="string">tag:unity3d.com,2011:</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!1</span> <span class="string">&amp;2548996960861856832</span></span><br><span class="line"><span class="attr">GameObject:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">serializedVersion:</span> <span class="number">6</span></span><br><span class="line">  <span class="attr">m_Component:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">5130387460885348626</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">7740301192594792805</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">7973370026506665244</span>&#125;</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">component:</span> &#123;<span class="attr">fileID:</span> <span class="number">5618074904614505148</span>&#125;</span><br><span class="line">  <span class="attr">m_Layer:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">m_Name:</span> <span class="string">ZpyUi</span></span><br><span class="line">  <span class="attr">m_TagString:</span> <span class="string">Untagged</span></span><br><span class="line">  <span class="attr">m_Icon:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_NavMeshLayer:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_StaticEditorFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_IsActive:</span> <span class="number">1</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!224</span> <span class="string">&amp;5130387460885348626</span></span><br><span class="line"><span class="attr">RectTransform:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalRotation:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>, <span class="attr">w:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalPosition:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_LocalScale:</span> &#123;<span class="attr">x:</span> <span class="number">1</span>, <span class="attr">y:</span> <span class="number">1</span>, <span class="attr">z:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_Children:</span> []</span><br><span class="line">  <span class="attr">m_Father:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_RootOrder:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_LocalEulerAnglesHint:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>, <span class="attr">z:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchorMin:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchorMax:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line">  <span class="attr">m_AnchoredPosition:</span> &#123;<span class="attr">x:</span> <span class="number">0</span>, <span class="attr">y:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_SizeDelta:</span> &#123;<span class="attr">x:</span> <span class="number">1920</span>, <span class="attr">y:</span> <span class="number">1080</span>&#125;</span><br><span class="line">  <span class="attr">m_Pivot:</span> &#123;<span class="attr">x:</span> <span class="number">0.5</span>, <span class="attr">y:</span> <span class="number">0.5</span>&#125;</span><br><span class="line"><span class="string">---</span> <span class="type">!u!222</span> <span class="string">&amp;7740301192594792805</span></span><br><span class="line"><span class="attr">CanvasRenderer:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_CullTransparentMesh:</span> <span class="number">0</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!114</span> <span class="string">&amp;7973370026506665244</span></span><br><span class="line"><span class="attr">MonoBehaviour:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_Enabled:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_EditorHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Script:</span> &#123;<span class="attr">fileID:</span> <span class="number">388327683</span>, <span class="attr">guid:</span> <span class="string">d05c7b2176348a9478b32514c46e03a0</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Name:</span></span><br><span class="line">  <span class="attr">m_EditorClassIdentifier:</span></span><br><span class="line">  <span class="attr">m_Material:</span> &#123;<span class="attr">fileID:</span> <span class="number">2100000</span>, <span class="attr">guid:</span> <span class="string">ba842e0c46768474d8443c764dea963d</span>, <span class="attr">type:</span> <span class="number">2</span>&#125;</span><br><span class="line">  <span class="attr">m_Color:</span> &#123;<span class="attr">r:</span> <span class="number">1</span>, <span class="attr">g:</span> <span class="number">1</span>, <span class="attr">b:</span> <span class="number">1</span>, <span class="attr">a:</span> <span class="number">1</span>&#125;</span><br><span class="line">  <span class="attr">m_RaycastTarget:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Maskable:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_OnCullStateChanged:</span></span><br><span class="line">    <span class="attr">m_PersistentCalls:</span></span><br><span class="line">      <span class="attr">m_Calls:</span> []</span><br><span class="line">  <span class="attr">m_Sprite:</span> &#123;<span class="attr">fileID:</span> <span class="number">21300000</span>, <span class="attr">guid:</span> <span class="string">fbe29152a48370345ac058d64760fc81</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Type:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_PreserveAspect:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_FillCenter:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillMethod:</span> <span class="number">4</span></span><br><span class="line">  <span class="attr">m_FillAmount:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillClockwise:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_FillOrigin:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_UseSpriteMesh:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_PixelsPerUnitMultiplier:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">mSpritePath:</span></span><br><span class="line"><span class="string">---</span> <span class="type">!u!114</span> <span class="string">&amp;5618074904614505148</span></span><br><span class="line"><span class="attr">MonoBehaviour:</span></span><br><span class="line">  <span class="attr">m_ObjectHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_CorrespondingSourceObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabInstance:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_PrefabAsset:</span> &#123;<span class="attr">fileID:</span> <span class="number">0</span>&#125;</span><br><span class="line">  <span class="attr">m_GameObject:</span> &#123;<span class="attr">fileID:</span> <span class="number">2548996960861856832</span>&#125;</span><br><span class="line">  <span class="attr">m_Enabled:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">m_EditorHideFlags:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">m_Script:</span> &#123;<span class="attr">fileID:</span> <span class="number">11500000</span>, <span class="attr">guid:</span> <span class="string">b9baae69706a4c9d9868410df9b79855</span>, <span class="attr">type:</span> <span class="number">3</span>&#125;</span><br><span class="line">  <span class="attr">m_Name:</span></span><br><span class="line">  <span class="attr">m_EditorClassIdentifier:</span></span><br><span class="line"></span><br></pre></td></tr></table></figure><p>整个Prefab的内容可以分为3部分：</p><h3 id="头部">1.头部</h3><p>line 1 ~ 2，这两行是UnityYAML头部</p><h3 id="gameobject信息">2.GameObject信息</h3><p>line 3 ~ 21，这一部分存储了预制体GameObject的信息 第3行!u!1，这里的1是指YAML定义好的类型id，代表GameObject，可以参考官方文档：https://docs.unity3d.com/2019.4/Documentation/Manual/ClassIDReference.html!u!1后面紧跟的数字值便是该预制件的GameObject对应的FileID剩下的部分是另外的存储字段，这里着重关照下line 10 ~14，这几行存储了预制件上的组件FileID</p><h3 id="组件信息">3.组件信息</h3><p>line 22 ~90，这里存储了4个组件的信息，对应第二点GameObject中存储的4个FileID这4个组件的格式和GameObject大同小异，但由于YAML类型id不同，它们的具体字段也不同。通过查询官方文档，从上到下这四者依次为：RectTransform、CanvasRenderer、MonoBehaviour和MonoBehaviour，也就是Inspector面板中的4个组件</p><h2 id="三不同的fileid">三、不同的FileID</h2><p>这里有一个重要的细节需要注意，虽然Image和WorldTrackManager这两个组件都是自定义的脚本，但它们指向的FileID却不同。</p><p>Image组件：<code>m_Script: &#123;fileID: 388327683, guid: d05c7b2176348a9478b32514c46e03a0, type: 3&#125;</code>，FileID是388327683WorldTrackManager组件：<code>m_Script: &#123;fileID: 11500000, guid: b9baae69706a4c9d9868410df9b79855, type: 3&#125;</code>，FileID是11500000</p><p>造成这个的原因是脚本本身的存储形式不同：</p><p>Image组件封装在Dll库中，可以查看该Dll的meta文件： <imgsrc="2022-11-20T163236.png" alt="2022-11-20T163236" /><br />然后是Inspector中Image组件的LocalID（也就是FileID）： <imgsrc="2022-11-20T164658.png" alt="2022-11-20T164658" /><br />这俩图结合可以得到：Image组件指向的是GUID为d05c7b2176348a9478b32514c46e03a0的文件中FileID为388327683的子文件</p><p>而WorldTrackManager是一个松散脚本，在UnityYAML中，为松散脚本定义了类型MonoScriptMonoScript的值为115，这里的FileID11500000是这个值乘以100000而来查看该松散脚本的meta文件，其GUID也能对上： <imgsrc="2022-11-20T165301.png" alt="2022-11-20T165301" /><br /></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在Unity中，序列化文件和meta文件本质上都是UnityYAML格式的文件，可以直接使用文本编辑器查看其内容。&lt;/p&gt;
-&lt;h2 id=&quot;一meta文件&quot;&gt;一、Meta文件&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;2022-11-20T165622.png&quot; alt=&quot;2</summary>
-      
-    
-    
-    
-    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
-    
-    <category term="基础" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity中的文件</title>
-    <link href="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/"/>
-    <id>https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</id>
-    <published>2022-11-19T09:33:17.000Z</published>
-    <updated>2024-04-15T14:01:29.551Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="一unity文件的分类">一、Unity文件的分类</h2><ul><li>序列化文件</li><li>资源文件</li><li>文本文件</li><li>代码文件</li><li>非序列化文件</li><li>meta文件</li></ul><h3 id="序列化文件也叫native-asset">1.序列化文件（也叫Native Asset)</h3><p>序列化文件指Unity能够序列化的文件，一般是Unity内部定义好的一些文件类型，比如<em>.Prefab、</em>.unity3d、<em>.asset(ScriptableObject)、</em>.mat等等。序列化文件能够在运行时直接反序列化为对应类（Unity内部定义的类或者说开发人员自己定义的类）的一个实例。</p><h3 id="资源文件也叫imported-asset">2.资源文件（也叫Imported Asset)</h3><p>资源文件是指软件领域公认的一些后缀或者格式且Unity能够识别的文件。</p><ul><li>公认：比如<em>.png、</em>.fbx等，就算不使用Unity，如果你从事软件领域的相关工作，也大概知道这是图片和模型格式的文件。这类文件大多是由美术设计师、音频设计师利用其他软件工具制造的。</li><li>Unity能够识别：能被Unity识别的这类文件，在Unity中有导入设置。不同的文件格式有不同的Importer，比如AudioImporter，TextureImporter，ModelImport等。</li></ul><h3 id="文本文件">3.文本文件</h3><p>文本文件比较特殊，它不是序列化文件，但是unity可以识别为TextAsset。很像资源文件，但是又不需要资源文件那样进行设置和转化。比如txt、xml文件等。</p><h3 id="代码文件">4.代码文件</h3><p>包括Unity识别的代码文件、库文件、shader等，在导入时，Unity会自动进行一次编译。</p><h3 id="非序列化文件">5.非序列化文件</h3><p>包括文件夹和Unity无法识别的文件</p><h3 id="meta文件">6.meta文件</h3><p>meta文件不会再Unity中显示，但它是Unity最重要的一类文件。每个显示在Project视图的文件或者文件夹，Unity会为其生成一个对应的*.meta文件，主要作用是：</p><ul><li>为对应文件生成GUID（唯一Id）：在一个Unity工程中，通过一个有效的GUID，可以找到对应的唯一的文件。</li><li>存储资源文件的ImportSetting：所有资源文件的导入设置数据（其实出了资源文件以外的文件，其meta中都有对应的Importer，比如预制体的PrefabImporter、*.asset文件的NativeFormatImporter，文件夹的DefaultImporter等等）</li><li>存储AssetBundle相关的数据：打AB包时的分类等数据</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;一unity文件的分类&quot;&gt;一、Unity文件的分类&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;序列化文件&lt;/li&gt;
-&lt;li&gt;资源文件&lt;/li&gt;
-&lt;li&gt;文本文件&lt;/li&gt;
-&lt;li&gt;代码文件&lt;/li&gt;
-&lt;li&gt;非序列化文件&lt;/li&gt;
-&lt;li&gt;meta文件&lt;/li&gt;</summary>
-      
-    
-    
-    
-    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
-    
-    <category term="基础" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
     
   </entry>
   
