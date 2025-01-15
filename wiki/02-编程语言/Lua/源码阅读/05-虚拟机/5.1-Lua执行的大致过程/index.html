@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>5.1 Lua执行的大致过程 | Per-Fragment</title>
+    
+    
+        <meta name="keywords" content="Lua">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="和其他语言的执行差异 一般语言分为编译型语言（Compiled Language）和解释型语言（Interpreted Language）。前者会先将代码编译为目标机器可运行的机器码，而后由目标机器直接运行，编译型语言的特点是在编译阶段实现跨平台，不同平台的编译结果不一样，由于它能由机器直接执行，速度会很快。解释型语言则是将代码交给解释器翻译执行，它的特点是由解释器来实现跨平台，平台的差异由语">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.1 Lua执行的大致过程">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Per-Fragment">
+<meta property="og:description" content="和其他语言的执行差异 一般语言分为编译型语言（Compiled Language）和解释型语言（Interpreted Language）。前者会先将代码编译为目标机器可运行的机器码，而后由目标机器直接运行，编译型语言的特点是在编译阶段实现跨平台，不同平台的编译结果不一样，由于它能由机器直接执行，速度会很快。解释型语言则是将代码交给解释器翻译执行，它的特点是由解释器来实现跨平台，平台的差异由语">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/LuaVm01.drawio.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/LuaVm02.drawio.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/LuaVm03.drawio.png">
+<meta property="article:published_time" content="2025-01-15T02:06:22.000Z">
+<meta property="article:modified_time" content="2025-01-15T10:20:02.776Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/LuaVm01.drawio.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Per-Fragment" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Per-Fragment</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-计算机科学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            02-编程语言
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSharp
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/1.1-%E6%A6%82%E8%A7%88/">1.1 概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-全局状态机及内存
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">2.1 全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-数据类型
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.1-Lua%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">2.1 Lua中的数据类型</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-字符串
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">3.1 字符串的数据结构设计</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/">3.2 字符串的相关实现</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.1-%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">4.1 表的数据结构</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/">4.2 表相关的算法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            05-虚拟机
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">5.1 Lua执行的大致过程</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-开发设计
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            游戏编程设计模式
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/03-%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/">01.总览</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-程序数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            EditorExtend
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UI
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UIElements
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            功能实例
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            粒子系统
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            06-引擎开发
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            07-图形学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            08-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-02-编程语言/Lua/源码阅读/05-虚拟机/5.1-Lua执行的大致过程" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">02-编程语言</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/">Lua</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/">05-虚拟机</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Lua/" rel="tag">Lua</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">
+            <time datetime="2025-01-15T02:06:22.000Z" itemprop="datePublished">2025-01-15</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/02-编程语言/Lua/源码阅读/05-虚拟机/5.1-Lua执行的大致过程.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/02-编程语言/Lua/源码阅读/05-虚拟机/5.1-Lua执行的大致过程.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/02-编程语言/Lua/源码阅读/05-虚拟机/5.1-Lua执行的大致过程.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            5.1 Lua执行的大致过程
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="和其他语言的执行差异">和其他语言的执行差异</h1>
+<p>一般语言分为编译型语言（Compiled Language）和解释型语言（Interpreted
+Language）。前者会先将代码编译为目标机器可运行的机器码，而后由目标机器直接运行，编译型语言的特点是在编译阶段实现跨平台，不同平台的编译结果不一样，由于它能由机器直接执行，速度会很快。解释型语言则是将代码交给解释器翻译执行，它的特点是由解释器来实现跨平台，平台的差异由语言自身的解释器来解决，由于它需要由解释器来执行，相比前者会慢不少。</p>
+<p><img src="LuaVm01.drawio.png" alt="语言间的执行差异"><br>
+</p>
+<p>Lua
+作为一门解释型语言，它实现了自己的虚拟机充当解释器的角色，来解释执行 Lua
+代码。这里有一点需要注意，Lua
+会先将代码进行语法词法分析，生成虚拟机能看懂的字节码（后称OpCode），再由虚拟机执行。现在不少解释型语言和
+Lua
+采用了一样的思路，虽然最终是在解释器中执行，但是仍然预先制定了一套语言定制化的编译规则，将代码编译为对应的字节码后再交给解释器执行，这样做会加快代码的执行速度但是仍然有部分语言是采用直接解释执行。比如
+Bash、AWK、早期的 PHP、Basic 等</p>
+<h2 id="lua-的即时编译和jit的区别">Lua 的即时编译和JIT的区别</h2>
+<p>Lua
+虽然是先编译为字节码，再交由虚拟机执行，但编译也是发生在运行阶段的，也就是说
+Lua
+是即时编译的。即时编译并不会妨碍它作为解释型语言在运行时可修改的特性，但
+Lua 的即时编译和传统的 JIT 有所不同。</p>
+<p>Lua 的编译执行过程分为两个阶段：</p>
+<ul>
+<li>即时编译阶段（源代码 –&gt; 字节码）
+<ul>
+<li>当 Lua 脚本被加载时，Lua 虚拟机会将源代码即时编译为字节码</li>
+<li>这一步发生在运行时，即每次加载脚本时都会进行，这个编译过程由
+<code>lua_load</code> 函数完成</li>
+</ul></li>
+<li>解释运行阶段（字节码 –&gt; 执行）
+<ul>
+<li>编译后的字节码并不会被进一步编译为机器码，而是由 Lua
+虚拟机逐条解释执行</li>
+</ul></li>
+</ul>
+<p>Lua 的即时编译与真正的 JIT 编译的区别在于：Lua
+即时编译的结果并非目标机器码，而是一种中间表示，只有它的虚拟机能够解释执行。</p>
+<h2 id="lua-为何不采用-jit-编译">Lua 为何不采用 JIT 编译？</h2>
+<p>它的官方解释器（PUC-Rio Lua）并没有集成 JIT 编译器，原因如下：</p>
+<ul>
+<li>跨平台性：
+<ul>
+<li>Lua
+以简单和轻量为核心设计目标，官方解释器支持多种平台，而字节码和虚拟机的实现更容易移植</li>
+<li>JIT 编译器需要针对特定的 CPU 架构生成机器码，移植性较差</li>
+</ul></li>
+<li>嵌入式使用：
+<ul>
+<li>Lua
+主要被设计为嵌入式脚本语言，典型场景包括嵌入游戏引擎、应用程序等</li>
+<li>字节码解释足以满足大部分需求，同时减少了 JIT
+编译的复杂性和内存开销</li>
+</ul></li>
+<li>性能需求：
+<ul>
+<li>Lua 的性能在许多嵌入式场景下已经足够</li>
+<li>对于更高性能需求的场景，可以使用 LuaJIT（Lua 的一个 JIT
+编译器版本，将字节码直接编译为机器码，极大提升了性能）</li>
+</ul></li>
+</ul>
+<h1 id="虚拟机概览">虚拟机概览</h1>
+<p>除了 Lua，还有一些其他语言也实现了自己的虚拟机比如 Java 和
+Python。一般一个语言的虚拟机的职责如下：</p>
+<ul>
+<li>将源代码编译成虚拟机可识别执行的字节码</li>
+<li>为函数调用准备调用栈</li>
+<li>内部维持一个指令指针（IP，Instruction
+Pointer）来保存下一个将执行的指令地址。在 Lua 中，该 IP 对应的是 PC
+指针，后续会讲</li>
+<li>模拟一个 CPU 的运行：循环拿出由 IP
+指向的字节码，根据字节码格式进行解码，然后执行</li>
+</ul>
+<p>这样一来，一台抽象的计算机就出现了，这也是它们被称为虚拟机的原因。</p>
+<p>虚拟机有两种实现方式：基于栈（stack-based）和基于寄存器（register-based），市面上常见的都是前者，而
+Lua 属于后者。</p>
+<h2 id="基于栈的虚拟机">基于栈的虚拟机</h2>
+<p>对于这种虚拟机，字节码的操作数从栈顶弹出，执行完操作后再压入栈顶，下图是一个加法操作后栈结构的变化：</p>
+<p><img src="LuaVm02.drawio.png" alt="基于栈的虚拟机"><br>
+</p>
+<p>这个操作对应的伪代码如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POP 2</span><br><span class="line">POP 1</span><br><span class="line">ADD 2,1,result</span><br><span class="line">PUSH result</span><br></pre></td></tr></table></figure>
+<p>完成一个加法操作需要 4
+条字节码，需要用额外的指令准备数据是这种设计的缺点。但是优点是指令不需要关心操作数的地址，在执行操作前已经将操作数准备在栈顶了</p>
+<h2 id="基于寄存器的虚拟机">基于寄存器的虚拟机</h2>
+<p>和基于栈的虚拟机不同，这种虚拟机将操作数存放在 “CPU的寄存器”
+中，这个寄存器不是物理意义上的寄存器，而是虚拟机的一种抽象实现。它实现前面的加法操作的示意图如下：</p>
+<p><img src="LuaVm03.drawio.png" alt="基于寄存器的虚拟机"><br>
+</p>
+<p>它对应的伪代码如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADD R1,R2,R3 <span class="comment">#寄存器R1与R2相加结果保存在寄存器R3中</span></span><br></pre></td></tr></table></figure>
+<p>这种虚拟机的优点是，指令简短，但缺点是程序需要关注操作数的位置。Lua选择这种寄存器的主要目的是尽可能高效。</p>
+<h1 id="执行源码分析">执行源码分析</h1>
+<h2 id="lual_dofile">luaL_dofile</h2>
+<p>这是 Lua 执行文件的调用函数，本身是个宏，等效于先调用
+<code>luaL_loadfile</code>，再调用 <code>lua_ocall</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> luaL_dofile(L, fn) \</span></span><br><span class="line"><span class="meta">	(luaL_loadfile(L, fn) || lua_pcall(L, 0, LUA_MULTRET, 0))</span></span><br></pre></td></tr></table></figure>
+<p>luaL_loadfile 负责进行词法语法分析，lua_pcall
+则将分析结果放到虚拟机中执行</p>
+<h2 id="lual_loadfile">luaL_loadfile</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> luaL_loadfile(L,f)	luaL_loadfilex(L,f,NULL)</span></span><br></pre></td></tr></table></figure>
+<p>luaL_loadfile 本质是基于 luaL_loadfilex 的一个宏，它使用 NULL
+作为模式参数而已，下文会讲到</p>
+<p>来看 luaL_loadfilex：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">LUALIB_API <span class="type">int</span> <span class="title function_">luaL_loadfilex</span> <span class="params">(lua_State *L, <span class="type">const</span> <span class="type">char</span> *filename,</span></span><br><span class="line"><span class="params">                                             <span class="type">const</span> <span class="type">char</span> *mode)</span> &#123;</span><br><span class="line">  LoadF lf;</span><br><span class="line">  <span class="type">int</span> status, readstatus;</span><br><span class="line">  <span class="type">int</span> c;</span><br><span class="line">  <span class="type">int</span> fnameindex = lua_gettop(L) + <span class="number">1</span>;  <span class="comment">/* index of filename on the stack */</span></span><br><span class="line">  <span class="keyword">if</span> (filename == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    lua_pushliteral(L, <span class="string">&quot;=stdin&quot;</span>);</span><br><span class="line">    lf.f = <span class="built_in">stdin</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    lua_pushfstring(L, <span class="string">&quot;@%s&quot;</span>, filename);</span><br><span class="line">    lf.f = fopen(filename, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (lf.f == <span class="literal">NULL</span>) <span class="keyword">return</span> errfile(L, <span class="string">&quot;open&quot;</span>, fnameindex);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (skipcomment(&amp;lf, &amp;c))  <span class="comment">/* read initial portion */</span></span><br><span class="line">    lf.buff[lf.n++] = <span class="string">&#x27;\n&#x27;</span>;  <span class="comment">/* add line to correct line numbers */</span></span><br><span class="line">  <span class="keyword">if</span> (c == LUA_SIGNATURE[<span class="number">0</span>] &amp;&amp; filename) &#123;  <span class="comment">/* binary file? */</span></span><br><span class="line">    lf.f = freopen(filename, <span class="string">&quot;rb&quot;</span>, lf.f);  <span class="comment">/* reopen in binary mode */</span></span><br><span class="line">    <span class="keyword">if</span> (lf.f == <span class="literal">NULL</span>) <span class="keyword">return</span> errfile(L, <span class="string">&quot;reopen&quot;</span>, fnameindex);</span><br><span class="line">    skipcomment(&amp;lf, &amp;c);  <span class="comment">/* re-read initial portion */</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (c != EOF)</span><br><span class="line">    lf.buff[lf.n++] = c;  <span class="comment">/* &#x27;c&#x27; is the first character of the stream */</span></span><br><span class="line">  status = lua_load(L, getF, &amp;lf, lua_tostring(L, <span class="number">-1</span>), mode);</span><br><span class="line">  readstatus = ferror(lf.f);</span><br><span class="line">  <span class="keyword">if</span> (filename) fclose(lf.f);  <span class="comment">/* close file (even in case of errors) */</span></span><br><span class="line">  <span class="keyword">if</span> (readstatus) &#123;</span><br><span class="line">    lua_settop(L, fnameindex);  <span class="comment">/* ignore results from &#x27;lua_load&#x27; */</span></span><br><span class="line">    <span class="keyword">return</span> errfile(L, <span class="string">&quot;read&quot;</span>, fnameindex);</span><br><span class="line">  &#125;</span><br><span class="line">  lua_remove(L, fnameindex);</span><br><span class="line">  <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>概述：该函数用于加载 Lua
+脚本文件或从标准输入读取脚本内容，并将其编译为 Lua
+的字节码。接下来逐块分析：</p>
+<ol type="1">
+<li>得到文件名在栈上的位置</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> fnameindex = lua_gettop(L) + <span class="number">1</span>;  <span class="comment">/* index of filename on the stack */</span></span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>处理 <code>filename</code> 参数</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (filename == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    lua_pushliteral(L, <span class="string">&quot;=stdin&quot;</span>);</span><br><span class="line">    lf.f = <span class="built_in">stdin</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    lua_pushfstring(L, <span class="string">&quot;@%s&quot;</span>, filename);</span><br><span class="line">    lf.f = fopen(filename, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (lf.f == <span class="literal">NULL</span>) <span class="keyword">return</span> errfile(L, <span class="string">&quot;open&quot;</span>, fnameindex);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果 filename 为 NULL，则从标准输入加载脚本并在栈顶压入
+<code>=stdin</code>（标识输入来源）</li>
+<li>如果提供了 filename，尝试以只读模式打开文件。如果失败，则调用
+errfile 报错</li>
+</ul>
+<ol start="3" type="1">
+<li>跳过文件中的注释</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (skipcomment(&amp;lf, &amp;c))  <span class="comment">/* read initial portion */</span></span><br><span class="line">    lf.buff[lf.n++] = <span class="string">&#x27;\n&#x27;</span>;  <span class="comment">/* add line to correct line numbers */</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用 skipcomment 跳过文件中的注释部分。c 保存第一个非注释字符</li>
+<li>如果跳过注释后需要调整行号（如文件首行为注释），将换行符 \n
+添加到缓冲区</li>
+</ul>
+<ol start="4" type="1">
+<li>如果是二进制文件，重新以二进制模式打开</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (c == LUA_SIGNATURE[<span class="number">0</span>] &amp;&amp; filename) &#123;  <span class="comment">/* binary file? */</span></span><br><span class="line">    lf.f = freopen(filename, <span class="string">&quot;rb&quot;</span>, lf.f);  <span class="comment">/* reopen in binary mode */</span></span><br><span class="line">    <span class="keyword">if</span> (lf.f == <span class="literal">NULL</span>) <span class="keyword">return</span> errfile(L, <span class="string">&quot;reopen&quot;</span>, fnameindex);</span><br><span class="line">    skipcomment(&amp;lf, &amp;c);  <span class="comment">/* re-read initial portion */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果文件的第一个字符与 LUA_SIGNATURE 匹配，表明可能是 Lua
+的预编译二进制文件</p>
+<ol start="5" type="1">
+<li>将第一个字符存入缓冲区</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (c != EOF)</span><br><span class="line">    lf.buff[lf.n++] = c;  <span class="comment">/* &#x27;c&#x27; is the first character of the stream */</span></span><br></pre></td></tr></table></figure>
+<p>如果是非空字符，将其存入缓冲区，作为流的第一个有效字符</p>
+<ol start="6" type="1">
+<li>调用 <code>lua_load</code></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">status = lua_load(L, getF, &amp;lf, lua_tostring(L, <span class="number">-1</span>), mode);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用 lua_load 编译文件内容为 Lua 字节码</li>
+<li>参数 getF 是一个回调函数，从 lf 中读取内容并提供给 lua_load</li>
+<li>编译模式由 mode 指定，可能为 t（文本）、b（二进制）或
+bt（自动检测）</li>
+</ul>
+<ol start="7" type="1">
+<li>检查文件读取错误</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">readstatus = ferror(lf.f);</span><br><span class="line"><span class="keyword">if</span> (filename) fclose(lf.f);  <span class="comment">/* close file (even in case of errors) */</span></span><br><span class="line"><span class="keyword">if</span> (readstatus) &#123;</span><br><span class="line">    lua_settop(L, fnameindex);  <span class="comment">/* ignore results from &#x27;lua_load&#x27; */</span></span><br><span class="line">    <span class="keyword">return</span> errfile(L, <span class="string">&quot;read&quot;</span>, fnameindex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 ferror 检查文件读取是否出错</li>
+<li>如果有错误，将 Lua 栈恢复到调用此函数之前的状态，并返回错误码</li>
+</ul>
+<ol start="8" type="1">
+<li>清理和返回</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lua_remove(L, fnameindex);</span><br><span class="line"><span class="keyword">return</span> status;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在成功加载文件后，移除栈上的文件名信息，保持栈的整洁</li>
+<li>返回 lua_load 的结果（LUA_OK 表示成功）</li>
+</ul>
+<h2 id="lua_load">lua_load</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">LUA_API <span class="type">int</span> <span class="title function_">lua_load</span> <span class="params">(lua_State *L, lua_Reader reader, <span class="type">void</span> *data,</span></span><br><span class="line"><span class="params">                      <span class="type">const</span> <span class="type">char</span> *chunkname, <span class="type">const</span> <span class="type">char</span> *mode)</span> &#123;</span><br><span class="line">  ZIO z;</span><br><span class="line">  <span class="type">int</span> status;</span><br><span class="line">  lua_lock(L);</span><br><span class="line">  <span class="keyword">if</span> (!chunkname) chunkname = <span class="string">&quot;?&quot;</span>;</span><br><span class="line">  luaZ_init(L, &amp;z, reader, data);</span><br><span class="line">  status = luaD_protectedparser(L, &amp;z, chunkname, mode);</span><br><span class="line">  <span class="keyword">if</span> (status == LUA_OK) &#123;  <span class="comment">/* no errors? */</span></span><br><span class="line">    LClosure *f = clLvalue(s2v(L-&gt;top - <span class="number">1</span>));  <span class="comment">/* get newly created function */</span></span><br><span class="line">    <span class="keyword">if</span> (f-&gt;nupvalues &gt;= <span class="number">1</span>) &#123;  <span class="comment">/* does it have an upvalue? */</span></span><br><span class="line">      <span class="comment">/* get global table from registry */</span></span><br><span class="line">      <span class="type">const</span> TValue *gt = getGtable(L);</span><br><span class="line">      <span class="comment">/* set global table as 1st upvalue of &#x27;f&#x27; (may be LUA_ENV) */</span></span><br><span class="line">      setobj(L, f-&gt;upvals[<span class="number">0</span>]-&gt;v, gt);</span><br><span class="line">      luaC_barrier(L, f-&gt;upvals[<span class="number">0</span>], gt);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  lua_unlock(L);</span><br><span class="line">  <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输入：</p>
+<ul>
+<li><code>lua_State *L</code>：当前状态机</li>
+<li><code>lua_Reader reader</code>：回调函数，用于逐步读取代码块的内容</li>
+<li><code>void *data</code>：传递给 reader
+的用户数据，通常是文件流或内存中的字符串，在 <code>luaL_loadfilex</code>
+传过来的是指定文件的文件流</li>
+<li><code>const char *chunkname</code>：代码块的名字，用于错误提示</li>
+<li><code>const char *mode</code>：编译模式，文本还是二进制</li>
+</ul>
+<p>输出：</p>
+<ul>
+<li>成功时返回 LUA_OK，并将编译后的 Lua 函数（LClosure）压入栈顶</li>
+<li>失败时返回错误代码，并将错误信息压入栈顶</li>
+</ul>
+<p>逐块分析：</p>
+<ol type="1">
+<li>加锁 &amp;&amp; 缺省 <code>chunkname</code></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lua_lock(L);</span><br><span class="line"><span class="keyword">if</span> (!chunkname) chunkname = <span class="string">&quot;?&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>很简单，第一步加锁确保线程安全，第二步给一个缺省的 chunkname</p>
+<ol start="2" type="1">
+<li>初始化 ZIO 流</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaZ_init(L, &amp;z, reader, data);</span><br></pre></td></tr></table></figure>
+<p><code>z</code> 是一个 ZIO
+结构，它封装了读取代码块内容的逻辑，<code>luaZ_init</code>逻辑很简单，它将
+<code>reader</code> 和 <code>data</code> 指定给这个 ZIO，确保用
+<code>reader</code> 指定的方式读取 <code>data</code> 的文件内容</p>
+<ol start="3" type="1">
+<li>调用解析器</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">status = luaD_protectedparser(L, &amp;z, chunkname, mode);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>此函数负责对代码块的解析和编译，它运行在一个受保护的环境中，可以捕获并处理运行时错误</li>
+<li>解析完成后，将生成的 Lua 函数（LClosure）压入栈顶</li>
+</ul>
+<ol start="4" type="1">
+<li>设置全局环境</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (status == LUA_OK) &#123;  <span class="comment">/* no errors? */</span></span><br><span class="line">  LClosure *f = clLvalue(s2v(L-&gt;top - <span class="number">1</span>));  <span class="comment">/* get newly created function */</span></span><br><span class="line">  <span class="keyword">if</span> (f-&gt;nupvalues &gt;= <span class="number">1</span>) &#123;  <span class="comment">/* does it have an upvalue? */</span></span><br><span class="line">    <span class="comment">/* get global table from registry */</span></span><br><span class="line">    <span class="type">const</span> TValue *gt = getGtable(L);</span><br><span class="line">    <span class="comment">/* set global table as 1st upvalue of &#x27;f&#x27; (may be LUA_ENV) */</span></span><br><span class="line">    setobj(L, f-&gt;upvals[<span class="number">0</span>]-&gt;v, gt);</span><br><span class="line">    luaC_barrier(L, f-&gt;upvals[<span class="number">0</span>], gt);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>L-&gt;top - 1</code> 指向的是上一步生成的放在栈顶的 Lua
+函数对象</li>
+<li><code>s2v</code> 理解为 StackValue to
+TValue，它将一个栈元素转化为通用的 TValue 结构体</li>
+<li><code>clLvalue</code> 进一步将 TValue 转化为 <code>LClosure</code>
+(Lua闭包)</li>
+<li>如果有上值，获取全局表并将全局表设置为该函数的第一个上值</li>
+<li><code>luaC_barrier</code> 确保垃圾回收的正确性，维护引用关系</li>
+</ul>
+<ol start="5" type="1">
+<li>释放锁并返回结果</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lua_unlock(L);</span><br><span class="line"><span class="keyword">return</span> status;</span><br></pre></td></tr></table></figure>
+<h2 id="luay_parser">luaY_parser</h2>
+<p>从 <code>lua_load</code>
+继续深入，中间还有一些调用逻辑，我们不必深究其实现细节，解释的核心逻辑在
+<code>f_parser</code>，它内部根据是文本还是二进制进一步划分了调用，我们以文本流的分支为例子，核心函数是
+<code>luaY_parser</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">LClosure *<span class="title function_">luaY_parser</span> <span class="params">(lua_State *L, ZIO *z, Mbuffer *buff,</span></span><br><span class="line"><span class="params">                       Dyndata *dyd, <span class="type">const</span> <span class="type">char</span> *name, <span class="type">int</span> firstchar)</span> &#123;</span><br><span class="line">  LexState lexstate;</span><br><span class="line">  FuncState funcstate;</span><br><span class="line">  LClosure *cl = luaF_newLclosure(L, <span class="number">1</span>);  <span class="comment">/* create main closure */</span></span><br><span class="line">  setclLvalue2s(L, L-&gt;top, cl);  <span class="comment">/* anchor it (to avoid being collected) */</span></span><br><span class="line">  luaD_inctop(L);</span><br><span class="line">  lexstate.h = luaH_new(L);  <span class="comment">/* create table for scanner */</span></span><br><span class="line">  sethvalue2s(L, L-&gt;top, lexstate.h);  <span class="comment">/* anchor it */</span></span><br><span class="line">  luaD_inctop(L);</span><br><span class="line">  funcstate.f = cl-&gt;p = luaF_newproto(L);</span><br><span class="line">  luaC_objbarrier(L, cl, cl-&gt;p);</span><br><span class="line">  funcstate.f-&gt;source = luaS_new(L, name);  <span class="comment">/* create and anchor TString */</span></span><br><span class="line">  luaC_objbarrier(L, funcstate.f, funcstate.f-&gt;source);</span><br><span class="line">  lexstate.buff = buff;</span><br><span class="line">  lexstate.dyd = dyd;</span><br><span class="line">  dyd-&gt;actvar.n = dyd-&gt;gt.n = dyd-&gt;label.n = <span class="number">0</span>;</span><br><span class="line">  luaX_setinput(L, &amp;lexstate, z, funcstate.f-&gt;source, firstchar);</span><br><span class="line">  mainfunc(&amp;lexstate, &amp;funcstate);</span><br><span class="line">  lua_assert(!funcstate.prev &amp;&amp; funcstate.nups == <span class="number">1</span> &amp;&amp; !lexstate.fs);</span><br><span class="line">  <span class="comment">/* all scopes should be correctly finished */</span></span><br><span class="line">  lua_assert(dyd-&gt;actvar.n == <span class="number">0</span> &amp;&amp; dyd-&gt;gt.n == <span class="number">0</span> &amp;&amp; dyd-&gt;label.n == <span class="number">0</span>);</span><br><span class="line">  L-&gt;top--;  <span class="comment">/* remove scanner&#x27;s table */</span></span><br><span class="line">  <span class="keyword">return</span> cl;  <span class="comment">/* closure is on the stack, too */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>声明分析状态</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LexState lexstate;</span><br><span class="line">FuncState funcstate;</span><br></pre></td></tr></table></figure>
+<p><code>lexstate</code> 是词法分析的状态，<code>funcstate</code>
+是当前解析函数的状态，这里不需要深究</p>
+<ol start="2" type="1">
+<li>创建闭包</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LClosure *cl = luaF_newLclosure(L, <span class="number">1</span>);  <span class="comment">/* create main closure */</span></span><br><span class="line">setclLvalue2s(L, L-&gt;top, cl);  <span class="comment">/* anchor it (to avoid being collected) */</span></span><br><span class="line">luaD_inctop(L);</span><br></pre></td></tr></table></figure>
+<p>这里创建好的闭包入栈是为了防止被垃圾回收机制错误回收</p>
+<ol start="3" type="1">
+<li>为词法分析器创建辅助表</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lexstate.h = luaH_new(L);  <span class="comment">/* create table for scanner */</span></span><br><span class="line">sethvalue2s(L, L-&gt;top, lexstate.h);  <span class="comment">/* anchor it */</span></span><br><span class="line">luaD_inctop(L);</span><br></pre></td></tr></table></figure>
+<p>同样，将其压入栈中以避免被垃圾回收</p>
+<ol start="4" type="1">
+<li>初始化函数原型</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">funcstate.f = cl-&gt;p = luaF_newproto(L);</span><br><span class="line">luaC_objbarrier(L, cl, cl-&gt;p);</span><br><span class="line">funcstate.f-&gt;source = luaS_new(L, name);  <span class="comment">/* create and anchor TString */</span></span><br><span class="line">luaC_objbarrier(L, funcstate.f, funcstate.f-&gt;source);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用 <code>luaF_newproto</code> 创建一个函数原型（Proto）</li>
+<li>将原型分配给闭包的 <code>p</code> 字段，并与 <code>funcState</code>
+关联</li>
+<li>使用 <code>luaS_new</code> 创建并设置原型的 <code>source</code>
+字段，用于存储代码块的名称</li>
+<li>使用 <code>luaC_objbarrier</code> 确保垃圾回收的正确性</li>
+</ul>
+<ol start="5" type="1">
+<li>设置解析上下文</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lexstate.buff = buff;</span><br><span class="line">lexstate.dyd = dyd;</span><br><span class="line">dyd-&gt;actvar.n = dyd-&gt;gt.n = dyd-&gt;label.n = <span class="number">0</span>;</span><br><span class="line">luaX_setinput(L, &amp;lexstate, z, funcstate.f-&gt;source, firstchar);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>初始化词法分析器和动态数据结构</li>
+<li>调用 <code>luaX_setinput</code> 设置词法分析器的输入流</li>
+</ul>
+<ol start="6" type="1">
+<li>调用主函数解析逻辑</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mainfunc(&amp;lexstate, &amp;funcstate);</span><br></pre></td></tr></table></figure>
+<p>这是核心的解析函数，负责递归地解析整个代码块；它处理语法树的生成、作用域管理等复杂逻辑。</p>
+<ol start="7" type="1">
+<li>状态检查、清理辅助表并返回闭包</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lua_assert(!funcstate.prev &amp;&amp; funcstate.nups == <span class="number">1</span> &amp;&amp; !lexstate.fs);</span><br><span class="line"><span class="comment">/* all scopes should be correctly finished */</span></span><br><span class="line">lua_assert(dyd-&gt;actvar.n == <span class="number">0</span> &amp;&amp; dyd-&gt;gt.n == <span class="number">0</span> &amp;&amp; dyd-&gt;label.n == <span class="number">0</span>);</span><br><span class="line">L-&gt;top--;  <span class="comment">/* remove scanner&#x27;s table */</span></span><br><span class="line"><span class="keyword">return</span> cl;  <span class="comment">/* closure is on the stack, too */</span></span><br></pre></td></tr></table></figure>
+<p>这里需要注意，返回后辅助表已经从栈中移除了，但是闭包仍然在栈上。</p>
+<h2 id="todo">TODO</h2>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+    
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">4.2 表相关的算法</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
