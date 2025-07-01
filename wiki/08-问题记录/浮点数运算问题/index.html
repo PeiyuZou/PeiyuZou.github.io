@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>浮点数运算问题 | Per-Fragment</title>
+    
+    
+        <meta name="keywords" content="Issues">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="一、问题 最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：   第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。 二、运算 首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：   第一种写法，vectorX和scale加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浮点数运算问题">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Per-Fragment">
+<meta property="og:description" content="一、问题 最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：   第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。 二、运算 首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：   第一种写法，vectorX和scale加">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T202841.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T203934.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T214038.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T223026.png">
+<meta property="article:published_time" content="2023-03-11T12:10:10.000Z">
+<meta property="article:modified_time" content="2024-12-09T08:53:15.109Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="Issues">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T202841.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Per-Fragment" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Per-Fragment</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-计算机科学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-编程语言
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSharp
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/1.1-%E6%A6%82%E8%A7%88/">1.1 概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-全局状态机及内存
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">2.1 全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-数据类型
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.1-Lua%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">2.1 Lua中的数据类型</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-字符串
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">3.1 字符串的数据结构设计</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/">3.2 字符串的相关实现</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.1-%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">4.1 表的数据结构</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/">4.2 表相关的算法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-虚拟机
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">5.1 Lua执行的大致过程</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.x-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB/">5.x 虚拟机相关函数解读</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-开发设计
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            游戏编程设计模式
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/03-%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/">01.总览</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-程序数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            EditorExtend
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UI
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UIElements
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            功能实例
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            粒子系统
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            06-引擎开发
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            07-图形学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            08-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-08-问题记录/浮点数运算问题" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">08-问题记录</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Issues/" rel="tag">Issues</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">
+            <time datetime="2023-03-11T12:10:10.000Z" itemprop="datePublished">2023-03-11</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/08-问题记录/浮点数运算问题.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/08-问题记录/浮点数运算问题.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/08-问题记录/浮点数运算问题.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            浮点数运算问题
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h2 id="一问题">一、问题</h2>
+<p>最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：</p>
+<p><img src="2023-03-11T202841.png" alt="2023-03-11T202841"><br>
+</p>
+<p>第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。</p>
+<h2 id="二运算">二、运算</h2>
+<p>首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：</p>
+<p><img src="2023-03-11T203934.png" alt="2023-03-11T203934"><br>
+</p>
+<p>第一种写法，vectorX和scale加载到寄存器后，执行的第一个操作是conv.r4，也就是将int32类型的scale转换为了float。然后再执行乘法，紧接着将结果强转int64，最后输出。从IL看没有什么问题，下面我们按照IL的步骤手动运算一下。</p>
+<h3 id="得到两个变量在机器中的真实值">1、得到两个变量在机器中的真实值</h3>
+<p>整个问题运算的核心是1.3f和10.0f这两个单精度浮点数运算：</p>
+<p>十进制数1.3转换为二进制数为<span class="math inline">\(1.01001100110011..._{(2)}\)</span></p>
+<p>由浮点数存储规则：V = <span class="math inline">\((-1)^S\)</span> x M
+x <span class="math inline">\(2^E\)</span></p>
+<ol type="1">
+<li>符号位S，因为是正数，所以为0</li>
+<li>阶数E = $log_2$1 = 0，float的偏置量bias是<span class="math inline">\(2^k\)</span> - 1 = <span class="math inline">\(2^8
+- 1\)</span> = 127，所以exponent = E + bias =
+127，得到8位阶码01111111</li>
+<li>fraction直接等于二进制小数位，由于float的尾数位有23个，所以保留前23，得到尾数二进制01001100110011001100110</li>
+</ol>
+<p>拼起来就是如下：</p>
+<h3 id="section">0<font color="red">0111111
+1</font><font color="blue">0100110 01100110 01100110</font></h3>
+<p>我们再从这个值推算阶数E和fraction（这里需要注意：这个二进制值不是由E和fraction计算得到的吗，什么又要推算回去？答：因为在计算实际的存储中，fraction由于只有23位，可能发生截断，如果截断后最低位是1，那么还会发生进位舍入，导致机器存储的实际值和数学意义上的值不一致）</p>
+<p>E = <span class="math inline">\(2^6\)</span> + <span class="math inline">\(2^5\)</span> + <span class="math inline">\(2^4\)</span> + <span class="math inline">\(2^3\)</span> + <span class="math inline">\(2^2\)</span> + <span class="math inline">\(2^1\)</span> - 127 = 0 fraction =
+0.01001100110011001100110 M = 1 + fraction = 1.01001100110011001100110 =
+1.0100110011001100110011（最低位的0对于数学计算来说没有用，可以忽略）</p>
+<p>所以1.3可以表示为：<span class="math inline">\((-1)^S\)</span> x M x
+<span class="math inline">\(2^E\)</span> = <span class="math inline">\(2^0\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span></p>
+<p>同理，10.0表示为：<span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.01_{(2)}\)</span></p>
+<h3 id="二进制乘法">2、二进制乘法</h3>
+<p>由上面得到的机器值结果：</p>
+<p>1.3 x 10.0 = <span class="math inline">\(2^0\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.01_{(2)}\)</span> = <span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <span class="math inline">\(1.01_{(2)}\)</span></p>
+<p><span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x
+<span class="math inline">\(1.01_{(2)}\)</span>的二进制乘法结果如下：</p>
+<p><img src="2023-03-11T214038.png" alt="2023-03-11T214038"><br>
+</p>
+<p>取小数点后23位10011111111111111111111</p>
+<p>所以最终，ALU计算得到的值是<span class="math inline">\(2^3\)</span> x
+<span class="math inline">\(1.10011111111111111111111_{(2)}\)</span></p>
+<h2 id="三存储">三、存储</h2>
+<p>ALU已经得到了值<span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.10011111111111111111111_{(2)}\)</span></p>
+<p>E = 3，所以exponent = 3 + 127 = 130，阶码为1000001 0</p>
+<h3 id="整个结果表示为-01000001-01001111-11111111-11111111">整个结果表示为：
+0<font color="red">1000001 0</font><font color="blue">1001111 11111111
+11111111</font></h3>
+<p>在现代CPU架构中，乘法和除法乘法和除法运算是使用两个累加器（主累加器
+EAX 与从累加器 EDX）进行临时存储（例如，MUL ECX 将把两个 32 位寄存器 ECX
+与 EAX 相乘，64 位结果放入 EAX 与 EDX）</p>
+<p>所以，累加器中的二进制值如下：</p>
+<h3 id="eax">EAX：</h3>
+<h3 id="section-1">01000001 01001111 11111111 11111111</h3>
+<h3 id="edx">EDX：</h3>
+<h3 id="section-2">00000000 00000000 00000000 00000000</h3>
+<p>这里存储的实际值是12.99999904632568359375
+接下来的处理是关键的地方，这个值被不同类型的变量去存，会有不同的二进制表现：</p>
+<h3 id="存储在float中">1、存储在float中</h3>
+<p>EAX中的32位值会被加载给栈上float变量的32位，这里由于最低位是1，会发生进位舍入，所以float变量的存储是：
+### 01000001 01010000 00000000 00000000 这个值是最终程序用到的值：<span class="math inline">\(2^3\)</span> x (1 + <span class="math inline">\(2^{-1}\)</span> + <span class="math inline">\(2^{-3}\)</span>) = 8 * 1.625 = 13
+这也是为什么第二种写法得到正确结果的原因，12.99999904632568359375先存入float变量，发生了进位舍入变为了13，再强转long时，小数截断完仍然是13</p>
+<h3 id="存储在int或者long中">2、存储在int或者long中</h3>
+<p>浮点数转整型，会直接发生小数截断，也就是直接舍弃所有小数点后的值，12.99999904632568359375直接截断为12，这也是第一种写法发生精度丢失的原因</p>
+<h3 id="存储在double中">3、存储在double中</h3>
+<p>由于double和float的阶码位和尾数位不一样，所以8位的阶码会重新计算成11位阶码，然后23位fraction会存储在52位fraction中，不足的低位用0布满，所以double变量的存储是这样：
+### 01000000 00101001 11111111 11111111 ### 11111100 00000000 00000000
+00000000 这个值是：12.99999988079071044921875</p>
+<p>所以理论上，如果我们在强转long之前不是用float去存而是用double存，也会被截断为12，我们验证下：</p>
+<p><img src="2023-03-11T223026.png" alt="2023-03-11T223026"><br>
+</p>
+<p>需要注意的是，第一种写法和第三种写法导致精度丢失的原因并不一样。第一种是因为累加器的值直接截断了；第三种是因为double存储，没有发生进位，同时也被截断了。</p>
+<h2 id="四总结">四、总结</h2>
+<p>个人认为，其实从浮点数的设计来看，精度丢失无法避免。如果程序对精度有要求，最好是通过整型存储一个放大的值来处理。</p>
+<p>如果无法使用整型来处理，尽量选择float，虽然也无法完全准确地表述一个真实值，但是对于强转整型发生时来说，float的表现更好，因为进位舍入能一定程度上中和掉小数截断导致的严重精度丢失，double存储位太多了，通常更容易形成一个我们不期望的近似值。</p>
+<p>最后，如果精度要求过高，float无法完成任务，这时还是选择使用double</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    组件使用
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">（八）踩坑和可视化调试工具</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

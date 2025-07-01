@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>3.1 字符串的数据结构设计 | Per-Fragment</title>
+    
+    
+        <meta name="keywords" content="Lua">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="基本设计  由任意的8位字符组合形成字符串 存储形式是带长度的内存块，也就是存内容的同时，也有额外空间保存长度 为了兼容C库函数，Lua的字符串也在其内容的末尾添加 \0，标记字符串结束  两种内部形式：长字符串和短字符串 对于外部来说，字符串只有一种类型，归属于Lua的9种基本类型之一，源码定义如下： 123456789101112131415161718&#x2F;&#x2F; lua.h&#x2F;**">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.1 字符串的数据结构设计">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="Per-Fragment">
+<meta property="og:description" content="基本设计  由任意的8位字符组合形成字符串 存储形式是带长度的内存块，也就是存内容的同时，也有额外空间保存长度 为了兼容C库函数，Lua的字符串也在其内容的末尾添加 \0，标记字符串结束  两种内部形式：长字符串和短字符串 对于外部来说，字符串只有一种类型，归属于Lua的9种基本类型之一，源码定义如下： 123456789101112131415161718&#x2F;&#x2F; lua.h&#x2F;**">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-09T05:47:03.000Z">
+<meta property="article:modified_time" content="2024-12-09T08:46:43.926Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Per-Fragment" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Per-Fragment</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-计算机科学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            02-编程语言
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSharp
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/1.1-%E6%A6%82%E8%A7%88/">1.1 概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-全局状态机及内存
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">2.1 全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-数据类型
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.1-Lua%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">2.1 Lua中的数据类型</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            03-字符串
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">3.1 字符串的数据结构设计</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/">3.2 字符串的相关实现</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.1-%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">4.1 表的数据结构</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/">4.2 表相关的算法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-虚拟机
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">5.1 Lua执行的大致过程</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.x-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB/">5.x 虚拟机相关函数解读</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-开发设计
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            游戏编程设计模式
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/03-%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/">01.总览</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-程序数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            EditorExtend
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UI
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UIElements
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            功能实例
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            粒子系统
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            06-引擎开发
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            07-图形学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            08-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-02-编程语言/Lua/源码阅读/03-字符串/3.1-字符串的数据结构设计" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">02-编程语言</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/">Lua</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/">03-字符串</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Lua/" rel="tag">Lua</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">
+            <time datetime="2024-12-09T05:47:03.000Z" itemprop="datePublished">2024-12-09</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/02-编程语言/Lua/源码阅读/03-字符串/3.1-字符串的数据结构设计.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/02-编程语言/Lua/源码阅读/03-字符串/3.1-字符串的数据结构设计.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/02-编程语言/Lua/源码阅读/03-字符串/3.1-字符串的数据结构设计.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            3.1 字符串的数据结构设计
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="基本设计">基本设计</h1>
+<ul>
+<li>由任意的8位字符组合形成字符串</li>
+<li>存储形式是带长度的内存块，也就是存内容的同时，也有额外空间保存长度</li>
+<li>为了兼容C库函数，Lua的字符串也在其内容的末尾添加
+<code>\0</code>，标记字符串结束</li>
+</ul>
+<h1 id="两种内部形式长字符串和短字符串">两种内部形式：长字符串和短字符串</h1>
+<p>对于外部来说，字符串只有一种类型，归属于Lua的9种基本类型之一，源码定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lua.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** basic types</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TNONE		(-1)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TNIL		0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TBOOLEAN		1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TLIGHTUSERDATA	2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TNUMBER		3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TSTRING		4</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TTABLE		5</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TFUNCTION		6</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TUSERDATA		7</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_TTHREAD		8</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_NUMTYPES		9</span></span><br></pre></td></tr></table></figure>
+<p>其中-1代表无效类型，0~8是9种基本类型的标识（其中字符串是4），<code>LUA_NUMTYPES</code>
+是指基本类型的数量有9个</p>
+<p>在字符串核心源码脚本 <code>lstring.c</code> 中，并没有用到
+<code>LUA_TSTRING</code>，而是使用 <code>LUA_VSHRSTR</code> 和
+<code>LUA_VLNGSTR</code>
+两个变种类型，以此来对长短字符串作区分以实现不同的内部处理，长短字符串的类型定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lobject.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* add variant bits to a type */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> makevariant(t,v)	((t) | ((v) &lt;&lt; 4))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Variant tags for strings */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_VSHRSTR	makevariant(LUA_TSTRING, 0)  <span class="comment">/* short strings */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LUA_VLNGSTR	makevariant(LUA_TSTRING, 1)  <span class="comment">/* long strings */</span></span></span><br></pre></td></tr></table></figure>
+<p><code>makevariant</code>
+仅对类型作左移4位的操作，由此让Lua内部支持对类型进行细分，比如
+<code>nil</code> 内部可以分为
+<code>nil</code>、<code>empty</code>、<code>abstkey</code>，<code>number</code>
+内部被分为浮点数和整型等。</p>
+<h2 id="长短字符如何界定存储方式有何差异">1.长短字符如何界定？存储方式有何差异？</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// llimits.h</span><br><span class="line"></span><br><span class="line">// 注释翻译：短字符串（即内部化的字符串）的最大长度。</span><br><span class="line">//（不能小于元方法的保留字或标记，因为这些字符串必须内部化）</span><br><span class="line">/*</span><br><span class="line">** Maximum length for short strings, that is, strings that are</span><br><span class="line">** internalized. (Cannot be smaller than reserved words or tags for</span><br><span class="line">** metamethods, as these strings must be internalized;</span><br><span class="line">** #(&quot;function&quot;) = 8, #(&quot;__newindex&quot;) = 10.)</span><br><span class="line">*/</span><br><span class="line">#if !defined(LUAI_MAXSHORTLEN)</span><br><span class="line">#define LUAI_MAXSHORTLEN	40</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里需要注意 <code>内部化</code> 的含义，内部化的意思是指，在同一个
+<code>Lua State</code>
+中，相同的字符串只会存在一份，合并相同的字符串可以大量减少内存占用，并且可以缩短比较时间，因为只需要比较内存地址是否相同即可，而不需要逐字节比较。Lua内部的保留字和标记也理所应当需要被内部化，其中最长的保留字是
+<code>__newindex</code> 长度是10个字符，因此
+<code>LUAI_MAXSHORTLEN</code> 不可以被设置小于10</p>
+</blockquote>
+<p>这个值可以由用户自行决定，但Lua给出的默认界定值是40，超过40的字符串被认为是长字符串。</p>
+<p>存储方式的差异：</p>
+<ul>
+<li>短字符串存储在 <code>全局字符串哈希表</code> 中，即
+<code>global_State</code> 中的 <code>strt</code>
+字段，这个哈希表内部采用链地址法的方式，实现方式比较简单</li>
+<li>长字符串则直接存储在字符串内部的字段中，在原文的Lua版本中，长字符串甚至不存储在
+<code>TString</code> 的内存块内，而是紧跟着存储在 <code>TString</code>
+的内存块后面</li>
+</ul>
+<h2 id="字符串类型的实现结构">2.字符串类型的实现结构</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lobject.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** Header for a string value.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TString</span> &#123;</span></span><br><span class="line">  CommonHeader;</span><br><span class="line">  lu_byte extra;  <span class="comment">/* reserved words for short strings; &quot;has hash&quot; for longs */</span></span><br><span class="line">  lu_byte shrlen;  <span class="comment">/* length for short strings */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> hash;</span><br><span class="line">  <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">    <span class="type">size_t</span> lnglen;  <span class="comment">/* length for long strings */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">TString</span> *<span class="title">hnext</span>;</span>  <span class="comment">/* linked list for hash table */</span></span><br><span class="line">  &#125; u;</span><br><span class="line">  <span class="type">char</span> contents[<span class="number">1</span>];</span><br><span class="line">&#125; TString;</span><br></pre></td></tr></table></figure>
+<h3 id="commonheader">2.1 CommonHeader</h3>
+<p>我们先看第一个宏 <code>CommonHeader</code>，它的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** Common Header for all collectable objects (in macro form, to be</span></span><br><span class="line"><span class="comment">** included in other objects)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CommonHeader	struct GCObject *next; lu_byte tt; lu_byte marked</span></span><br></pre></td></tr></table></figure>
+<p><code>CommonHeader</code>
+并不是字符串专属，Lua对一切需要被垃圾收集器管理的对象，均会插入这个宏。它会在垃圾回收的章节中细讲，这里不赘述。我们这里关注一个域：<code>tt</code></p>
+<p>让我们回想上面的内容，字符串在基本类型中的定义是
+<code>LUA_TSTRING</code>，并且在内部还细分为了 <code>LUA_VSHRSTR</code>
+和 <code>LUA_VLNGSTR</code>，这里怎么又有一个 <code>TString</code>
+类型，到底哪个才是字符串类型？</p>
+<p>要回答这个问题，就需要了解 <code>tt</code>
+的设计，Lua为了清楚地知道每一个对象的实际类型，需要对每一个参与垃圾收集的对象做类型标记（type
+tag，简写为tt），也就是花了一个域的空间来存储这个对象的类型，因此
+<code>tt</code> 也可以理解为 <code>类型的类型</code> 或者
+<code>类型的值</code>。</p>
+<p>所以 <code>LUA_TSTRING</code> 、<code>LUA_VSHRSTR</code> 和
+<code>LUA_VLNGSTR</code>
+并不是字符串的类型定义，它们仅仅标记当前这个字符串的内部类型，真正定义一个字符串结构的是
+<code>TString</code></p>
+<h3 id="extra">2.2 extra</h3>
+<p>这个域的作用和注释解释的一样：</p>
+<ul>
+<li>对短字符串来说，它用来标记当前字符串是否是保留字，这会用于词法分析</li>
+<li>对长字符串来说，它表示是否计算了hash，这用于惰性求哈希值
+<ul>
+<li>惰性：在取Hash值时才判断是否已经计算，已经计算则返回计算好的结果，否则当场计算</li>
+<li>从外部压入一个长字符串时，没有立刻计算其hash值，只是简单地复制一遍字符串内容，然后标记一下extra域，标记为没有hash。直到需要对字符串做键匹配时，才惰性计算hash值，加快之后的键比较过程</li>
+</ul></li>
+</ul>
+<h3 id="shrlen">2.3 shrlen</h3>
+<p>如果当前字符串是短字符串，存储短字符串的长度</p>
+<h3 id="hash">2.4 hash</h3>
+<p>当前字符串的哈希值，由于短字符串存储在</p>
+<h3 id="lnglenhnext以及u的设计">2.5 lnglen、hnext以及u的设计</h3>
+<p>首先我们看 <code>lnglen</code> 和 <code>hnext</code>
+的含义，再来看为何要结合两者形成 <code>u</code></p>
+<p><code>lnglen</code> 存储长字符串的长度，区别于 <code>shrlen</code>
+只有一个 <code>lu_byte (unsigned char))</code> 的大小，它给了一个
+<code>size_t (unsigned int64)</code> 的大小给的很充足</p>
+<p><code>hnext</code>
+则与长字符串无关，由于采用链表寻址，短字符串存储在全局字符哈希表中的单个哈希桶中，该指针指向哈希桶的下一个链表节点，也就是哈希冲突的下一个元素。这个指针的作用是在删除当前短字符串，或者全局哈希表触发了
+<code>rehash</code> 操作的时候，亦或是新建字符串触发 <code>内部化</code>
+查询的时候，帮助Lua内部更高效地处理哈希表</p>
+<p><code>Union</code>
+是一种共用体，允许多个成员共用同一段内存，而不是分别占用内存。像
+<code>lnglen</code> 和 <code>hnext</code> 特别使用
+<code>Union</code>，因为它们的应用场景是互斥的，只可能有两者之一被使用，这样一来节省了字符串字段的内存占用。其实这里
+<code>lnglen</code> 和 <code>shrlen</code> 也是互斥的，但是这里明显使用
+<code>hnext</code>
+更优，毕竟指针最少占用4字节（64位操作系统就是64÷8=8个字节），将两个占用大的声明在一起更节省，这种细节设计也是比较精彩的</p>
+<h3 id="contents">2.6 contents</h3>
+<p>长字符串存储实际字符串内容的数组，从一个 <code>TString</code>
+类型的对象中取实际字符串内容的API：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** Get the actual string (array of bytes) from a &#x27;TString&#x27;.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> getstr(ts)  ((ts)-&gt;contents)</span></span><br></pre></td></tr></table></figure>
+<h1 id="hash-dos">Hash DoS</h1>
+<p>在Lua5.2.0及之前，字符串不管长短一律内部化后存放在字符串表中，当时字符串哈希值的计算代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">luaS_hash</span> <span class="params">(<span class="type">const</span> <span class="type">char</span> *str, <span class="type">size_t</span> l)</span> &#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> h = cast(<span class="type">unsigned</span> <span class="type">int</span>, l);</span><br><span class="line">  <span class="type">size_t</span> step = (<span class="number">1</span>&gt;&gt;<span class="number">5</span>)+<span class="number">1</span>;</span><br><span class="line">  <span class="type">size_t</span> l1;</span><br><span class="line">  <span class="keyword">for</span> (l1=l; l1&gt;=step; l1-=step)</span><br><span class="line">    h = h ^ ((h&lt;&lt;<span class="number">5</span>)+(h&gt;&gt;<span class="number">2</span>)+cast(<span class="type">unsigned</span> <span class="type">char</span>, str[l1-l]));</span><br><span class="line">  <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>原文：Lua5.2.0发布不久，有人在邮件列表中提出，Lua的这个设计有可能对其给于
+Hash Dos
+攻击的机会。攻击者可以轻易构造出上千万拥有相同哈希值的不同字符串，以此数十倍的降低Lua从外部压入字符串进入内部字符串表的效率。当Lua用于大量依赖字符串处理的诸如HTTP服务的处理时，输入的字符串不可控制，很容易被人恶意利用</p>
+</blockquote>
+<p>从Lua5.2.1开始，为了解决这个问题做了如下改动：</p>
+<ul>
+<li>长字符串独立出来，不再通过内部化进入全局字符串表</li>
+<li>使用一个随机种子用于哈希值的计算，使攻击者无法轻易构造出拥有相同哈希值的不同字符串</li>
+</ul>
+<p>这里我们看下5.4.4版本的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lstring.c</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">luaS_hash</span> <span class="params">(<span class="type">const</span> <span class="type">char</span> *str, <span class="type">size_t</span> l, <span class="type">unsigned</span> <span class="type">int</span> seed)</span> &#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> h = seed ^ cast_uint(l);</span><br><span class="line">  <span class="keyword">for</span> (; l &gt; <span class="number">0</span>; l--)</span><br><span class="line">    h ^= ((h&lt;&lt;<span class="number">5</span>) + (h&gt;&gt;<span class="number">2</span>) + cast_byte(str[l - <span class="number">1</span>]));</span><br><span class="line">  <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个随机种子 <code>seed</code> 在默认情况下是在
+<code>Lua State</code>
+创建时放在全局表中的，它利用了构造状态机的内存地址随机性，以及用户可配置的一个随机量（默认是使用time函数获取时间构造种子）同时决定，如下是相关代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lstate.c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** Compute an initial seed with some level of randomness.</span></span><br><span class="line"><span class="comment">** Rely on Address Space Layout Randomization (if present) and</span></span><br><span class="line"><span class="comment">** current time.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> addbuff(b,p,e) \</span></span><br><span class="line"><span class="meta">  &#123; size_t t = cast_sizet(e); \</span></span><br><span class="line"><span class="meta">    memcpy(b + p, &amp;t, sizeof(t)); p += sizeof(t); &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">luai_makeseed</span> <span class="params">(lua_State *L)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buff[<span class="number">3</span> * <span class="keyword">sizeof</span>(<span class="type">size_t</span>)];</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> h = cast_uint(time(<span class="literal">NULL</span>));</span><br><span class="line">  <span class="type">int</span> p = <span class="number">0</span>;</span><br><span class="line">  addbuff(buff, p, L);  <span class="comment">/* heap variable */</span></span><br><span class="line">  addbuff(buff, p, &amp;h);  <span class="comment">/* local variable */</span></span><br><span class="line">  addbuff(buff, p, &amp;lua_newstate);  <span class="comment">/* public function */</span></span><br><span class="line">  lua_assert(p == <span class="keyword">sizeof</span>(buff));</span><br><span class="line">  <span class="keyword">return</span> luaS_hash(buff, p, h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>种子的存放和使用，相关代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lstate.c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 创建状态机时存放在全局状态机种 */</span></span><br><span class="line">LUA_API lua_State *<span class="title function_">lua_newstate</span> <span class="params">(lua_Alloc f, <span class="type">void</span> *ud)</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">  g-&gt;seed = luai_makeseed(L);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 返回或者构建短字符串 */</span></span><br><span class="line"><span class="type">static</span> TString *<span class="title function_">internshrstr</span> <span class="params">(lua_State *L, <span class="type">const</span> <span class="type">char</span> *str, <span class="type">size_t</span> l)</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> h = luaS_hash(str, l, g-&gt;seed);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 构建长字符串 */</span></span><br><span class="line">TString *<span class="title function_">luaS_createlngstrobj</span> <span class="params">(lua_State *L, <span class="type">size_t</span> l)</span> &#123;</span><br><span class="line">  TString *ts = createstrobj(L, l, LUA_VLNGSTR, G(L)-&gt;seed);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    3.2 字符串的相关实现
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">2.1 全局状态机及内存管理</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
