@@ -3,29 +3,24 @@
 <head>
     <meta charset="utf-8">
     
-    <title>浮点数运算问题 | Per-Fragment</title>
+    <title>02.Unity内存管理 | Per-Fragment</title>
     
     
-        <meta name="keywords" content="Issues">
+        <meta name="keywords" content="Unity">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="一、问题 最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：   第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。 二、运算 首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：   第一种写法，vectorX和scale加">
+    <meta name="description" content="概览  Unity 是一个 C++ 引擎  底层代码完全由 C++ 实现 通过 Wrapper 提供给用户 API 用户代码会转换为 Cpp 代码（IL2CPP） VM 仍然存在（解决跨平台问题）   Unity 引擎概述 Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++ 写的，除了一些 Editor 里面的 Services 可能会用到 No">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浮点数运算问题">
-<meta property="og:url" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:title" content="02.Unity内存管理">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="Per-Fragment">
-<meta property="og:description" content="一、问题 最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：   第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。 二、运算 首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：   第一种写法，vectorX和scale加">
+<meta property="og:description" content="概览  Unity 是一个 C++ 引擎  底层代码完全由 C++ 实现 通过 Wrapper 提供给用户 API 用户代码会转换为 Cpp 代码（IL2CPP） VM 仍然存在（解决跨平台问题）   Unity 引擎概述 Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++ 写的，除了一些 Editor 里面的 Services 可能会用到 No">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T202841.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T203934.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T214038.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T223026.png">
-<meta property="article:published_time" content="2023-03-11T12:10:10.000Z">
-<meta property="article:modified_time" content="2024-12-07T05:13:22.780Z">
+<meta property="article:published_time" content="2025-07-09T15:39:20.000Z">
+<meta property="article:modified_time" content="2025-07-09T15:47:07.189Z">
 <meta property="article:author" content="Z.P.Y">
-<meta property="article:tag" content="Issues">
+<meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/2023-03-11T202841.png">
     
 
     
@@ -315,19 +310,28 @@
                             &nbsp;
                             04-程序数学
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
-                    </li> 
-                    
-                    <li class="directory">
-                        <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
-                            &nbsp;
-                            05-游戏编程
-                        </a>
                          <ul class="unstyled" id="tree"> 
                     <li class="directory">
                         <a href="#" data-role="directory">
                             <i class="fa fa-folder"></i>
+                            &nbsp;
+                            实践数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/%E5%AE%9E%E8%B7%B5%E6%95%B0%E5%AD%A6/01.%E7%AB%8B%E6%96%B9%E4%BD%93%E5%88%87%E5%89%B2/">01.立方体切割</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             Unity
                         </a>
@@ -357,6 +361,15 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
                     </li> 
                      </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Unity内存管理
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">01.什么是内存</a></li>  <li class="file active"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">02.Unity内存管理</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -408,13 +421,31 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
-                            08-问题记录
+                            08-网络编程
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Socket
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/01.Socket%E6%A6%82%E8%A7%88/">01.Socket概览</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/02.%E4%BD%BF%E7%94%A8C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAWinSock%E7%AE%80%E6%98%93%E4%BE%8B%E5%AD%90/">02.使用C语言实现一个WinSock简易例子</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/03.%E5%8D%8F%E8%AE%AE%E6%97%8F%E5%92%8C%E5%A5%97%E6%8E%A5%E5%AD%97%E7%B1%BB%E5%9E%8B/">03.协议族和套接字类型</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            99-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
                     </li> 
                      <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
     </div>
@@ -488,7 +519,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title"><span>标签</span></h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -496,7 +527,7 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="post-08-问题记录/浮点数运算问题" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-05-游戏编程/Unity/Unity内存管理/02.Unity内存管理" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -506,20 +537,20 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">08-问题记录</a>
+        <a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/">05-游戏编程</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Unity内存管理</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/Issues/" rel="tag">Issues</a>
+        <a class="tag-link-link" href="/tags/Unity/" rel="tag">Unity</a>
     </div>
 
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/08-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">
-            <time datetime="2023-03-11T12:10:10.000Z" itemprop="datePublished">2023-03-11</time>
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+            <time datetime="2025-07-09T15:39:20.000Z" itemprop="datePublished">2025-07-09</time>
         </a>
     </div>
 
@@ -530,13 +561,13 @@
                          -->
                         
                             <div class="article-meta-button">
-                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/08-问题记录/浮点数运算问题.md"> Source </a>
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md"> Source </a>
                             </div>
                             <!-- <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/08-问题记录/浮点数运算问题.md'> Edit </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md'> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/08-问题记录/浮点数运算问题.md'> History </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md'> History </a>
                             </div> -->
                         
                     </div>
@@ -544,7 +575,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            浮点数运算问题
+            02.Unity内存管理
         </h1>
     
 
@@ -557,82 +588,36 @@
             
         
         
-            <h2 id="一问题">一、问题</h2>
-<p>最近工作中遇到一个C#单精度浮点数丢精度的问题，直接上发生问题的代码：</p>
-<p><img src="2023-03-11T202841.png" alt="2023-03-11T202841"><br>
-</p>
-<p>第一种写法发生了严重的精度丢失，但其实不是全部的数都会发生这个问题，所以平时开发时并没有发现。要理解造成这个现象的原因，需要从浮点数的运算和存储的基础知识出发去追溯。</p>
-<h2 id="二运算">二、运算</h2>
-<p>首先，我们看下这段代码的IL，搞清楚CPU处理这段逻辑大概做了什么操作：</p>
-<p><img src="2023-03-11T203934.png" alt="2023-03-11T203934"><br>
-</p>
-<p>第一种写法，vectorX和scale加载到寄存器后，执行的第一个操作是conv.r4，也就是将int32类型的scale转换为了float。然后再执行乘法，紧接着将结果强转int64，最后输出。从IL看没有什么问题，下面我们按照IL的步骤手动运算一下。</p>
-<h3 id="得到两个变量在机器中的真实值">1、得到两个变量在机器中的真实值</h3>
-<p>整个问题运算的核心是1.3f和10.0f这两个单精度浮点数运算：</p>
-<p>十进制数1.3转换为二进制数为<span class="math inline">\(1.01001100110011..._{(2)}\)</span></p>
-<p>由浮点数存储规则：V = <span class="math inline">\((-1)^S\)</span> x M
-x <span class="math inline">\(2^E\)</span></p>
-<ol type="1">
-<li>符号位S，因为是正数，所以为0</li>
-<li>阶数E = $log_2$1 = 0，float的偏置量bias是<span class="math inline">\(2^k\)</span> - 1 = <span class="math inline">\(2^8
-- 1\)</span> = 127，所以exponent = E + bias =
-127，得到8位阶码01111111</li>
-<li>fraction直接等于二进制小数位，由于float的尾数位有23个，所以保留前23，得到尾数二进制01001100110011001100110</li>
-</ol>
-<p>拼起来就是如下：</p>
-<h3 id="section">0<font color="red">0111111
-1</font><font color="blue">0100110 01100110 01100110</font></h3>
-<p>我们再从这个值推算阶数E和fraction（这里需要注意：这个二进制值不是由E和fraction计算得到的吗，什么又要推算回去？答：因为在计算实际的存储中，fraction由于只有23位，可能发生截断，如果截断后最低位是1，那么还会发生进位舍入，导致机器存储的实际值和数学意义上的值不一致）</p>
-<p>E = <span class="math inline">\(2^6\)</span> + <span class="math inline">\(2^5\)</span> + <span class="math inline">\(2^4\)</span> + <span class="math inline">\(2^3\)</span> + <span class="math inline">\(2^2\)</span> + <span class="math inline">\(2^1\)</span> - 127 = 0 fraction =
-0.01001100110011001100110 M = 1 + fraction = 1.01001100110011001100110 =
-1.0100110011001100110011（最低位的0对于数学计算来说没有用，可以忽略）</p>
-<p>所以1.3可以表示为：<span class="math inline">\((-1)^S\)</span> x M x
-<span class="math inline">\(2^E\)</span> = <span class="math inline">\(2^0\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span></p>
-<p>同理，10.0表示为：<span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.01_{(2)}\)</span></p>
-<h3 id="二进制乘法">2、二进制乘法</h3>
-<p>由上面得到的机器值结果：</p>
-<p>1.3 x 10.0 = <span class="math inline">\(2^0\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.01_{(2)}\)</span> = <span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x <span class="math inline">\(1.01_{(2)}\)</span></p>
-<p><span class="math inline">\(1.0100110011001100110011_{(2)}\)</span> x
-<span class="math inline">\(1.01_{(2)}\)</span>的二进制乘法结果如下：</p>
-<p><img src="2023-03-11T214038.png" alt="2023-03-11T214038"><br>
-</p>
-<p>取小数点后23位10011111111111111111111</p>
-<p>所以最终，ALU计算得到的值是<span class="math inline">\(2^3\)</span> x
-<span class="math inline">\(1.10011111111111111111111_{(2)}\)</span></p>
-<h2 id="三存储">三、存储</h2>
-<p>ALU已经得到了值<span class="math inline">\(2^3\)</span> x <span class="math inline">\(1.10011111111111111111111_{(2)}\)</span></p>
-<p>E = 3，所以exponent = 3 + 127 = 130，阶码为1000001 0</p>
-<h3 id="整个结果表示为-01000001-01001111-11111111-11111111">整个结果表示为：
-0<font color="red">1000001 0</font><font color="blue">1001111 11111111
-11111111</font></h3>
-<p>在现代CPU架构中，乘法和除法乘法和除法运算是使用两个累加器（主累加器
-EAX 与从累加器 EDX）进行临时存储（例如，MUL ECX 将把两个 32 位寄存器 ECX
-与 EAX 相乘，64 位结果放入 EAX 与 EDX）</p>
-<p>所以，累加器中的二进制值如下：</p>
-<h3 id="eax">EAX：</h3>
-<h3 id="section-1">01000001 01001111 11111111 11111111</h3>
-<h3 id="edx">EDX：</h3>
-<h3 id="section-2">00000000 00000000 00000000 00000000</h3>
-<p>这里存储的实际值是12.99999904632568359375
-接下来的处理是关键的地方，这个值被不同类型的变量去存，会有不同的二进制表现：</p>
-<h3 id="存储在float中">1、存储在float中</h3>
-<p>EAX中的32位值会被加载给栈上float变量的32位，这里由于最低位是1，会发生进位舍入，所以float变量的存储是：
-### 01000001 01010000 00000000 00000000 这个值是最终程序用到的值：<span class="math inline">\(2^3\)</span> x (1 + <span class="math inline">\(2^{-1}\)</span> + <span class="math inline">\(2^{-3}\)</span>) = 8 * 1.625 = 13
-这也是为什么第二种写法得到正确结果的原因，12.99999904632568359375先存入float变量，发生了进位舍入变为了13，再强转long时，小数截断完仍然是13</p>
-<h3 id="存储在int或者long中">2、存储在int或者long中</h3>
-<p>浮点数转整型，会直接发生小数截断，也就是直接舍弃所有小数点后的值，12.99999904632568359375直接截断为12，这也是第一种写法发生精度丢失的原因</p>
-<h3 id="存储在double中">3、存储在double中</h3>
-<p>由于double和float的阶码位和尾数位不一样，所以8位的阶码会重新计算成11位阶码，然后23位fraction会存储在52位fraction中，不足的低位用0布满，所以double变量的存储是这样：
-### 01000000 00101001 11111111 11111111 ### 11111100 00000000 00000000
-00000000 这个值是：12.99999988079071044921875</p>
-<p>所以理论上，如果我们在强转long之前不是用float去存而是用double存，也会被截断为12，我们验证下：</p>
-<p><img src="2023-03-11T223026.png" alt="2023-03-11T223026"><br>
-</p>
-<p>需要注意的是，第一种写法和第三种写法导致精度丢失的原因并不一样。第一种是因为累加器的值直接截断了；第三种是因为double存储，没有发生进位，同时也被截断了。</p>
-<h2 id="四总结">四、总结</h2>
-<p>个人认为，其实从浮点数的设计来看，精度丢失无法避免。如果程序对精度有要求，最好是通过整型存储一个放大的值来处理。</p>
-<p>如果无法使用整型来处理，尽量选择float，虽然也无法完全准确地表述一个真实值，但是对于强转整型发生时来说，float的表现更好，因为进位舍入能一定程度上中和掉小数截断导致的严重精度丢失，double存储位太多了，通常更容易形成一个我们不期望的近似值。</p>
-<p>最后，如果精度要求过高，float无法完成任务，这时还是选择使用double</p>
+            <h1 id="概览">概览</h1>
+<ul>
+<li>Unity 是一个 C++ 引擎
+<ul>
+<li>底层代码完全由 C++ 实现</li>
+<li>通过 Wrapper 提供给用户 API</li>
+<li>用户代码会转换为 Cpp 代码（IL2CPP）</li>
+<li>VM 仍然存在（解决跨平台问题）</li>
+</ul></li>
+</ul>
+<h1 id="unity-引擎概述">Unity 引擎概述</h1>
+<p>Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++
+写的，除了一些 Editor 里面的 Services 可能会用到 NodeJS
+这些网络的语言，Runtime 里面用到的每行 Unity 底层代码都是 C++ 的。</p>
+<p>Unity 实际上分为三层：</p>
+<ul>
+<li>最底层是 Runtime，全是 Native C++ 代码。</li>
+<li>最上层是 C#，Unity 本身也有一些 C#，例如 Unity 的 Editor 是用 C#
+写的，还有些 Package 也是 C# 写的。</li>
+<li>中间还有一层叫 Binding，可以看见很多的 .bindings.cs 文件（基于 C# 的
+binding 语言，一开始是 Unity 自定义的一种语言），这些文件的作用就是把
+C++ 和 C# 联系在一起，为 C# 层提供所有的 API。因此使用 Unity 时看见的 C#
+API，都是在 Binding 层中自定义的。这些文件底层运行的时候还是 C++，只是个
+Wrapper（封装）。</li>
+</ul>
+<p>最早用户代码是运行在 C# 上，是 MonoRuntime。现在可以通过 IL2CPP
+将其转成 C++ 代码，所以现在几乎没有纯正的 C# 在运行了。</p>
+<p>Unity 的 VM（虚拟机：Virtual
+Machine）依旧还是存在，主要用于跨平台，有了一层 VM
+抽象后，跨平台的工作会容易很多，IL2CPP 本质也是 VM。</p>
 
             </div>
         
@@ -646,19 +631,10 @@ EAX 与从累加器 EDX）进行临时存储（例如，MUL ECX 将把两个 32 
     
 <nav id="article-nav">
     
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    组件使用
-                
-            </div>
-        </a>
     
-    
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">（八）踩坑和可视化调试工具</div>
+            <div class="article-nav-title">01.什么是内存</div>
         </a>
     
 </nav>

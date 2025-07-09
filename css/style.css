@@ -249,19 +249,19 @@ code {
 }
 .article-entry h1,
 .widget h1 {
-  font-size: 2em;
+  font-size: 1.8em;
 }
 .article-entry h2,
 .widget h2 {
-  font-size: 1.5em;
+  font-size: 1.4em;
 }
 .article-entry h3,
 .widget h3 {
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 .article-entry h4,
 .widget h4 {
-  font-size: 1.2em;
+  font-size: 1em;
 }
 .article-entry h5,
 .widget h5 {
@@ -939,7 +939,6 @@ div.article-meta-button a:hover {
   font-weight: bold;
   line-height: 1.3em;
   margin: 1.3em 0;
-  display: table;
 }
 .article-entry h1 .headerlink,
 .article-entry h2 .headerlink,
@@ -977,12 +976,8 @@ div.article-meta-button a:hover {
   visibility: visible;
 }
 .article-entry h1 {
-  border-left: 6px solid #7bfc02;
-  padding-left: 8px;
-  color: #7bfc02;
-}
-.article-entry h2 {
-  color: #7bfc02;
+  border-bottom: 2px solid #f5f5f5;
+  padding-bottom: 8px;
 }
 .article-entry a {
   color: #38b7ea;
@@ -1614,7 +1609,7 @@ ol.toc {
   transition: 0.2s ease;
 }
 .layout-wrap-inner.list-categories li a:hover:before {
-  color: #7bfc02;
+  color: #38b7ea;
 }
 .layout-wrap-inner.tag-cloud a {
   display: inline-block;
@@ -1882,7 +1877,7 @@ ol.toc {
   text-decoration: none;
 }
 .widget a:hover {
-  color: #7bfc02;
+  color: #38b7ea;
 }
 .widget ul ul,
 .widget ol ul,
@@ -1946,7 +1941,7 @@ ol.toc {
 }
 .widget ul:not(#recent-post) li a:hover:before,
 .widget ol:not(#recent-post) li a:hover:before {
-  color: #7bfc02;
+  color: #38b7ea;
 }
 #toTop {
   display: none;
@@ -2035,7 +2030,7 @@ ol.toc {
 }
 #recent-post li .item-inner a a:hover,
 #recent-post li .item-inner .item-category a:hover {
-  color: #7bfc02;
+  color: #38b7ea;
 }
 #recent-post li .item-inner a a,
 #recent-post li .item-inner .item-category a,
@@ -2047,7 +2042,7 @@ ol.toc {
   font-size: 15px;
 }
 #recent-post li .item-inner .item-title a {
-  color: #7bfc02;
+  color: #38b7ea;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   -ms-transition: all 0.2s ease;
@@ -2099,7 +2094,7 @@ ol.toc {
 }
 #categories li.file.active > a {
   font-weight: bold;
-  color: #7bfc02;
+  color: #38b7ea;
 }
 #categories li li.file {
   padding-left: 10px;
@@ -2111,14 +2106,14 @@ ol.toc {
 #categories li a:hover {
   display: block;
   text-decoration: none;
-  color: #7bfc02;
+  color: #38b7ea;
 }
 #categories li a:focus:before {
   content: "↪";
   float: left;
   margin-left: -16px;
   font-weight: bold;
-  color: #7bfc02;
+  color: #38b7ea;
 }
 .ins-search {
   display: none;
