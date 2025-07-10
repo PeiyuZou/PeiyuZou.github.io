@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>01.什么是内存 | Per-Fragment</title>
+    
+    
+        <meta name="keywords" content="Unity">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="概览  物理内存  CPU 访问内存是一个慢速过程  减少 Cache miss ECS 和 DOTS  移动设备与台式设备内存架构差异  没有独立显卡 没有独立显存 CPU 板载面积更小，缓存级数更少，缓存大小更小   虚拟内存  内存交换  PC 设备支持 移动设备不支持  内存压缩  iOS 支持 Android 不支持   内存寻址">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01.什么是内存">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/index.html">
+<meta property="og:site_name" content="Per-Fragment">
+<meta property="og:description" content="概览  物理内存  CPU 访问内存是一个慢速过程  减少 Cache miss ECS 和 DOTS  移动设备与台式设备内存架构差异  没有独立显卡 没有独立显存 CPU 板载面积更小，缓存级数更少，缓存大小更小   虚拟内存  内存交换  PC 设备支持 移动设备不支持  内存压缩  iOS 支持 Android 不支持   内存寻址">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/2025-07-09T232219.png">
+<meta property="article:published_time" content="2025-07-09T14:38:36.000Z">
+<meta property="article:modified_time" content="2025-07-10T01:40:39.160Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/2025-07-09T232219.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Per-Fragment" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Per-Fragment</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-计算机科学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-编程语言
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSharp
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/1.1-%E6%A6%82%E8%A7%88/">1.1 概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-全局状态机及内存
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">2.1 全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-数据类型
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.1-Lua%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">2.1 Lua中的数据类型</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-字符串
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">3.1 字符串的数据结构设计</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/">3.2 字符串的相关实现</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.1-%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">4.1 表的数据结构</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/">4.2 表相关的算法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-虚拟机
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">5.1 Lua执行的大致过程</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.x-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB/">5.x 虚拟机相关函数解读</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-开发设计
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            游戏编程设计模式
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/03-%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/">01.总览</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-程序数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            EditorExtend
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UI
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UIElements
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Unity内存管理
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">01.什么是内存</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/">02.Unity内存管理</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/03.Unity%20Native%20Memory/">03.Unity Native Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/04.Unity%20Managed%20Memory/">04.Unity Managed Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/05.Unity%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">05.Unity内存优化最佳实践</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            功能实例
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            粒子系统
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            06-引擎开发
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            07-图形学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            08-网络编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Socket
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/01.Socket%E6%A6%82%E8%A7%88/">01.Socket概览</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/02.%E4%BD%BF%E7%94%A8C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAWinSock%E7%AE%80%E6%98%93%E4%BE%8B%E5%AD%90/">02.使用C语言实现一个WinSock简易例子</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/03.%E5%8D%8F%E8%AE%AE%E6%97%8F%E5%92%8C%E5%A5%97%E6%8E%A5%E5%AD%97%E7%B1%BB%E5%9E%8B/">03.协议族和套接字类型</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            99-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-05-游戏编程/Unity/Unity内存管理/01.什么是内存" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/">05-游戏编程</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Unity内存管理</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Unity/" rel="tag">Unity</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">
+            <time datetime="2025-07-09T14:38:36.000Z" itemprop="datePublished">2025-07-09</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/05-游戏编程/Unity/Unity内存管理/01.什么是内存.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/05-游戏编程/Unity/Unity内存管理/01.什么是内存.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/05-游戏编程/Unity/Unity内存管理/01.什么是内存.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            01.什么是内存
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="概览">概览</h1>
+<ul>
+<li>物理内存
+<ul>
+<li>CPU 访问内存是一个慢速过程
+<ul>
+<li>减少 Cache miss</li>
+<li>ECS 和 DOTS</li>
+</ul></li>
+<li>移动设备与台式设备内存架构差异
+<ul>
+<li>没有独立显卡</li>
+<li>没有独立显存</li>
+<li>CPU 板载面积更小，缓存级数更少，缓存大小更小</li>
+</ul></li>
+</ul></li>
+<li>虚拟内存
+<ul>
+<li>内存交换
+<ul>
+<li>PC 设备支持</li>
+<li>移动设备不支持</li>
+</ul></li>
+<li>内存压缩
+<ul>
+<li>iOS 支持</li>
+<li>Android 不支持</li>
+</ul></li>
+</ul></li>
+<li>内存寻址范围
+<ul>
+<li>32 位 CPU 和 64 位 CPU
+的寻址范围不一定谁更大（但可以普遍认为后者更大）</li>
+</ul></li>
+<li>Android 内存管理
+<ul>
+<li>内存基本单位：Page</li>
+<li>内存杀手：low memory killer</li>
+<li>内存指标：RSS、PSS、USS</li>
+</ul></li>
+</ul>
+<h1 id="物理内存">物理内存</h1>
+<p>物理内存关注两个点：CPU
+访问内存是一个慢速过程、理解移动设备的内存架构差异。这里只解释前者，后者比较简单，看大纲即可。</p>
+<p>CPU 在访问内存之前，会先去依次访问 L1、L2、L3
+Cache，如果没有得到想要的数据（称为一次 Cache
+Miss），则会访问主内存，然后回到
+Cache。整个这个过程是比较慢的，如果执行指令或者内存地址不连续，这个过程会导致大量的
+Cache Miss，造成大量的主内存和 Cache
+之间的交换，大量的时间会被浪费在内存的读取上。</p>
+<p>所以物理内存的一个核心问题是如何减少 Cache Miss。Unity 推出的 DOTS
+技术的一个理念就是把不连续的内存尽量变为连续的内存，以此减少 Cache
+Miss。</p>
+<h1 id="虚拟内存">虚拟内存</h1>
+<p>内存交换是指设备将无用的内存数据写入到硬盘，以腾出内存空间的行为。PC
+设备支持内存交换，移动设备不支持，不支持的原因有以下两点：</p>
+<ul>
+<li>移动设备的 IO 性能较差，做内存交换会严重影响性能</li>
+<li>移动设备的外置存储可擦写次数较少，频繁的内存交换会减少外置存储的寿命</li>
+</ul>
+<p>为了解决这个问题，iOS
+支持了内存压缩，大致原理是把无用的内存数据压缩起来放到指定位置，以此节省内存空间。</p>
+<h1 id="android-内存管理">Android 内存管理</h1>
+<p>Android 是基于 Linux 的操作系统，所以 Android 的内存管理与 Linux
+的内存管理是类似的。</p>
+<h2 id="内存基本单位">内存基本单位</h2>
+<p>它的内存基本单位是一个 Page，大小为 4KB（不代表所有数据是按照 4KB
+进行内存对齐）。回收和分配以 Page
+为单位。内存空间分为内核态和用户态，内核态的内存是用户态严格禁止访问的。</p>
+<h2 id="low-memory-killer">low memory killer</h2>
+<blockquote>
+<p>详细介绍参考：https://developer.android.com/games/optimize/vitals/lmk?hl=zh-cn</p>
+</blockquote>
+<p><img src="2025-07-09T232219.png" alt="Android 进程，从上到下，优先级递增"><br>
+</p>
+<p>lmk
+的原理是根据进程的优先级，在内存不足时，优先杀死优先级低的进程。所以一般在前台游戏进程分配过多内存时，优先杀掉了后台进程，如果内存分配还在继续，则肯呢个会影响到声音、桌面，甚至杀掉当前前台进程，如果前台进程被杀掉时，内存分配没有来得及释放，则可能会导致系统崩溃，也就是最高到
+System 这一级别。Native 内核层不会受影响。</p>
+<p>lmk
+通常受到忽略，比如后台被杀掉的其他进程，或者音乐停了，但是游戏还在运行。但我们仍然需要关注，这变向地暴露了游戏内存的过多分配。</p>
+<h2 id="内存指标">内存指标</h2>
+<ul>
+<li>RSS：Resident Set Size，常驻内存。</li>
+<li>PSS：Proportional Set Size，比例内存。</li>
+<li>USS：Unique Set Size，唯一内存。</li>
+</ul>
+<p>RSS 是你的应用占用的内存 +
+由于调用公共库，公共库所分配出来的内存。PSS 和 RSS
+类似，但是会根据公共库的共享程度进行比例分配，比如公共库被 10
+个进程使用，它被分配了 10MB 的内存，那么每个进程的 PSS 就是 1MB。USS
+是你的应用占用的内存，不包括公共库的内存。</p>
+<p>所以一般如果我们 RSS 高但 USS
+低，说明我们调用了某个复杂度较高的公共库。这些内存指标可以通过 Procrank
+工具（一款用于 Android 平台的内存分析工具）查看。</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    02.Unity内存管理
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/03.%E5%8D%8F%E8%AE%AE%E6%97%8F%E5%92%8C%E5%A5%97%E6%8E%A5%E5%AD%97%E7%B1%BB%E5%9E%8B/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">03.协议族和套接字类型</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
