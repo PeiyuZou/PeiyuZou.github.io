@@ -976,7 +976,7 @@ div.article-meta-button a:hover {
   visibility: visible;
 }
 .article-entry h1 {
-  border-bottom: 2px solid #f5f5f5;
+  border-bottom: 1px solid #000;
   padding-bottom: 8px;
 }
 .article-entry a {
