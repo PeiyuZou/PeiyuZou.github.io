@@ -3,24 +3,28 @@
 <head>
     <meta charset="utf-8">
     
-    <title>02.Unity内存管理 | Per-Fragment</title>
+    <title>01.Lz4压缩 | Per-Fragment</title>
     
     
-        <meta name="keywords" content="Unity">
+        <meta name="keywords" content="Compression">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="概览  Unity 是一个 C++ 引擎  底层代码完全由 C++ 实现 通过 Wrapper 提供给用户 API 用户代码会转换为 Cpp 代码（IL2CPP） VM 仍然存在（解决跨平台问题）   Unity 引擎概述 Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++ 写的，除了一些 Editor 里面的 Services 可能会用到 No">
+    <meta name="description" content="概述 LZ4 是一种无损压缩算法，提供每核 &gt; 500 MB&#x2F;s 的压缩速度，并可通过多核 CPU 进行扩展。它具有极快的解码器，每核速度可达数 GB&#x2F;s，通常会达到多核系统的 RAM 速度极限。 作为 Unity AssetBundle 主推的压缩算法，它相比 Lzma 拥有更快的速度（大约是 Lzma 的十倍以上）。并且是基于块压缩的（Chunk Based），可以按需选择">
 <meta property="og:type" content="article">
-<meta property="og:title" content="02.Unity内存管理">
-<meta property="og:url" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:title" content="01.Lz4压缩">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/index.html">
 <meta property="og:site_name" content="Per-Fragment">
-<meta property="og:description" content="概览  Unity 是一个 C++ 引擎  底层代码完全由 C++ 实现 通过 Wrapper 提供给用户 API 用户代码会转换为 Cpp 代码（IL2CPP） VM 仍然存在（解决跨平台问题）   Unity 引擎概述 Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++ 写的，除了一些 Editor 里面的 Services 可能会用到 No">
+<meta property="og:description" content="概述 LZ4 是一种无损压缩算法，提供每核 &gt; 500 MB&#x2F;s 的压缩速度，并可通过多核 CPU 进行扩展。它具有极快的解码器，每核速度可达数 GB&#x2F;s，通常会达到多核系统的 RAM 速度极限。 作为 Unity AssetBundle 主推的压缩算法，它相比 Lzma 拥有更快的速度（大约是 Lzma 的十倍以上）。并且是基于块压缩的（Chunk Based），可以按需选择">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-07-09T15:39:20.000Z">
-<meta property="article:modified_time" content="2025-07-09T15:47:07.189Z">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/Lz4_Sequence.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/Lz4_Exp.drawio.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/Lz4.drawio.png">
+<meta property="article:published_time" content="2025-07-10T11:06:13.000Z">
+<meta property="article:modified_time" content="2025-07-12T13:41:14.178Z">
 <meta property="article:author" content="Z.P.Y">
-<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Compression">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/Lz4_Sequence.png">
     
 
     
@@ -184,7 +188,16 @@
                             &nbsp;
                             01-计算机科学
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"></a></li>  </ul> 
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CrashCourse
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/">01.算数逻辑单元</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/02.%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E5%86%85%E5%AD%98/">02.寄存器和内存</a></li>  </ul> 
+                    </li> 
+                     </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -329,9 +342,9 @@
                             05-游戏编程
                         </a>
                          <ul class="unstyled" id="tree"> 
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             Unity
                         </a>
@@ -363,13 +376,13 @@
                      </ul> 
                     </li> 
                     
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             Unity内存管理
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">01.什么是内存</a></li>  <li class="file active"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">02.Unity内存管理</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">01.什么是内存</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/">02.Unity内存管理</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/03.Unity%20Native%20Memory/">03.Unity Native Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/04.Unity%20Managed%20Memory/">04.Unity Managed Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/05.Unity%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">05.Unity内存优化最佳实践</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -399,6 +412,15 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
                     </li> 
                      </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            压缩算法
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/">01.Lz4压缩</a></li>  </ul> 
                     </li> 
                      </ul> 
                     </li> 
@@ -519,7 +541,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title"><span>标签</span></h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CS-101/" rel="tag">CS-101</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compression/" rel="tag">Compression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -527,7 +549,7 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="post-05-游戏编程/Unity/Unity内存管理/02.Unity内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-05-游戏编程/压缩算法/01.Lz4" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -537,20 +559,20 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/">05-游戏编程</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Unity内存管理</a>
+        <a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/">05-游戏编程</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/">压缩算法</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/Unity/" rel="tag">Unity</a>
+        <a class="tag-link-link" href="/tags/Compression/" rel="tag">Compression</a>
     </div>
 
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
-            <time datetime="2025-07-09T15:39:20.000Z" itemprop="datePublished">2025-07-09</time>
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/">
+            <time datetime="2025-07-10T11:06:13.000Z" itemprop="datePublished">2025-07-10</time>
         </a>
     </div>
 
@@ -561,13 +583,13 @@
                          -->
                         
                             <div class="article-meta-button">
-                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md"> Source </a>
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/05-游戏编程/压缩算法/01.Lz4.md"> Source </a>
                             </div>
                             <!-- <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md'> Edit </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/05-游戏编程/压缩算法/01.Lz4.md'> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/05-游戏编程/Unity/Unity内存管理/02.Unity内存管理.md'> History </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/05-游戏编程/压缩算法/01.Lz4.md'> History </a>
                             </div> -->
                         
                     </div>
@@ -575,7 +597,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            02.Unity内存管理
+            01.Lz4压缩
         </h1>
     
 
@@ -588,36 +610,70 @@
             
         
         
-            <h1 id="概览">概览</h1>
+            <h1 id="概述">概述</h1>
+<p>LZ4 是一种无损压缩算法，提供每核 &gt; 500 MB/s
+的压缩速度，并可通过多核 CPU
+进行扩展。它具有极快的解码器，每核速度可达数 GB/s，通常会达到多核系统的
+RAM 速度极限。</p>
+<p>作为 Unity AssetBundle 主推的压缩算法，它相比 Lzma
+拥有更快的速度（大约是 Lzma 的十倍以上）。并且是基于块压缩的（Chunk
+Based），可以按需选择加载部分块，而不用将整个文件全部加载，这对于内存来说是更友好的。唯一相较于
+Lzma 的劣势是压缩率，大约比 Lzma 高出 30%</p>
+<h1 id="lz4-的原理">Lz4 的原理</h1>
+<p>Lz4
+压缩后的文件由块组成，每一个压缩块则由若干序列组成，它的核心原理简单概括就是找出重复的字节序列，按照固定规则以更省空间的形式存储。先来看它的序列示意图：</p>
+<p><img src="Lz4_Sequence.png" alt="Lz4的序列"><br>
+</p>
+<p>首先，开头的一个字节称为一个标记（Token），这个标记由两个 4
+位组成（因此值的范围从 0 到 15）</p>
+<p>高 4
+位用于存储字面量（Literal）的长度，字面量是指压缩过程中无法被压缩的原始字节。由于
+4 位能表示的值范围有限，因此图中 Literal length+
+（图中黄色区域）用于支持更大的长度值的存储，这是一个可选的区域。如果 4
+位之内足够存储字面量的长度，这个区域就不存在，Token 之后会紧跟
+Literals（字面量）。如果该 4 位存储的值为 0，则代表没有字面量。如果为
+15（4 位全 1），则增加一个 Literal length+ 区域，其代表的值为 0 -
+255（一个字节的大小），此时字面量的长度 = 15 +
+这个字节的值。如果这个字节的值仍然满了（255），则继续增加一个新的字节，直到可以表示字面量的长度为止。（因此图中写的是
+0-n bytes）</p>
+<p>这两个区域之后，则是字面量的存储区域，字面量是未压缩的字节，按原样复制。</p>
+<p>紧接着是偏移量（Offset），这是一个两个字节的值（0-65535），它表示要从中复制匹配的位置。请注意，0
+是无效值，不会被使用。1 表示“当前位置 - 1
+字节”，另外需要注意，这个值使用小端格式存储（低位在前，高位在后）。通过偏移量，我们可以得到重复字节的起始位置</p>
+<p>我们使用重复字节的起始位置加上匹配长度的值，就可以得到重复位置从哪个位置开始到哪个位置结束。匹配长度是指从在
+Token 的低 4
+位值存储，如果不够，再启用后面的可选区域，可选区域的规则和字面量长度的规则一致，但这里有一点细小的差异，匹配长度要求最小值为
+4，也就是说至少要 4
+个重复的字节才可以压缩，这应该是为了压缩率至少不能超过 1
+而设计的，毕竟压缩后变大了是不行的。这里存储的值如果为 0，代表匹配长度为
+4 个字节，如果值为 15，代表匹配长度为 19+
+个字节（可能启用了可选区域）</p>
+<h1 id="进行一次计算">进行一次计算</h1>
+<p><img src="Lz4_Exp.drawio.png" alt="原始字节序列"><br>
+</p>
+<p>假设我们有上面这个字节序列，其中每个字节编号一个索引，最大值是F（11111111），现在开始对它进行模拟压缩，步骤如下：</p>
+<p><img src="Lz4.drawio.png" alt="模拟压缩步骤"><br>
+</p>
+<h2 id="压缩计算">压缩计算</h2>
+<p>现在我们得到：</p>
 <ul>
-<li>Unity 是一个 C++ 引擎
-<ul>
-<li>底层代码完全由 C++ 实现</li>
-<li>通过 Wrapper 提供给用户 API</li>
-<li>用户代码会转换为 Cpp 代码（IL2CPP）</li>
-<li>VM 仍然存在（解决跨平台问题）</li>
-</ul></li>
+<li>字面量为[C, C, C, A, B, C, D, E, F, B, B, B]，长度为12。</li>
+<li>偏移量为9</li>
+<li>匹配长度为6</li>
 </ul>
-<h1 id="unity-引擎概述">Unity 引擎概述</h1>
-<p>Unity 是一个 C++ 引擎，并不是 C# 引擎，底层代码全部是由 C++
-写的，除了一些 Editor 里面的 Services 可能会用到 NodeJS
-这些网络的语言，Runtime 里面用到的每行 Unity 底层代码都是 C++ 的。</p>
-<p>Unity 实际上分为三层：</p>
-<ul>
-<li>最底层是 Runtime，全是 Native C++ 代码。</li>
-<li>最上层是 C#，Unity 本身也有一些 C#，例如 Unity 的 Editor 是用 C#
-写的，还有些 Package 也是 C# 写的。</li>
-<li>中间还有一层叫 Binding，可以看见很多的 .bindings.cs 文件（基于 C# 的
-binding 语言，一开始是 Unity 自定义的一种语言），这些文件的作用就是把
-C++ 和 C# 联系在一起，为 C# 层提供所有的 API。因此使用 Unity 时看见的 C#
-API，都是在 Binding 层中自定义的。这些文件底层运行的时候还是 C++，只是个
-Wrapper（封装）。</li>
-</ul>
-<p>最早用户代码是运行在 C# 上，是 MonoRuntime。现在可以通过 IL2CPP
-将其转成 C++ 代码，所以现在几乎没有纯正的 C# 在运行了。</p>
-<p>Unity 的 VM（虚拟机：Virtual
-Machine）依旧还是存在，主要用于跨平台，有了一层 VM
-抽象后，跨平台的工作会容易很多，IL2CPP 本质也是 VM。</p>
+<p>首先第一个序列用来存储字面量：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Token：</span><br><span class="line">- 高 4 位：12（字面量长度，小于 15 无需额外字节）</span><br><span class="line">- 低 4 位：0（不存储匹配）</span><br><span class="line">Literals：[C, C, C, A, B, C, D, E, F, B, B, B]</span><br><span class="line">Offset：由于该序列仅表示字面量，因此不存储Offset</span><br></pre></td></tr></table></figure>
+<p>第二个序列用来存储匹配数据：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">匹配信息:</span><br><span class="line">- 偏移量: 9</span><br><span class="line">- 匹配长度: 6</span><br><span class="line">Token:</span><br><span class="line">- 高4位: 0 (没有字面量)</span><br><span class="line">- 低4位: 2 (匹配长度 = 6-4 = 2)</span><br><span class="line">Token = 0x02</span><br><span class="line">偏移量编码: 0x0009 → 小端序 [0x09][0x00]</span><br></pre></td></tr></table></figure>
+<p>得到最终压缩结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[0xC0][C][C][C][A][B][C][D][E][F][B][B][B][0x02][0x09][0x00]</span><br><span class="line"></span><br><span class="line">原始数据: 18字节</span><br><span class="line">压缩数据: 16字节</span><br><span class="line">压缩率: 16/18 ≈ 88.9%</span><br><span class="line">节省: 2字节 (11.1%)</span><br></pre></td></tr></table></figure>
+<h2 id="解压计算">解压计算</h2>
+<p>解压Token1 (0xC0)：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">字面量长度: 12</span><br><span class="line">匹配长度: 0</span><br><span class="line">操作: 复制12个字面量</span><br><span class="line">输出: C C C A B C D E F B B B</span><br></pre></td></tr></table></figure>
+<p>解压Token2 (0x02)：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">字面量长度: 0</span><br><span class="line">匹配长度: 2+4 = 6</span><br><span class="line">偏移量: 9</span><br><span class="line">操作: 从位置3开始复制6个字节</span><br><span class="line">输出: A B C D E F (复制位置3-8)</span><br></pre></td></tr></table></figure>
+<p>最终结果与原数据一致：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C C C A B C D E F B B B A B C D E F</span><br></pre></td></tr></table></figure>
 
             </div>
         
@@ -631,10 +687,19 @@ Machine）依旧还是存在，主要用于跨平台，有了一层 VM
     
 <nav id="article-nav">
     
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    01.算数逻辑单元
+                
+            </div>
+        </a>
     
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" id="article-nav-older" class="article-nav-link-wrap">
+    
+        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/05.Unity%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">01.什么是内存</div>
+            <div class="article-nav-title">05.Unity内存优化最佳实践</div>
         </a>
     
 </nav>
