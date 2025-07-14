@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2025-07-11T01:43:50.040Z</updated>
+  <updated>2025-07-14T01:39:24.734Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>01.算数逻辑单元</title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/</id>
+    <published>2025-07-12T13:28:47.000Z</published>
+    <updated>2025-07-14T01:39:24.734Z</updated>
+    
+    <content type="html"><![CDATA[<p>算数逻辑单元，通常叫做 ALU（Arithmetic &amp; LogicUnit），它包含两个单元：算数单元和逻辑单元</p><h1 id="算数单元">算数单元</h1><p>算数单元负责了计算机的所有算数计算，了解它需要先理解<strong>半加器</strong>和<strong>全加器</strong></p><h2 id="半加器">半加器</h2><p>思考我们在单个 <code>bit（位）</code> 上做二进制加法：</p><p><img src="half_adder_0.png" alt="二进制相加表格" /><br /></p><p>加法非常简单，但是结果无法用单个位存储，因为 <code>1 + 1</code>的结果带有进位（Carry），所以我们需要有两个输出值：</p><p><img src="half_adder_1.png" alt="半加器表格" /><br /></p><p>因此，我们可以抽象出一个 <code>半加器（half adder）</code>：</p><p><img src="half_adder_2.png" alt="半加器" /><br /></p><h2 id="全加器">全加器</h2><p>如果我们要实现多位数的相加，那么除了最低位，其余位都要处理这个进位，所以输入的值会变成三个：</p><p><img src="full_adder_0.png" alt="全加器表格" /><br /></p><p>所以我们又抽象出了一个 <code>全加器（full adder）</code>：</p><p><img src="full_adder_1.png" alt="全加器" /><br /></p><h2 id="制作-8-位加法器">制作 8 位加法器</h2><p>通过半加器和全加器，我们可以对多位表示的数进行加法运算，由于最低位不计算进位，所以使用半加器去处理，剩余的位使用全加器：</p><p><img src="full_adder_2.png" alt="8 位行波进位加法器" /><br /></p><p>由此我们得到了一个 8 位行波进位加法器（8-bit ripple carry adder）</p><p>注意最高位仍然有一个进位，当这个进位为1，代表两个数字之和太大，发生了溢出</p><h2 id="alu-的其他算数能力">ALU 的其他算数能力</h2><p>包含上面部分说的加法，ALU 一般还可以做以下的运算：</p><ul><li>加法</li><li>带进位的加法</li><li>减法</li><li>带借位的减法</li><li>正负取反</li><li>自增</li><li>自减</li><li>数字无改变，通过（All bits of A are passed through unmodified）</li></ul><p>对于简单的 ALU来说，它们没有能直接处理乘法和除法的算数单元，但是可以通过多次简单的运算来达到目的，比如<code>12 x 5</code> 变为<code>12 + 12 + 12 + 12 + 12</code>，而现代计算的 CPU比较先进，它们具备了专门做乘除法的算数单元</p><h1 id="逻辑单元">逻辑单元</h1><p>逻辑单元用来处理一些逻辑运算，比如<code>AND</code>、<code>OR</code>、<code>NOT</code>、<code>XOR</code>等，也可以用于做一些简单的数值测试，比如检查 ALU 的输出是否为 0</p><p><img src="logic_unit_0.png"alt="检查 ALU 输出是否为 0 的电路" /><br /></p><h1 id="alu-的抽象">ALU 的抽象</h1><p>一般工程师使用下图的 “V” 型图标表示一个 ALU ：</p><p><img src="alu_0.png" alt="ALU" /><br /></p><p>ALU 要求有两个 8 位的输入值，另外还要 4位的操作码，以此来确定怎么处理两个函数的计算（比如 1000代表相加），最终输出一个 8 位的值，另外还有一些标记位（单个bit），比如图中的三个：</p><ul><li>Overflow：运算是否发生了溢出</li><li>Zero：运算结果是否为零，判断两个数值是否相等的时候很有用</li><li>Negative：运算结果是否为负，判断大小时有用</li></ul><p>一些高级的 ALU 还会有其他的 Flags，但是这三个是比较通用的</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;算数逻辑单元，通常叫做 ALU（Arithmetic &amp;amp; Logic
+Unit），它包含两个单元：算数单元和逻辑单元&lt;/p&gt;
+&lt;h1 id=&quot;算数单元&quot;&gt;算数单元&lt;/h1&gt;
+&lt;p&gt;算数单元负责了计算机的所有算数计算，了解它需要先理解&lt;strong&gt;半加器&lt;/s</summary>
+      
+    
+    
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="CrashCourse" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/"/>
+    
+    
+    <category term="CS-101" scheme="https://peiyuzou.github.io/tags/CS-101/"/>
+    
+  </entry>
   
   <entry>
     <title>01.Lz4压缩</title>
@@ -388,29 +417,6 @@ Socket 的部件来完成这个事。&lt;/p&gt;
     
     
     <category term="04-程序数学" scheme="https://peiyuzou.github.io/categories/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/"/>
-    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Blank/</id>
-    <published>2025-07-01T12:26:56.304Z</published>
-    <updated>2024-12-09T03:20:45.072Z</updated>
-    
-    <content type="html"><![CDATA[]]></content>
-    
-    
-      
-      
-    <summary type="html">
-</summary>
-      
-    
-    
-    
-    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
     
     
   </entry>
