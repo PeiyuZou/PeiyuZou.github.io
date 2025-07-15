@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2025-07-15T01:25:14.263Z</updated>
+  <updated>2025-07-15T03:06:16.909Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -15,6 +15,135 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>3.3 数字编码</title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/</id>
+    <published>2025-07-15T02:25:59.000Z</published>
+    <updated>2025-07-15T03:06:16.909Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="原码反码和补码">原码、反码和补码</h1><p>在上一节的表格中我们发现，所有整数类型能够表示的负数都比正数多一个，例如byte 的取值范围是 <span class="math inline">\([-128, 127]\)</span>。这个现象比较反直觉，我们需要先了解原码、反码和补码：</p><ul><li>原码：我们将数字的二进制表示的最高位视为符号位，其中 0 表示正数， 1表示负数，其余位表示数字的值。</li><li>反码：正数的反码与其原码相同，负数的反码是对其原码除符号位外的所有位取反。</li><li>补码：正数的补码与其原码相同，负数的补码是在其反码的基础上加 1。</li></ul><p><img src="num_encode_0.png"alt="原码、反码与补码之间的相互转换" /><br /></p><p><strong>在计算机中，数字是以“补码”的形式存储的</strong>，这一点非常重要，但为什么不用原码呢？</p><p>原码虽然最直观，但存在一些局限性。一方面，负数的原码不能直接用于运算。例如在原码下计算<span class="math inline">\(1 + (-2)\)</span> ，得到的结果是 <spanclass="math inline">\(-3\)</span> ，这显然是不对的。</p><p><span class="math display">\[\begin{align}1 + (-2) &amp;= 0000\,0001 + 1000\,0010 \\    &amp;= 1000\,0011 \\    &amp;= -3\end{align}\]</span></p><p>为了解决此问题，计算机引入了反码：</p><p><span class="math display">\[\begin{align}1 + (-2) &amp;= 0000\,0001(原码) + 1000\,0010(原码) \\    &amp;= 0000\,0001(反码) + 1111\,1101(反码) \\    &amp;= 1111\,1110(反码) \\    &amp;= 1000\,0001(原码) \\    &amp;= -1\end{align}\]</span></p><p>另一方面，数字零的原码有 <span class="math inline">\(-0\)</span> 和<span class="math inline">\(+0\)</span>两种表示方式。如果是这样，计算机要处理零相关的判断需要同时处理这两个，降低运行效率。为了统一正负零，计算机引入了补码：</p><p><span class="math display">\[\begin{align}-0 &amp;= 1000\,0000(原码) \\    &amp;= 1111\,1111(反码) \\    &amp;= 1\,0000\,0001(补码)\end{align}\]</span></p><p>在负零的反码基础上加 1 会产生进位，但 byte 类型的长度只有 8位，因此溢出到第 9 位的 1会被舍弃。因此得到的补码中，正负零都是同一个值了。</p><p>然而，补码 <span class="math inline">\(1000\,0000\)</span>是一个例外，它并没有对应的原码。根据转换方法，我们得到该补码的原码为<span class="math inline">\(0000\,0000\)</span>。这显然是矛盾的，因为该原码表示数字 <spanclass="math inline">\(0\)</span>，它的补码应该是自身。计算机规定这个特殊的补码 <spanclass="math inline">\(1000\,0000\)</span> 代表 <spanclass="math inline">\(-128\)</span> 。实际上，<spanclass="math inline">\((-1) + (-127)\)</span> 在补码下的计算结果就是<span class="math inline">\((-128)\)</span> 。</p><p><span class="math display">\[\begin{align}(-127) + (-1) &amp;= 1111\,1111(原码) + 1000\,0001(原码) \\    &amp;= 1000\,0000(反码) + 1111\,1110(反码) \\    &amp;= 1000\,0001(补码) + 1111\,1111(补码) \\    &amp;= 1000\,0000(补码) \\    &amp;= -128\end{align}\]</span></p><p>你可能已经发现了，上述所有计算都是加法运算。这暗示着一个重要事实：<strong>计算机内部的硬件电路主要是基于加法运算设计的</strong>。这是因为加法运算相对于其他运算（比如乘法、除法和减法）来说，硬件实现起来更简单，更容易进行并行化处理，运算速度更快。</p><p>通过将加法与一些基本逻辑运算结合，计算机能够实现各种其他的数学运算。例如，计算减法<span class="math inline">\(a - b\)</span> 可以转换为计算加法 <spanclass="math inline">\(a + (-b)\)</span>；计算乘法和除法可以转换为计算多次加法或减法。</p><h1 id="浮点数编码">浮点数编码</h1><p><img src="num_encode_1.png"alt="IEEE 754 标准下的 float 的计算示例" /><br /></p><p>我们这里所说的浮点数以 float 为准，double 是同理的</p><p>float 相较于 int 而言，两者都是 32 位的长度，但是 float表示的值范围要大得多，但副作用是牺牲了精度：由于指数位的存在，浮点数float 的数值越大，相邻两个数字之间的差值就会趋向越大。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;原码反码和补码&quot;&gt;原码、反码和补码&lt;/h1&gt;
+&lt;p&gt;在上一节的表格中我们发现，所有整数类型能够表示的负数都比正数多一个，例如
+byte 的取值范围是 &lt;span class=&quot;math inline&quot;&gt;&#92;([-128, 127]&#92;)&lt;/span&gt;
+。这个现象</summary>
+      
+    
+    
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+    <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3.2 基本数据类型</title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
+    <published>2025-07-15T01:54:14.000Z</published>
+    <updated>2025-07-15T02:13:07.861Z</updated>
+    
+    <content type="html"><![CDATA[<p>基本数据类型是 CPU可以直接进行运算的类型。基本数据类型以二进制的形式存储在计算机中。一个二进制位即为1 比特。在绝大多数现代操作系统中，1 字节（byte）由 8比特（bit）组成。</p><p>以下是 C# 中的基本数据类型</p><table><colgroup><col style="width: 11%" /><col style="width: 13%" /><col style="width: 11%" /><col style="width: 25%" /><col style="width: 26%" /><col style="width: 11%" /></colgroup><thead><tr><th>类型分类</th><th>符号</th><th>占用空间</th><th>最小值</th><th>最大值</th><th>默认值</th></tr></thead><tbody><tr><td>整数</td><td><code>sbyte</code></td><td>1 字节</td><td><span class="math inline">\(-2^7\)</span></td><td><span class="math inline">\(2^7 - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>byte</code></td><td>1 字节</td><td><span class="math inline">\(0\)</span></td><td><span class="math inline">\(2^8 - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>short</code></td><td>2 字节</td><td><span class="math inline">\(-2^{15}\)</span></td><td><span class="math inline">\(2^{15} - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>ushort</code></td><td>2 字节</td><td><span class="math inline">\(0\)</span></td><td><span class="math inline">\(2^{16} - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>int</code></td><td>4 字节</td><td><span class="math inline">\(-2^{31}\)</span></td><td><span class="math inline">\(2^{31} - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>uint</code></td><td>4 字节</td><td><span class="math inline">\(0\)</span></td><td><span class="math inline">\(2^{32} - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>long</code></td><td>8 字节</td><td><span class="math inline">\(-2^{63}\)</span></td><td><span class="math inline">\(2^{63} - 1\)</span></td><td>0</td></tr><tr><td>整数</td><td><code>ulong</code></td><td>8 字节</td><td><span class="math inline">\(0\)</span></td><td><span class="math inline">\(2^{64} - 1\)</span></td><td>0</td></tr><tr><td>浮点数</td><td><code>float</code></td><td>4 字节</td><td><span class="math inline">\(\approx -3.4 \times10^{38}\)</span></td><td><span class="math inline">\(\approx 3.4 \times 10^{38}\)</span></td><td>0.0f</td></tr><tr><td>浮点数</td><td><code>double</code></td><td>8 字节</td><td><span class="math inline">\(\approx -1.8 \times10^{308}\)</span></td><td><span class="math inline">\(\approx 1.8 \times10^{308}\)</span></td><td>0.0d</td></tr><tr><td>字符</td><td><code>char</code></td><td>2 字节</td><td><code>U+0000</code></td><td><code>U+FFFF</code></td><td><code>\0</code></td></tr><tr><td>布尔</td><td><code>bool</code></td><td>1 字节</td><td><code>false</code></td><td><code>true</code></td><td>false</td></tr></tbody></table><p>需要注意：</p><ul><li>字符 char 的大小在 C 和 C++ 中为 1字节，在大多数编程语言中取决于特定的字符编码方法。</li><li>即使表示布尔量仅需 1 位（0 或 1），它在内存中通常也存储为 1字节。这是因为现代计算机 CPU 通常将 1 字节作为最小寻址内存单元。</li></ul><p>基本数据类型提供了数据的 “内容类型” ，而数据结构提供了数据的“组织方式”</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;基本数据类型是 CPU
+可以直接进行运算的类型。基本数据类型以二进制的形式存储在计算机中。一个二进制位即为
+1 比特。在绝大多数现代操作系统中，1 字节（byte）由 8
+比特（bit）组成。&lt;/p&gt;
+&lt;p&gt;以下是 C# 中的基本数据类型&lt;/p&gt;
+&lt;table&gt;</summary>
+      
+    
+    
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+    <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3.1 数据结构的分类</title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/</id>
+    <published>2025-07-15T01:41:15.000Z</published>
+    <updated>2025-07-15T01:51:43.910Z</updated>
+    
+    <content type="html"><![CDATA[<p>常见的数据结构包括：数组、链表、栈、队列、哈希表、树、堆、图</p><p>数据结构的分类，按照逻辑结构分：</p><ul><li>线性</li><li>非线性</li></ul><p>按照物理结构分：</p><ul><li>连续</li><li>分散</li></ul><h1 id="线性和非线性">线性和非线性</h1><ul><li>线性数据结构：元素之间是一对一的顺序关系，比如数组、链表、栈、队列、哈希表</li><li>非线性数据结构：元素之间是一对多或者多对多的关系<ul><li>树形结构（一对多）：树、堆、哈希表</li><li>网状结构（多对多）：图</li></ul></li></ul><p><img src="data_struct_0.png"alt="线性数据结构与非线性数据结构" /><br /></p><h1 id="连续与分散">连续与分散</h1><p>当算法程序运行时，正在处理的数据主要存储在内存中。系统通过内存地址来访问目标位置的数据。</p><p><img src="data_struct_1.png"alt="内存条、内存空间、内存地址" /><br /></p><p>在数据结构与算法的设计中，内存资源是一个重要的考虑因素。算法所占用的内存峰值不应超过系统剩余空闲内存；如果缺少连续大块的内存空间，那么所选用的数据结构必须能够存储在分散的内存空间内。</p><p><img src="data_struct_2.png"alt="连续空间存储与分散空间存储" /><br /></p><p>值得说明的是，所有数据结构都是基于数组、链表或二者的组合实现的。例如，栈和队列既可以使用数组实现，也可以使用链表实现；而哈希表的实现可能同时包含数组和链表。</p><ul><li>基于数组可实现：栈、队列、哈希表、树、堆、图、矩阵、张量（维度 <spanclass="math inline">\(\ge3\)</span> 的数组）等。</li><li>基于链表可实现：栈、队列、哈希表、树、堆、图等。</li></ul><p>链表在初始化后，仍可以在程序运行过程中对其长度进行调整，因此也称“动态数据结构”。数组在初始化后长度不可变，因此也称“静态数据结构”。值得注意的是，数组可通过重新分配内存实现长度变化，从而具备一定的“动态性”。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;常见的数据结构包括：数组、链表、栈、队列、哈希表、树、堆、图&lt;/p&gt;
+&lt;p&gt;数据结构的分类，按照逻辑结构分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;线性&lt;/li&gt;
+&lt;li&gt;非线性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;按照物理结构分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连续&lt;/li&gt;
+</summary>
+      
+    
+    
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+    <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>01.方法和函数</title>
+    <link href="https://peiyuzou.github.io/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/"/>
+    <id>https://peiyuzou.github.io/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/</id>
+    <published>2025-07-15T01:34:16.000Z</published>
+    <updated>2025-07-15T01:37:37.646Z</updated>
+    
+    <content type="html"><![CDATA[<p>函数（function）可以被独立执行，所有参数都以显式传递。方法（method）与一个对象关联，被隐式传递给调用它的对象，能够对类的实例中包含的数据进行操作。</p><p>下面以几种常见的编程语言为例来说明：</p><ul><li>C语言是过程式编程语言，没有面向对象的概念，所以只有函数。但我们可以通过创建结构体（struct）来模拟面向对象编程，与结构体相关联的函数就相当于其他编程语言中的方法。</li><li>Java 和 C#是面向对象的编程语言，代码块（方法）通常作为某个类的一部分。静态方法的行为类似于函数，因为它被绑定在类上，不能访问特定的实例变量。</li><li>C++ 和 Python既支持过程式编程（函数），也支持面向对象编程（方法）。</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;函数（function）可以被独立执行，所有参数都以显式传递。方法（method）与一个对象关联，被隐式传递给调用它的对象，能够对类的实例中包含的数据进行操作。&lt;/p&gt;
+&lt;p&gt;下面以几种常见的编程语言为例来说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;C
+语言是过程式编程语言，</summary>
+      
+    
+    
+    
+    <category term="98-易混淆点" scheme="https://peiyuzou.github.io/categories/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/"/>
+    
+    
+    <category term="易混淆点" scheme="https://peiyuzou.github.io/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/"/>
+    
+  </entry>
   
   <entry>
     <title>03.中央处理器</title>
@@ -517,100 +646,6 @@ RAM 速度极限。&lt;/p&gt;
     <category term="08-网络编程" scheme="https://peiyuzou.github.io/categories/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
     
     <category term="Socket" scheme="https://peiyuzou.github.io/categories/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>01.Socket概览</title>
-    <link href="https://peiyuzou.github.io/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/01.Socket%E6%A6%82%E8%A7%88/"/>
-    <id>https://peiyuzou.github.io/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/01.Socket%E6%A6%82%E8%A7%88/</id>
-    <published>2025-07-02T05:55:31.000Z</published>
-    <updated>2025-07-02T06:02:47.717Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="先入为主">先入为主</h1><p>网络编程的实际意义就是在两台连网的计算机之间交换数据。除开所需的物理连接外，只需要编写数据传输软件就可以做到了，然而我们通常不需要担心这点，因为操作系统已经为我们提供了名为Socket 的部件来完成这个事。</p><p>由此可以得出定义：Socket（又名套接字）是操作系统层面提供的用于网络传输的软件部件。</p><h1 id="套接字使用过程">套接字使用过程</h1><ul><li>创建套接字</li><li>分配IP地址和端口号</li><li>进入接收请求状态</li><li>受理连接请求</li></ul><p>这是整个套接字编程的“轮廓”</p><h1 id="文件描述符">文件描述符</h1><p>在windows平台又称“文件句柄”。文件描述符是系统分配给文件或者套接字的一个整数值。它类似于一个图书馆中某本书的编号，在程序员和操作系统两者之间，对文件或者套接字操作提供的一个便利性的指代。如果通过某个函数创建了一个套接字，一般会返回一整数，这个整数就是文件描述符，在下文的代码中，则可以使用这个句柄对套接字做一些操作，有点类似指针。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;先入为主&quot;&gt;先入为主&lt;/h1&gt;
-&lt;p&gt;网络编程的实际意义就是在两台连网的计算机之间交换数据。除开所需的物理连接外，只需要编写数据传输软件就可以做到了，然而我们通常不需要担心这点，因为操作系统已经为我们提供了名为
-Socket 的部件来完成这个事。&lt;/p&gt;
-&lt;</summary>
-      
-    
-    
-    
-    <category term="08-网络编程" scheme="https://peiyuzou.github.io/categories/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="Socket" scheme="https://peiyuzou.github.io/categories/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://peiyuzou.github.io/wiki/index/"/>
-    <id>https://peiyuzou.github.io/wiki/index/</id>
-    <published>2025-07-01T12:26:56.425Z</published>
-    <updated>2025-07-14T09:41:21.518Z</updated>
-    
-    <content type="html"><![CDATA[<p>Back Number’s Blog</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Back Number’s Blog&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://peiyuzou.github.io/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"/>
-    <id>https://peiyuzou.github.io/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/</id>
-    <published>2025-07-01T12:26:56.404Z</published>
-    <updated>2024-12-09T03:20:48.261Z</updated>
-    
-    <content type="html"><![CDATA[]]></content>
-    
-    
-      
-      
-    <summary type="html">
-</summary>
-      
-    
-    
-    
-    <category term="06-引擎开发" scheme="https://peiyuzou.github.io/categories/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://peiyuzou.github.io/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"/>
-    <id>https://peiyuzou.github.io/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/</id>
-    <published>2025-07-01T12:26:56.404Z</published>
-    <updated>2024-12-09T03:20:48.262Z</updated>
-    
-    <content type="html"><![CDATA[]]></content>
-    
-    
-      
-      
-    <summary type="html">
-</summary>
-      
-    
-    
-    
-    <category term="07-图形学" scheme="https://peiyuzou.github.io/categories/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
     
     
   </entry>

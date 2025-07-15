@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/</loc>
+    
+    <lastmod>2025-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</loc>
+    
+    <lastmod>2025-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/</loc>
+    
+    <lastmod>2025-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/</loc>
+    
+    <lastmod>2025-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/</loc>
     
     <lastmod>2025-07-15</lastmod>
@@ -488,7 +524,7 @@
 
   
   <url>
-    <loc>https://peiyuzou.github.io/tags/CS-101/</loc>
+    <loc>https://peiyuzou.github.io/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -496,6 +532,13 @@
   
   <url>
     <loc>https://peiyuzou.github.io/tags/Issues/</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/tags/CS-101/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -530,6 +573,13 @@
   </url>
   
   <url>
+    <loc>https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://peiyuzou.github.io/tags/Lua/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -544,14 +594,14 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/tags/Unity/</loc>
+    <loc>https://peiyuzou.github.io/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/</loc>
+    <loc>https://peiyuzou.github.io/tags/Unity/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -567,13 +617,6 @@
 
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/</loc>
-    <lastmod>2025-07-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://peiyuzou.github.io/categories/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -581,14 +624,28 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</loc>
+    <loc>https://peiyuzou.github.io/categories/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/</loc>
+    <loc>https://peiyuzou.github.io/categories/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/categories/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -616,14 +673,14 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/</loc>
+    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/</loc>
+    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -693,6 +750,13 @@
   </url>
   
   <url>
+    <loc>https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -700,14 +764,14 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</loc>
+    <loc>https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/</loc>
+    <loc>https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -756,14 +820,14 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/</loc>
+    <loc>https://peiyuzou.github.io/categories/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</loc>
+    <loc>https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -784,14 +848,14 @@
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</loc>
+    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/</loc>
+    <loc>https://peiyuzou.github.io/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</loc>
     <lastmod>2025-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
