@@ -170,7 +170,7 @@ code {
   width: 40px;
   height: 40px;
   background-repeat: no-repeat;
-  background-image: url("/images/pixel06.gif");
+  background-image: url("/images/BackNumber.png");
   background-size: 40px 40px;
 }
 #container {
@@ -1952,7 +1952,7 @@ ol.toc {
   color: #fff;
   font-size: 50px;
   line-height: 55px;
-  background: 1d 1d 20;
+  background: #222;
   opacity: 0.8;
   border-radius: 4px;
   bottom: 20px;
