@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>4.4 内存与缓存 | Back Number</title>
+    
+    
+        <meta name="keywords" content="数据结构和算法">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="我们在本章讨论的数组和链表，它们分别代表代表了 “连续存储” 和 “分散存储” 两种物理结构，物理结构在很大程度上决定了程序对内存和缓存的使用效率。 计算机存储设备 计算机中包括三种类型的存储设备：硬盘（hard disk）、内存（random-access memory, RAM）、缓存（cache memory）         硬盘 内存 缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.4 内存与缓存">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:site_name" content="Back Number">
+<meta property="og:description" content="我们在本章讨论的数组和链表，它们分别代表代表了 “连续存储” 和 “分散存储” 两种物理结构，物理结构在很大程度上决定了程序对内存和缓存的使用效率。 计算机存储设备 计算机中包括三种类型的存储设备：硬盘（hard disk）、内存（random-access memory, RAM）、缓存（cache memory）         硬盘 内存 缓存">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/memory_cache_0.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/memory_cache_1.png">
+<meta property="article:published_time" content="2025-07-16T03:12:31.000Z">
+<meta property="article:modified_time" content="2025-07-16T03:25:51.314Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="数据结构和算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/memory_cache_0.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Back Number" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Back Number</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CS-101/" rel="tag">CS-101</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compression/" rel="tag">Compression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/" rel="tag">易混淆点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-01-计算机科学/数据结构和算法/04-数组与链表/4.4-内存与缓存" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/">
+            <time datetime="2025-07-16T03:12:31.000Z" itemprop="datePublished">2025-07-16</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/01-计算机科学/数据结构和算法/04-数组与链表/4.4-内存与缓存.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/01-计算机科学/数据结构和算法/04-数组与链表/4.4-内存与缓存.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/01-计算机科学/数据结构和算法/04-数组与链表/4.4-内存与缓存.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            4.4 内存与缓存
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <p>我们在本章讨论的数组和链表，它们分别代表代表了 “连续存储” 和
+“分散存储”
+两种物理结构，物理结构在很大程度上决定了程序对内存和缓存的使用效率。</p>
+<h1 id="计算机存储设备">计算机存储设备</h1>
+<p>计算机中包括三种类型的存储设备：硬盘（hard
+disk）、内存（random-access memory, RAM）、缓存（cache memory）</p>
+<table>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>硬盘</th>
+<th>内存</th>
+<th>缓存</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用途</td>
+<td>长期存储数据，包括操作系统、程序、文件等</td>
+<td>临时存储当前运行的程序和正在处理的数据</td>
+</tr>
+<tr>
+<td>易失性</td>
+<td>断电后数据不会丢失</td>
+<td>断电后数据会丢失</td>
+</tr>
+<tr>
+<td>容量</td>
+<td>较大，TB 级别</td>
+<td>较小，GB 级别</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>较慢，几百到几千 MB/s</td>
+<td>较快，几十 GB/s</td>
+</tr>
+<tr>
+<td>价格（人民币）</td>
+<td>较便宜，几毛到几元 / GB</td>
+<td>较贵，几十到几百元 / GB</td>
+</tr>
+</tbody>
+</table>
+<p>这种多层级的设计并非偶然，而是计算机科学家和工程师们经过深思熟虑的结果：</p>
+<ul>
+<li><strong>硬盘难以被内存取代</strong>。首先，内存中的数据在断电后会丢失，因此它不适合长期存储数据；其次，内存的成本是硬盘的几十倍，这使得它难以在消费者市场普及。</li>
+<li><strong>缓存的大容量和高速度难以兼得</strong>。随着 L1、L2、L3
+缓存的容量逐步增大，其物理尺寸会变大，与 CPU
+核心之间的物理距离会变远，从而导致数据传输时间增加，元素访问延迟变高。在当前技术下，多层级的缓存结构是容量、速度和成本之间的最佳平衡点。</li>
+</ul>
+<p><img src="memory_cache_0.png" alt="计算机存储系统"><br>
+</p>
+<p>总的来说，硬盘用于长期存储大量数据，内存用于临时存储程序运行中正在处理的数据，而缓存则用于存储经常访问的数据和指令，以提高程序运行效率。三者共同协作，确保计算机系统高效运行。</p>
+<p>在程序运行时，数据会从硬盘中被读取到内存中，供 CPU
+计算使用。缓存可以看作 CPU 的一部分，它通过智能地从内存加载数据，给 CPU
+提供高速的数据读取，从而显著提升程序的执行效率，减少对较慢的内存的依赖。</p>
+<p><img src="memory_cache_1.png" alt="硬盘、内存和缓存之间的数据流通"><br>
+</p>
+<h1 id="数据结构的内存效率">数据结构的内存效率</h1>
+<p>在内存空间利用方面，数组和链表各自具有优势和局限性。</p>
+<p>一方面，内存是有限的，且同一块内存不能被多个程序共享，因此我们希望数据结构能够尽可能高效地利用空间。数组的元素紧密排列，不需要额外的空间来存储链表节点间的引用（指针），因此空间效率更高。然而，数组需要一次性分配足够的连续内存空间，这可能导致内存浪费，数组扩容也需要额外的时间和空间成本。相比之下，链表以
+“节点” 为单位进行动态内存分配和回收，提供了更大的灵活性。</p>
+<p>另一方面，在程序运行时，随着反复申请与释放内存，空闲内存的碎片化程度会越来越高，从而导致内存的利用效率降低。数组由于其连续的存储方式，相对不容易导致内存碎片化。相反，链表的元素是分散存储的，在频繁的插入与删除操作中，更容易导致内存碎片化。</p>
+<h1 id="数据结构的缓存效率">数据结构的缓存效率</h1>
+<h2 id="cache-miss">Cache Miss</h2>
+<p>缓存虽然在空间容量上远小于内存，但它比内存快得多，在程序执行速度上起着至关重要的作用。由于缓存的容量有限，只能存储一小部分频繁访问的数据，因此当
+CPU 尝试访问的数据不在缓存中时，就会发生<strong>缓存未命中（cache
+miss）</strong>，此时 CPU 不得不从速度较慢的内存中加载所需数据。</p>
+<p>显然，<strong>“缓存未命中” 越少，CPU
+读写数据的效率就越高，程序性能也就越好</strong>。我们将 CPU
+从缓存中成功获取数据的比例称为缓存命中率（cache hit
+rate），这个指标通常用来衡量缓存效率。</p>
+<h2 id="缓存的机制">缓存的机制</h2>
+<p>为了尽可能达到更高的效率，缓存会采取以下数据加载机制。</p>
+<ul>
+<li><strong>缓存行</strong>：缓存不是单个字节地存储与加载数据，而是以缓存行为单位。相比于单个字节的传输，缓存行的传输形式更加高效。</li>
+<li><strong>预取机制</strong>：处理器会尝试预测数据访问模式（例如顺序访问、固定步长跳跃访问等），并根据特定模式将数据加载至缓存之中，从而提升命中率。</li>
+<li><strong>空间局部性</strong>：如果一个数据被访问，那么它附近的数据可能近期也会被访问。因此，缓存在加载某一数据时，也会加载其附近的数据，以提高命中率。</li>
+<li><strong>时间局部性</strong>：如果一个数据被访问，那么它在不久的将来很可能再次被访问。缓存利用这一原理，通过保留最近访问过的数据来提高命中率。</li>
+</ul>
+<h2 id="缓存层面对比数组和链表">缓存层面对比数组和链表</h2>
+<p>数组和链表对缓存的利用效率是不同的，主要体现在以下几个方面。</p>
+<ul>
+<li><strong>占用空间</strong>：链表元素比数组元素占用空间更多，导致缓存中容纳的有效数据量更少。</li>
+<li><strong>缓存行</strong>：链表数据分散在内存各处，而缓存是“按行加载”的，因此加载到无效数据的比例更高。</li>
+<li><strong>预取机制</strong>：数组比链表的数据访问模式更具“可预测性”，即系统更容易猜出即将被加载的数据。</li>
+<li><strong>空间局部性</strong>：数组被存储在集中的内存空间中，因此被加载数据附近的数据更有可能即将被访问。</li>
+</ul>
+<p>总体而言，<strong>数组具有更高的缓存命中率，因此它在操作效率上通常优于链表</strong>。这使得在解决算法问题时，基于数组实现的数据结构往往更受欢迎。</p>
+<p>需要注意的是，<strong>高缓存效率并不意味着数组在所有情况下都优于链表</strong>。实际应用中选择哪种数据结构，应根据具体需求来决定。例如，数组和链表都可以实现
+“栈” 数据结构，但它们适用于不同场景。</p>
+<ul>
+<li>在做算法题时，我们会倾向于选择基于数组实现的栈，因为它提供了更高的操作效率和随机访问的能力，代价仅是需要预先为数组分配一定的内存空间。</li>
+<li>如果数据量非常大、动态性很高、栈的预期大小难以估计，那么基于链表实现的栈更加合适。链表能够将大量数据分散存储于内存的不同部分，并且避免了数组扩容产生的额外开销。</li>
+</ul>
+
+            </div>
+        
+        <!-- <footer class="article-footer">
+        </footer> -->
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-Q&A/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    4.5 Q&amp;A
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.3-%E5%88%97%E8%A1%A8/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">4.3 列表</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
