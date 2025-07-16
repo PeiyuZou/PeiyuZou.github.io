@@ -6,7 +6,7 @@
   <link href="https://peiyuzou.github.io/atom.xml" rel="self"/>
   
   <link href="https://peiyuzou.github.io/"/>
-  <updated>2025-07-16T03:41:34.234Z</updated>
+  <updated>2025-07-16T04:18:04.250Z</updated>
   <id>https://peiyuzou.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>4.5 Q&amp;A</title>
-    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-Q&amp;A/"/>
-    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-Q&amp;A/</id>
+    <title>4.5 相关问题</title>
+    <link href="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/"/>
+    <id>https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</id>
     <published>2025-07-16T03:32:12.000Z</published>
-    <updated>2025-07-16T03:41:34.234Z</updated>
+    <updated>2025-07-16T04:18:04.250Z</updated>
     
     <content type="html"><![CDATA[<h1 id="数组分配在栈-or-堆">数组分配在栈 or 堆？</h1><p>这个问题不同语言有不同的结果。</p><p>对于 C++ 来说，静态数组（编译时确定大小）和 std:array分配在栈上，动态数组（new[]）和 std::vector 分配在堆上。</p><p>对于 C# 来说，都是分配在堆上，但是提供了关键字 stackalloc在栈上分配：</p><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Span&lt;<span class="built_in">int</span>&gt; stackSpan = <span class="keyword">stackalloc</span> <span class="built_in">int</span>[<span class="number">100</span>];</span><br></pre></td></tr></table></figure><h1id="数组存储在栈上和存储在堆上对时间效率和空间效率是否有影响">数组存储在栈上和存储在堆上，对时间效率和空间效率是否有影响？</h1><p>存储在栈上和堆上的数组都被存储在连续内存空间内，数据操作效率基本一致。然而，栈和堆具有各自的特点，从而导致以下不同点。</p><ul><li>分配和释放效率：栈是一块较小的内存，分配由编译器自动完成；而堆内存相对更大，可以在代码中动态分配，更容易碎片化。因此，堆上的分配和释放操作通常比栈上的慢。</li><li>大小限制：栈内存相对较小，堆的大小一般受限于可用内存。因此堆更加适合存储大型数组。</li><li>灵活性：栈上的数组的大小需要在编译时确定，而堆上的数组的大小可以在运行时动态确定。</li></ul><h1id="为什么数组要求相同类型的元素而在链表中却没有强调相同类型呢">为什么数组要求相同类型的元素，而在链表中却没有强调相同类型呢？</h1><p>链表由节点组成，通过指针连接，所以各个节点可以存储不同类型的数据。</p><p>而数组必须是相同类型，这样才能通过计算偏移量来获取对应元素位置。例如，数组同时包含int 和 long 两种类型，单个元素分别占用 4 字节和 8 字节，此时就不能用公式计算偏移量了，因为数组中包含了两种 “元素长度” 。</p><h1id="在列表末尾添加元素是否时时刻刻都为-o1">在列表末尾添加元素是否时时刻刻都为<span class="math inline">\(O(1)\)</span> ？</h1><p>如果添加元素时超出列表长度，则需要先扩容列表再添加。系统会申请一块新的内存，并将原列表的所有元素搬运过去，这时候时间复杂度就会是<span class="math inline">\(O(n)\)</span> 。</p><h1 id="列表的内存浪费如何避免">列表的内存浪费如何避免？</h1><p>我们可以通过预先确定列表的最大长度来在初始化时给列表分配一个固定长度的空间并且确保在生命周期内不会扩容，这样可以尽量减少内存空间的浪费，同时也避免了扩容带来的时间和空间的开销。</p>]]></content>
     
@@ -35,6 +35,12 @@
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="04-数组与链表" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/"/>
     
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
@@ -62,6 +68,12 @@
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="04-数组与链表" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -85,6 +97,12 @@
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="04-数组与链表" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/"/>
     
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
@@ -112,6 +130,12 @@ list）是一种线性数据结构，其中的每个元素都是一个节点对�
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="04-数组与链表" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -137,6 +161,12 @@ list）是一种线性数据结构，其中的每个元素都是一个节点对�
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="04-数组与链表" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -161,6 +191,12 @@ byte 的取值范围是 &lt;span class=&quot;math inline&quot;&gt;&#92;([-128, 1
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
     
     <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
@@ -188,6 +224,12 @@ byte 的取值范围是 &lt;span class=&quot;math inline&quot;&gt;&#92;([-128, 1
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
     
     <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
@@ -220,6 +262,12 @@ byte 的取值范围是 &lt;span class=&quot;math inline&quot;&gt;&#92;([-128, 1
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="03-数据结构" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
     
     <category term="数据结构" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
@@ -246,6 +294,8 @@ byte 的取值范围是 &lt;span class=&quot;math inline&quot;&gt;&#92;([-128, 1
     
     
     
+    <category term="98-易混淆点" scheme="https://peiyuzou.github.io/categories/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/"/>
+    
     
     <category term="易混淆点" scheme="https://peiyuzou.github.io/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/"/>
     
@@ -270,6 +320,10 @@ Unit），我们本篇从一个高层次视角去了解 CPU
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="CrashCourse" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/"/>
     
     
     <category term="CS-101" scheme="https://peiyuzou.github.io/tags/CS-101/"/>
@@ -298,6 +352,12 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="02-复杂度分析" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -321,6 +381,12 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="02-复杂度分析" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/"/>
     
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
@@ -347,6 +413,12 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="02-复杂度分析" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/"/>
     
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
@@ -378,6 +450,12 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="02-复杂度分析" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -405,6 +483,12 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
     
     
     
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="数据结构和算法" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="01-概览" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/01-%E6%A6%82%E8%A7%88/"/>
+    
     
     <category term="数据结构和算法" scheme="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
     
@@ -428,6 +512,10 @@ complexity）用于衡量算法占用内存空间随着数据量变大时的增�
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="CrashCourse" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/"/>
     
     
     <category term="CS-101" scheme="https://peiyuzou.github.io/tags/CS-101/"/>
@@ -453,6 +541,10 @@ Unit），它包含两个单元：算数单元和逻辑单元&lt;/p&gt;
       
     
     
+    
+    <category term="01-计算机科学" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    <category term="CrashCourse" scheme="https://peiyuzou.github.io/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/"/>
     
     
     <category term="CS-101" scheme="https://peiyuzou.github.io/tags/CS-101/"/>
@@ -481,6 +573,10 @@ RAM 速度极限。&lt;/p&gt;
     
     
     
+    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="压缩算法" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/"/>
+    
     
     <category term="Compression" scheme="https://peiyuzou.github.io/tags/Compression/"/>
     
@@ -503,6 +599,12 @@ RAM 速度极限。&lt;/p&gt;
       
     
     
+    
+    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
+    
+    <category term="Unity内存管理" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
     
     
     <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
@@ -535,6 +637,12 @@ RAM 速度极限。&lt;/p&gt;
       
     
     
+    
+    <category term="05-游戏编程" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Unity" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/"/>
+    
+    <category term="Unity内存管理" scheme="https://peiyuzou.github.io/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
     
     
     <category term="Unity" scheme="https://peiyuzou.github.io/tags/Unity/"/>
