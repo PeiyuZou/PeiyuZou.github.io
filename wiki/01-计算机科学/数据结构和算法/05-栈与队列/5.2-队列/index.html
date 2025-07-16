@@ -3,19 +3,32 @@
 <head>
     <meta charset="utf-8">
     
-    <title>标签: 数据结构 | Back Number</title>
+    <title>5.2 队列 | Back Number</title>
     
     
-        <meta name="keywords" content="Back Number">
+        <meta name="keywords" content="数据结构和算法">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Back Number">
-<meta property="og:url" content="https://peiyuzou.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+    <meta name="description" content="队列是一种先进先出的线性数据结构   常用操作    方法 描述 时间复杂度     push() 元素入队，即将元素添加至队尾 \(O(1)\)   pop() 队首元素出队 \(O(1)\)   peek() 访问队首元素 \(O(1)\)    123456789101112131415161718192021&#x2F;* 初始化队列 *&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.2 队列">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/index.html">
 <meta property="og:site_name" content="Back Number">
+<meta property="og:description" content="队列是一种先进先出的线性数据结构   常用操作    方法 描述 时间复杂度     push() 元素入队，即将元素添加至队尾 \(O(1)\)   pop() 队首元素出队 \(O(1)\)   peek() 访问队首元素 \(O(1)\)    123456789101112131415161718192021&#x2F;* 初始化队列 *&#x2F;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_0.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_1.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_2.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_3.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_4.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_5.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_6.png">
+<meta property="article:published_time" content="2025-07-16T06:16:48.000Z">
+<meta property="article:modified_time" content="2025-07-16T06:28:18.995Z">
 <meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="数据结构和算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/queue_0.png">
     
 
     
@@ -173,9 +186,9 @@
         
         
          <ul class="unstyled" id="tree"> 
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             01-计算机科学
                         </a>
@@ -189,9 +202,9 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/">01.算数逻辑单元</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/02.%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E5%86%85%E5%AD%98/">02.寄存器和内存</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">03.中央处理器</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             数据结构和算法
                         </a>
@@ -230,6 +243,15 @@
                             04-数组与链表
                         </a>
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.1-%E6%95%B0%E7%BB%84/">4.1 数组</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.2-%E9%93%BE%E8%A1%A8/">4.2 链表</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.3-%E5%88%97%E8%A1%A8/">4.3 列表</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/">4.4 内存与缓存</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">4.5 相关问题</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            05-栈与队列
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.1-%E6%A0%88/">5.1 栈</a></li>  <li class="file active"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/">5.2 队列</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.3-%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/">5.3 双向队列</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.4-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">5.4 相关问题</a></li>  </ul> 
                     </li> 
                      </ul> 
                     </li> 
@@ -577,7 +599,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title"><span>标签</span></h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CS-101/" rel="tag">CS-101</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compression/" rel="tag">Compression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/" rel="tag">易混淆点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CS-101/" rel="tag">CS-101</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compression/" rel="tag">Compression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/" rel="tag">易混淆点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -585,122 +607,174 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-tag"></i></span>
-        <h1 class="title">#数据结构</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-01-计算机科学/数据结构和算法/05-栈与队列/5.2-队列" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/">3.3 数字编码</a>
-        </h1>
-    
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">数据结构和算法</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/">05-栈与队列</a>
+    </div>
 
-                <div class="article-meta">
-                    
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a>
+    </div>
+
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/">
-            <time datetime="2025-07-15T02:25:59.000Z" itemprop="datePublished">2025-07-15</time>
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/">
+            <time datetime="2025-07-16T06:16:48.000Z" itemprop="datePublished">2025-07-16</time>
         </a>
     </div>
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">数据结构和算法</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">03-数据结构</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/01-计算机科学/数据结构和算法/05-栈与队列/5.2-队列.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/01-计算机科学/数据结构和算法/05-栈与队列/5.2-队列.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/01-计算机科学/数据结构和算法/05-栈与队列/5.2-队列.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">3.2 基本数据类型</a>
+        <h1 class="article-title" itemprop="name">
+            5.2 队列
         </h1>
     
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
-            <time datetime="2025-07-15T01:54:14.000Z" itemprop="datePublished">2025-07-15</time>
-        </a>
-    </div>
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <p>队列是一种先进先出的线性数据结构</p>
+<p><img src="queue_0.png" alt="队列的先入先出规则"><br>
+</p>
+<h1 id="常用操作">常用操作</h1>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>push()</td>
+<td>元素入队，即将元素添加至队尾</td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>队首元素出队</td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr>
+<td>peek()</td>
+<td>访问队首元素</td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 初始化队列 */</span></span><br><span class="line">Queue&lt;<span class="built_in">int</span>&gt; queue = <span class="keyword">new</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 元素入队 */</span></span><br><span class="line">queue.Enqueue(<span class="number">1</span>);</span><br><span class="line">queue.Enqueue(<span class="number">3</span>);</span><br><span class="line">queue.Enqueue(<span class="number">2</span>);</span><br><span class="line">queue.Enqueue(<span class="number">5</span>);</span><br><span class="line">queue.Enqueue(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 访问队首元素 */</span></span><br><span class="line"><span class="built_in">int</span> peek = queue.Peek();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 元素出队 */</span></span><br><span class="line"><span class="built_in">int</span> pop = queue.Dequeue();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 获取队列的长度 */</span></span><br><span class="line"><span class="built_in">int</span> size = queue.Count;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 判断队列是否为空 */</span></span><br><span class="line"><span class="built_in">bool</span> isEmpty = queue.Count == <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="队列实现">队列实现</h1>
+<h2 id="基于链表的实现">基于链表的实现</h2>
+<p>可以将链表的“头节点”和“尾节点”分别视为“队首”和“队尾”，规定队尾仅可添加节点，队首仅可删除节点。</p>
+<p><img src="queue_1.png" alt="step 1"><img src="queue_2.png" alt="step 2"><img src="queue_3.png" alt="step 3"><br>
+</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 基于链表实现的队列 */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">LinkedListQueue</span> &#123;</span><br><span class="line">    ListNode? front, rear;  <span class="comment">// 头节点 front ，尾节点 rear</span></span><br><span class="line">    <span class="built_in">int</span> queSize = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkedListQueue</span>()</span> &#123;</span><br><span class="line">        front = <span class="literal">null</span>;</span><br><span class="line">        rear = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 获取队列的长度 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Size</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> queSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 判断队列是否为空 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">IsEmpty</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Size() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 入队 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params"><span class="built_in">int</span> num</span>)</span> &#123;</span><br><span class="line">        <span class="comment">// 在尾节点后添加 num</span></span><br><span class="line">        ListNode node = <span class="keyword">new</span>(num);</span><br><span class="line">        <span class="comment">// 如果队列为空，则令头、尾节点都指向该节点</span></span><br><span class="line">        <span class="keyword">if</span> (front == <span class="literal">null</span>) &#123;</span><br><span class="line">            front = node;</span><br><span class="line">            rear = node;</span><br><span class="line">            <span class="comment">// 如果队列不为空，则将该节点添加到尾节点后</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rear != <span class="literal">null</span>) &#123;</span><br><span class="line">            rear.next = node;</span><br><span class="line">            rear = node;</span><br><span class="line">        &#125;</span><br><span class="line">        queSize++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 出队 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Pop</span>()</span> &#123;</span><br><span class="line">        <span class="built_in">int</span> num = Peek();</span><br><span class="line">        <span class="comment">// 删除头节点</span></span><br><span class="line">        front = front?.next;</span><br><span class="line">        queSize--;</span><br><span class="line">        <span class="keyword">return</span> num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 访问队首元素 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Peek</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (IsEmpty())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">        <span class="keyword">return</span> front!.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 将链表转化为 Array 并返回 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span>[] <span class="title">ToArray</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (front == <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">return</span> [];</span><br><span class="line"></span><br><span class="line">        ListNode? node = front;</span><br><span class="line">        <span class="built_in">int</span>[] res = <span class="keyword">new</span> <span class="built_in">int</span>[Size()];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; res.Length; i++) &#123;</span><br><span class="line">            res[i] = node!.val;</span><br><span class="line">            node = node.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基于数组的实现">基于数组的实现</h2>
+<p>用数组实现有一个核心问题，删除队首元素的时间复杂度为 <span class="math inline">\(O(n)\)</span>
+，效率比较低，但我们可以通过下面的方法巧妙地规避：</p>
+<p>使用一个变量 front 指向队首元素的索引，并维护一个变量 size
+用于记录队列长度。定义 rear = front + size ，这个公式计算出的 rear
+指向队尾元素之后的下一个位置。</p>
+<p>基于此设计，数组中包含元素的有效区间为 [front, rear - 1] ：</p>
+<ul>
+<li>入队操作：将输入元素赋值给 rear 索引处，并将 size 增加 1 。</li>
+<li>出队操作：只需将 front 增加 1 ，并将 size 减少 1 。</li>
+</ul>
+<p>可以看到，入队和出队操作都只需进行一次操作，时间复杂度均为 <span class="math inline">\(O(1)\)</span> 。</p>
+<p><img src="queue_4.png" alt="step 1"><img src="queue_5.png" alt="step 2"><img src="queue_6.png" alt="step 3"><br>
+</p>
+<p>你可能会发现一个问题：在不断进行入队和出队的过程中，front 和 rear
+都在向右移动，<strong>当它们到达数组尾部时就无法继续移动了</strong>。为了解决此问题，我们可以将数组视为首尾相接的“环形数组”。</p>
+<p>对于环形数组，我们需要让 front 或 rear
+在越过数组尾部时，直接回到数组头部继续遍历。这种周期性规律可以通过“取余操作”来实现，代码如下所示：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 基于环形数组实现的队列 */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">ArrayQueue</span> &#123;</span><br><span class="line">    <span class="built_in">int</span>[] nums;  <span class="comment">// 用于存储队列元素的数组</span></span><br><span class="line">    <span class="built_in">int</span> front;   <span class="comment">// 队首指针，指向队首元素</span></span><br><span class="line">    <span class="built_in">int</span> queSize; <span class="comment">// 队列长度</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayQueue</span>(<span class="params"><span class="built_in">int</span> capacity</span>)</span> &#123;</span><br><span class="line">        nums = <span class="keyword">new</span> <span class="built_in">int</span>[capacity];</span><br><span class="line">        front = queSize = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 获取队列的容量 */</span></span><br><span class="line">    <span class="function"><span class="built_in">int</span> <span class="title">Capacity</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> nums.Length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 获取队列的长度 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Size</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> queSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 判断队列是否为空 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">IsEmpty</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> queSize == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 入队 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params"><span class="built_in">int</span> num</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (queSize == Capacity()) &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;队列已满&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 计算队尾指针，指向队尾索引 + 1</span></span><br><span class="line">        <span class="comment">// 通过取余操作实现 rear 越过数组尾部后回到头部</span></span><br><span class="line">        <span class="built_in">int</span> rear = (front + queSize) % Capacity();</span><br><span class="line">        <span class="comment">// 将 num 添加至队尾</span></span><br><span class="line">        nums[rear] = num;</span><br><span class="line">        queSize++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 出队 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Pop</span>()</span> &#123;</span><br><span class="line">        <span class="built_in">int</span> num = Peek();</span><br><span class="line">        <span class="comment">// 队首指针向后移动一位，若越过尾部，则返回到数组头部</span></span><br><span class="line">        front = (front + <span class="number">1</span>) % Capacity();</span><br><span class="line">        queSize--;</span><br><span class="line">        <span class="keyword">return</span> num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 访问队首元素 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Peek</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (IsEmpty())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">        <span class="keyword">return</span> nums[front];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 返回数组 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span>[] <span class="title">ToArray</span>()</span> &#123;</span><br><span class="line">        <span class="comment">// 仅转换有效长度范围内的列表元素</span></span><br><span class="line">        <span class="built_in">int</span>[] res = <span class="keyword">new</span> <span class="built_in">int</span>[queSize];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>, j = front; i &lt; queSize; i++, j++) &#123;</span><br><span class="line">            res[i] = nums[j % <span class="keyword">this</span>.Capacity()];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上实现的队列仍然具有局限性：其长度不可变。然而，这个问题不难解决，我们可以将数组替换为动态数组，从而引入扩容机制。</p>
+<h1 id="典型应用">典型应用</h1>
+<ul>
+<li>淘宝订单。购物者下单后，订单将加入队列中，系统随后会根据顺序处理队列中的订单。在双十一期间，短时间内会产生海量订单，高并发成为工程师们需要重点攻克的问题。</li>
+<li>各类待办事项。任何需要实现 “先来后到”
+功能的场景，例如打印机的任务队列、餐厅的出餐队列等，队列在这些场景中可以有效地维护处理顺序。</li>
+</ul>
 
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">数据结构和算法</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">03-数据结构</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a>
-    </div>
-
-                </div>
             </div>
-        </div>
+        
+        <!-- <footer class="article-footer">
+        </footer> -->
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
     
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+<nav id="article-nav">
+    
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.3-%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/">3.1 数据结构的分类</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/">
-            <time datetime="2025-07-15T01:41:15.000Z" itemprop="datePublished">2025-07-15</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">数据结构和算法</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">03-数据结构</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a>
-    </div>
-
-                </div>
+                    5.3 双向队列
+                
             </div>
-        </div>
+        </a>
     
-</div>
+    
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.1-%E6%A0%88/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">5.1 栈</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
 </section>
         </div>
         <footer id="footer">
