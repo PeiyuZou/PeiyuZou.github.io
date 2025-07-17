@@ -3,39 +3,24 @@
 <head>
     <meta charset="utf-8">
     
-    <title>03.中央处理器 | Back Number</title>
+    <title>匿名函数和闭包问题 | Back Number</title>
     
     
-        <meta name="keywords" content="CS-101">
+        <meta name="keywords" content="C#">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="中央处理器，常称 CPU（Central Processing Unit），我们本篇从一个高层次视角去了解 CPU 的组成，每一个根线不是指代真正的数据线，而是一组完善电路的抽象，代表这里有某种连接，这种高层次视角称 “微体系架构” （MicroArchitecture） CPU 组成 首先，我们要准备一个 RAM ，但注意内存不是 CPU 的组成部分，这里是为了演示 CPU 如何和">
+    <meta name="description" content="闭包问题 1234567891011121314151617181920212223242526272829303132333435363738class A&#123;    public B b;&#125;class B&#123;    public string Name;    public override string ToString()    &#123;        re">
 <meta property="og:type" content="article">
-<meta property="og:title" content="03.中央处理器">
-<meta property="og:url" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/index.html">
+<meta property="og:title" content="匿名函数和闭包问题">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Back Number">
-<meta property="og:description" content="中央处理器，常称 CPU（Central Processing Unit），我们本篇从一个高层次视角去了解 CPU 的组成，每一个根线不是指代真正的数据线，而是一组完善电路的抽象，代表这里有某种连接，这种高层次视角称 “微体系架构” （MicroArchitecture） CPU 组成 首先，我们要准备一个 RAM ，但注意内存不是 CPU 的组成部分，这里是为了演示 CPU 如何和">
+<meta property="og:description" content="闭包问题 1234567891011121314151617181920212223242526272829303132333435363738class A&#123;    public B b;&#125;class B&#123;    public string Name;    public override string ToString()    &#123;        re">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_0.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_1.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_2.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_3.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_4.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_5.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_6.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_7.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_8.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_9.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_10.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_11.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_12.png">
-<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_13.png">
-<meta property="article:published_time" content="2025-07-14T13:56:30.000Z">
-<meta property="article:modified_time" content="2025-07-16T02:04:01.566Z">
+<meta property="article:published_time" content="2025-07-17T05:48:31.000Z">
+<meta property="article:modified_time" content="2025-07-17T08:06:17.824Z">
 <meta property="article:author" content="Z.P.Y">
-<meta property="article:tag" content="CS-101">
+<meta property="article:tag" content="C#">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_0.png">
     
 
     
@@ -193,20 +178,20 @@
         
         
          <ul class="unstyled" id="tree"> 
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             01-计算机科学
                         </a>
                          <ul class="unstyled" id="tree"> 
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             CrashCourse
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/">01.算数逻辑单元</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/02.%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E5%86%85%E5%AD%98/">02.寄存器和内存</a></li>  <li class="file active"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">03.中央处理器</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/">01.算数逻辑单元</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/02.%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E5%86%85%E5%AD%98/">02.寄存器和内存</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">03.中央处理器</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -265,20 +250,20 @@
                      </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             02-编程语言
                         </a>
                          <ul class="unstyled" id="tree"> 
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             CSharp
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/">匿名函数和闭包问题</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  <li class="file active"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/">匿名函数和闭包问题</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -614,7 +599,7 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="post-01-计算机科学/CrashCourse/03.中央处理器" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-02-编程语言/CSharp/匿名函数和闭包问题" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -624,20 +609,20 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/">CrashCourse</a>
+        <a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">02-编程语言</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/">CSharp</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/CS-101/" rel="tag">CS-101</a>
+        <a class="tag-link-link" href="/tags/C/" rel="tag">C#</a>
     </div>
 
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">
-            <time datetime="2025-07-14T13:56:30.000Z" itemprop="datePublished">2025-07-14</time>
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/">
+            <time datetime="2025-07-17T05:48:31.000Z" itemprop="datePublished">2025-07-17</time>
         </a>
     </div>
 
@@ -648,13 +633,13 @@
                          -->
                         
                             <div class="article-meta-button">
-                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/01-计算机科学/CrashCourse/03.中央处理器.md"> Source </a>
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/02-编程语言/CSharp/匿名函数和闭包问题.md"> Source </a>
                             </div>
                             <!-- <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/01-计算机科学/CrashCourse/03.中央处理器.md'> Edit </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/02-编程语言/CSharp/匿名函数和闭包问题.md'> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/01-计算机科学/CrashCourse/03.中央处理器.md'> History </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/02-编程语言/CSharp/匿名函数和闭包问题.md'> History </a>
                             </div> -->
                         
                     </div>
@@ -662,7 +647,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            03.中央处理器
+            匿名函数和闭包问题
         </h1>
     
 
@@ -675,106 +660,104 @@
             
         
         
-            <p>中央处理器，常称 CPU（Central Processing
-Unit），我们本篇从一个高层次视角去了解 CPU
-的组成，每一个根线不是指代真正的数据线，而是一组完善电路的抽象，代表这里有某种连接，这种高层次视角称
-“微体系架构” （MicroArchitecture）</p>
-<h1 id="cpu-组成">CPU 组成</h1>
-<p>首先，我们要准备一个 RAM ，但注意<strong>内存不是 CPU
-的组成部分</strong>，这里是为了演示 CPU
-如何和内存打交道，进而解释它每个组成部分在其中发挥的作用。</p>
-<p>为了简单，我们假设有一个只有 16 个地址的
-RAM（如下图所示），因此它的地址可以用 4 位值表示（0 ~ 15），这 16
-个地址中存储了若干的指令或者数据。对于数据来说，其中的 8
-位都是值。对于指令来说，高 4 位代表操作码，低 4
-位代表目标数据在内存或者寄存器中的地址。（这里只是举例，在实际的内存中可能和这个设计不一样，也可能更复杂）</p>
-<p><img src="cpu_0.png" alt="内存"><br>
-</p>
-<h2 id="设立寄存器">设立寄存器</h2>
-<p>为了操作数据和存储临时数据，我们需要给 CPU 安排 4 个寄存器：</p>
-<p><img src="cpu_1.png" alt="临时存储和操作数据的寄存器"><br>
-</p>
-<p>我们给 CPU 支持的所有指令分配一个操作码，对应上面指令中的高 4
-位，比如下图：</p>
-<p><img src="cpu_2.png" alt="指令表"><br>
-</p>
-<p>我们还需要另外两个寄存器：</p>
+            <h1 id="闭包问题">闭包问题</h1>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> B b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">B</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="built_in">string</span> <span class="title">ToString</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Name.ToString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> a = <span class="keyword">new</span> A();</span><br><span class="line">        <span class="keyword">var</span> b1 = <span class="keyword">new</span> B() &#123; Name = <span class="string">&quot;B1&quot;</span> &#125;;</span><br><span class="line">        <span class="keyword">var</span> b2 = <span class="keyword">new</span> B() &#123; Name = <span class="string">&quot;B2&quot;</span> &#125;;</span><br><span class="line">        <span class="keyword">var</span> b3 = <span class="keyword">new</span> B() &#123; Name = <span class="string">&quot;B3&quot;</span> &#125;;</span><br><span class="line">        a.b = b1;</span><br><span class="line">        <span class="keyword">var</span> c = a.b;</span><br><span class="line">        Action closure = () =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(c.ToString());</span><br><span class="line">            Console.WriteLine(a.b.ToString());</span><br><span class="line">            Console.WriteLine();</span><br><span class="line">        &#125;;</span><br><span class="line">        closure();</span><br><span class="line">        a.b = b2;</span><br><span class="line">        closure();</span><br><span class="line">        a.b = b3;</span><br><span class="line">        closure();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一段包含闭包的测试代码，它的打印结果是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">B1</span><br><span class="line">B1</span><br><span class="line"></span><br><span class="line">B1</span><br><span class="line">B2</span><br><span class="line"></span><br><span class="line">B1</span><br><span class="line">B3</span><br></pre></td></tr></table></figure>
+<p>我们来看它生成的 IL
+代码，以此来了解闭包对作用域外的局部变量，是如何处理的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">A..ctor:</span><br><span class="line">IL_0000:  ldarg.0     // 将第一个参数（this引用）压入栈</span><br><span class="line">IL_0001:  call        System.Object..ctor  // 调用Object的构造函数</span><br><span class="line">IL_0006:  nop         // 空操作（可能是调试信息）</span><br><span class="line">IL_0007:  ret         // 返回</span><br><span class="line"></span><br><span class="line">B.ToString:</span><br><span class="line">IL_0000:  nop         // 空操作</span><br><span class="line">IL_0001:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0002:  ldfld       UserQuery+B.Name  // 加载B类的Name字段到栈</span><br><span class="line">IL_0007:  callvirt    System.Object.ToString  // 虚调用ToString方法</span><br><span class="line">IL_000C:  stloc.0     // 将结果存储到本地变量0</span><br><span class="line">IL_000D:  br.s        IL_000F  // 短跳转到IL_000F</span><br><span class="line">IL_000F:  ldloc.0     // 从本地变量0加载值到栈</span><br><span class="line">IL_0010:  ret         // 返回栈顶值</span><br><span class="line"></span><br><span class="line">B..ctor:</span><br><span class="line">IL_0000:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0001:  call        System.Object..ctor  // 调用Object构造函数</span><br><span class="line">IL_0006:  nop         // 空操作</span><br><span class="line">IL_0007:  ret         // 返回</span><br><span class="line"></span><br><span class="line">Program1.Main:</span><br><span class="line">IL_0000:  newobj      UserQuery+Program1+&lt;&gt;c__DisplayClass0_0..ctor  // 创建闭包类实例</span><br><span class="line">IL_0005:  stloc.0     // 存储到本地变量0 (CS$&lt;&gt;8__locals0)</span><br><span class="line">IL_0006:  nop         // 空操作</span><br><span class="line">IL_0007:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_0008:  newobj      UserQuery+A..ctor  // 创建A类实例</span><br><span class="line">IL_000D:  stfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 将A实例存储到闭包的a字段</span><br><span class="line">IL_0012:  newobj      UserQuery+B..ctor  // 创建B类实例</span><br><span class="line">IL_0017:  dup         // 复制栈顶值</span><br><span class="line">IL_0018:  ldstr       &quot;B1&quot;  // 加载字符串&quot;B1&quot;</span><br><span class="line">IL_001D:  stfld       UserQuery+B.Name  // 设置B.Name字段为&quot;B1&quot;</span><br><span class="line">IL_0022:  stloc.1     // 存储到本地变量1 (b1)</span><br><span class="line">IL_0023:  newobj      UserQuery+B..ctor  // 创建另一个B类实例</span><br><span class="line">IL_0028:  dup         // 复制栈顶值</span><br><span class="line">IL_0029:  ldstr       &quot;B2&quot;  // 加载字符串&quot;B2&quot;</span><br><span class="line">IL_002E:  stfld       UserQuery+B.Name  // 设置B.Name字段为&quot;B2&quot;</span><br><span class="line">IL_0033:  stloc.2     // 存储到本地变量2 (b2)</span><br><span class="line">IL_0034:  newobj      UserQuery+B..ctor  // 创建第三个B类实例</span><br><span class="line">IL_0039:  dup         // 复制栈顶值</span><br><span class="line">IL_003A:  ldstr       &quot;B3&quot;  // 加载字符串&quot;B3&quot;</span><br><span class="line">IL_003F:  stfld       UserQuery+B.Name  // 设置B.Name字段为&quot;B3&quot;</span><br><span class="line">IL_0044:  stloc.3     // 存储到本地变量3 (b3)</span><br><span class="line">IL_0045:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_0046:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 获取闭包的a字段</span><br><span class="line">IL_004B:  ldloc.1     // 加载变量b1</span><br><span class="line">IL_004C:  stfld       UserQuery+A.b  // 设置a.b = b1</span><br><span class="line">IL_0051:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_0052:  ldloc.0     // 再次加载闭包类实例</span><br><span class="line">IL_0053:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 获取闭包的a字段</span><br><span class="line">IL_0058:  ldfld       UserQuery+A.b  // 获取a.b字段</span><br><span class="line">IL_005D:  stfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.c  // 设置闭包的c字段 = a.b</span><br><span class="line">IL_0062:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_0063:  ldftn       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.&lt;Main&gt;b__0  // 加载方法指针</span><br><span class="line">IL_0069:  newobj      System.Action..ctor  // 创建Action委托</span><br><span class="line">IL_006E:  stloc.s     04  // 存储到本地变量4 (closure)</span><br><span class="line">IL_0070:  ldloc.s     04  // 加载closure</span><br><span class="line">IL_0072:  callvirt    System.Action.Invoke  // 调用Action（第一次执行）</span><br><span class="line">IL_0077:  nop         // 空操作</span><br><span class="line">IL_0078:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_0079:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 获取闭包的a字段</span><br><span class="line">IL_007E:  ldloc.2     // 加载变量b2</span><br><span class="line">IL_007F:  stfld       UserQuery+A.b  // 设置a.b = b2</span><br><span class="line">IL_0084:  ldloc.s     04  // 加载closure</span><br><span class="line">IL_0086:  callvirt    System.Action.Invoke  // 调用Action（第二次执行）</span><br><span class="line">IL_008B:  nop         // 空操作</span><br><span class="line">IL_008C:  ldloc.0     // 加载闭包类实例</span><br><span class="line">IL_008D:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 获取闭包的a字段</span><br><span class="line">IL_0092:  ldloc.3     // 加载变量b3</span><br><span class="line">IL_0093:  stfld       UserQuery+A.b  // 设置a.b = b3</span><br><span class="line">IL_0098:  ldloc.s     04  // 加载closure</span><br><span class="line">IL_009A:  callvirt    System.Action.Invoke  // 调用Action（第三次执行）</span><br><span class="line">IL_009F:  nop         // 空操作</span><br><span class="line">IL_00A0:  ret         // 返回</span><br><span class="line"></span><br><span class="line">Program1..ctor:</span><br><span class="line">IL_0000:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0001:  call        System.Object..ctor  // 调用Object构造函数</span><br><span class="line">IL_0006:  nop         // 空操作</span><br><span class="line">IL_0007:  ret         // 返回</span><br><span class="line"></span><br><span class="line">&lt;&gt;c__DisplayClass0_0.&lt;Main&gt;b__0:</span><br><span class="line">IL_0000:  nop         // 空操作</span><br><span class="line">IL_0001:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0002:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.c  // 获取闭包的c字段</span><br><span class="line">IL_0007:  callvirt    System.Object.ToString  // 调用ToString方法</span><br><span class="line">IL_000C:  call        System.Console.WriteLine  // 调用Console.WriteLine输出c字段</span><br><span class="line">IL_0011:  nop         // 空操作</span><br><span class="line">IL_0012:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0013:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.a  // 获取闭包的a字段</span><br><span class="line">IL_0018:  ldfld       UserQuery+A.b  // 获取a.b字段</span><br><span class="line">IL_001D:  callvirt    System.Object.ToString  // 调用ToString方法</span><br><span class="line">IL_0022:  call        System.Console.WriteLine  // 调用Console.WriteLine输出a.b字段</span><br><span class="line">IL_0027:  nop         // 空操作</span><br><span class="line">IL_0028:  call        System.Console.WriteLine  // 调用Console.WriteLine输出空行</span><br><span class="line">IL_002D:  nop         // 空操作</span><br><span class="line">IL_002E:  ret         // 返回</span><br><span class="line"></span><br><span class="line">&lt;&gt;c__DisplayClass0_0..ctor:</span><br><span class="line">IL_0000:  ldarg.0     // 将this引用压入栈</span><br><span class="line">IL_0001:  call        System.Object..ctor  // 调用Object构造函数</span><br><span class="line">IL_0006:  nop         // 空操作</span><br><span class="line">IL_0007:  ret         // 返回</span><br></pre></td></tr></table></figure>
+<p>最后两个 IL 代码块
+<code>&lt;&gt;c__DisplayClass0_0.&lt;Main&gt;b__0</code> 和
+<code>&lt;&gt;c__DisplayClass0_0..ctor</code> 表明，C# 在编译 IL
+时，为闭包生成了一个匿名的 Class
+，同时闭包被构建为该类的一个实例，捕获了变量 c
+当时指向的内存地址，也就是 b1 的内存地址。在后续改变 a.b
+指向的内存地址时，并不会影响闭包中的变量，关键代码是如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Program1.Main:</span><br><span class="line">...</span><br><span class="line">IL_005D:  stfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.c  // 设置闭包的c字段 = a.b</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&lt;&gt;c__DisplayClass0_0.&lt;Main&gt;b__0:</span><br><span class="line">...</span><br><span class="line">IL_0002:  ldfld       UserQuery+Program1+&lt;&gt;c__DisplayClass0_0.c  // 获取闭包的c字段</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h1 id="闭包和匿名函数">闭包和匿名函数</h1>
+<h2 id="匿名函数anonymous-function">匿名函数（Anonymous Function）</h2>
+<p><strong>定义：</strong>
+匿名函数是没有名字的函数，在定义的地方直接使用。</p>
+<p><strong>特点：</strong> - 没有函数名 - 通常用于一次性使用 - 语法简洁
+- 可以作为参数传递</p>
+<p><strong>C# 中的匿名函数形式：</strong> <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 匿名方法（C# 2.0）</span></span><br><span class="line"><span class="built_in">delegate</span>(<span class="built_in">int</span> x) &#123; <span class="keyword">return</span> x * <span class="number">2</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Lambda表达式（C# 3.0+）也是一种匿名函数</span></span><br><span class="line">x =&gt; x * <span class="number">2</span></span><br><span class="line">(x, y) =&gt; x + y</span><br><span class="line">() =&gt; Console.WriteLine(<span class="string">&quot;Hello&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="闭包closure">闭包（Closure）</h2>
+<p><strong>定义：</strong>
+闭包是函数与其周围状态（词法环境）的引用捆绑在一起的组合。换句话说，闭包让你可以在函数内部访问外部函数的作用域。</p>
+<p><strong>特点：</strong> - 可以访问外部作用域的变量 -
+这些变量在外部函数执行完后仍然存在 - 形成了一个封闭的环境 -
+变量的生命周期被延长</p>
+<h2 id="核心区别">核心区别</h2>
+<table>
+<thead>
+<tr>
+<th>方面</th>
+<th>匿名函数</th>
+<th>闭包</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>本质</strong></td>
+<td>语法特性（没有名字的函数）</td>
+<td>行为特性（捕获外部变量）</td>
+</tr>
+<tr>
+<td><strong>关注点</strong></td>
+<td>函数的定义方式</td>
+<td>变量的作用域和生命周期</td>
+</tr>
+<tr>
+<td><strong>实现</strong></td>
+<td>编译器生成普通方法</td>
+<td>编译器生成额外的类来保存变量</td>
+</tr>
+<tr>
+<td><strong>性能</strong></td>
+<td>轻量级</td>
+<td>可能有额外的内存开销</td>
+</tr>
+</tbody>
+</table>
+<h2 id="实际例子对比">实际例子对比</h2>
+<h3 id="纯匿名函数无闭包">1. 纯匿名函数（无闭包）</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt; multiply = x =&gt; x * <span class="number">2</span>;  <span class="comment">// 匿名函数，但没有闭包</span></span><br></pre></td></tr></table></figure>
+<p>编译后的IL相对简单，不需要额外的类。</p>
+<h3 id="匿名函数-闭包">2. 匿名函数 + 闭包</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> factor = <span class="number">10</span>;</span><br><span class="line">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt; multiply = x =&gt; x * factor;  <span class="comment">// 匿名函数 + 闭包</span></span><br></pre></td></tr></table></figure>
+<p>这里既有匿名函数（Lambda表达式），又有闭包（捕获了外部变量<code>factor</code>）。</p>
+<h3 id="从刚才的il代码分析">3. 从刚才的IL代码分析</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> A();</span><br><span class="line"><span class="comment">// ... 创建b1, b2, b3 ...</span></span><br><span class="line"></span><br><span class="line">Action closure = () =&gt; &#123;</span><br><span class="line">    Console.WriteLine(c);        <span class="comment">// 闭包：捕获了变量c</span></span><br><span class="line">    Console.WriteLine(a.b);      <span class="comment">// 闭包：捕获了变量a</span></span><br><span class="line">    Console.WriteLine();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>这里发生了什么：</strong></p>
 <ul>
-<li>指令地址寄存器：用于追踪当前程序运行到哪里，存储的是指令在内存中的地址</li>
-<li>指令寄存器：用于存储当前指令，方便 CPU 解码这个指令</li>
+<li><code>() =&gt; &#123; ... &#125;</code> 是匿名函数（Lambda表达式）</li>
+<li>但它捕获了外部变量<code>c</code>和<code>a</code>，所以形成了闭包</li>
+<li>编译器生成了<code>&lt;&gt;c__DisplayClass0_0</code>类来保存这些捕获的变量</li>
 </ul>
-<p><img src="cpu_3.png" alt="指令地址寄存器 和 指令寄存器"><br>
-</p>
-<p>计算机开始运行，所有寄存器被初始化为 0 ：</p>
-<p><img src="cpu_4.png" alt="初始化寄存器"><br>
-</p>
-<h2 id="取指令">取指令</h2>
-<p>计算机从内存中取指令，然后一条一条执行，首先指令地址寄存器访问内存的第一个地址，并且将第一个地址的内容（一条指令）放入指令寄存器中：</p>
-<p><img src="cpu_5.png" alt="取指令阶段"><br>
-</p>
-<h2 id="解释并执行指令">解释并执行指令</h2>
-<p>得到了一条指令后，计算机需要将这条指令解释。它的高 4
-位的值对应指令表中的第一条，即将指定内存地址的值放入寄存器 A 中：</p>
-<p><img src="cpu_6.png" alt="解释并执行"><br>
-</p>
-<h2 id="继续取指令解释执行">继续取指令、解释、执行</h2>
-<p>执行完一条指令后，指令地址寄存器指向的内存地址 + 1
-，继续读取下一条指令，然后解释执行。</p>
-<h1 id="控制单元">控制单元</h1>
-<p>由指令地址寄存器、指令寄存器、解码电路等部分组成了一个控制单元（Control
-Unit），我们可以将它抽象出来：</p>
-<p><img src="cpu_7.png" alt="控制单元"><br>
-</p>
-<h1 id="继续执行">继续执行</h1>
-<h2 id="第二条指令">第二条指令</h2>
-<p>CPU 继续取下一条指令并执行，第二条指令将内存地址 15 的值放在了寄存器
-B 中：</p>
-<p><img src="cpu_8.png" alt="第二条指令的执行结果"><br>
-</p>
-<h2 id="第三条指令">第三条指令</h2>
-<p>第三条指令比较特殊，它代表将两个寄存器的值相加，并将结果放在指定的第二个寄存器中，这里寄存器
-A 的地址为 00 ，寄存器 B 的地址为 01 ，因此是要将 B 中的值与 A
-中的值相加，结果放入 A 中：</p>
-<p><img src="cpu_9.png" alt="第三条指令的解释阶段"><br>
-</p>
-<p>为了对两个值做算数运算，我们需要继续设立一个 ALU
-进来，控制单元会将两个寄存器的值作为 ALU 的两个输入，然后传递 ALU
-当前的操作码，计算得到的值并不会马上写入寄存器，而是放在一个临时的寄存器中（图中没有），当关闭
-ALU 之后再写入寄存器 A ，防止 ALU 的值错误：</p>
-<p><img src="cpu_10.png" alt="第三条指令的执行阶段"><br>
-</p>
-<h2 id="最后一条指令">最后一条指令</h2>
-<p>最后一条指令，将寄存器 A 中的值写入内存中：</p>
-<p><img src="cpu_11.png" alt="第四条指令的执行结果"><br>
-</p>
-<h1 id="时钟">时钟</h1>
-<p>时钟（Clock）用来管理 CPU 的执行节奏。</p>
-<p><img src="cpu_12.png" alt="时钟"><br>
-</p>
-<p>它以精确的间隔来触发电信号，控制单元根据这个电信号去推动 CPU
-的内部操作。这频率不能太快，因为电的传输也需要时间（很少很少）。</p>
-<p>CPU 执行一次 “取指令-解码-执行” 的速度叫做 “时钟速度”
-，它的单位是赫兹（Hz），现代 CPU 的主频已经达到了 GHz
-级别，我们常说的超频就是允许 CPU
-以更快的速度执行，但会增大用电量，并且可能损坏 CPU ，同样，许多 CPU
-也有降频功能，在闲置的时间段内降频可以降低耗电量，这些都是通过改变时钟速度实现的。</p>
-<h1 id="对-cpu-做一次抽象">对 CPU 做一次抽象</h1>
-<p>现在我们得到了一个简单的 CPU ，可以对它进行一次抽象：</p>
-<p><img src="cpu_13.png" alt="CPU"><br>
-</p>
-<p>从这里也可以看出来，RAM 不是 CPU 的组成部分，但它们息息相关</p>
-<h1 id="指令集">指令集</h1>
-<p>上面提到的操作码，在实际计算机中远不止 4 个，也不止 4
-位，比如常见的让程序停止运行的 HALT
-指令等。为了让指令能更多，有两个策略：</p>
+<h2 id="编译器实现机制">编译器实现机制</h2>
+<h3 id="匿名函数无闭包">匿名函数（无闭包）</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原始代码</span></span><br><span class="line">Action simple = () =&gt; Console.WriteLine(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编译器生成类似这样的代码</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> &lt;Main&gt;b__0() &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="闭包">闭包</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原始代码</span></span><br><span class="line"><span class="built_in">string</span> message = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">Action closure = () =&gt; Console.WriteLine(message);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编译器生成类似这样的代码</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">class</span> &lt;&gt;<span class="title">c__DisplayClass0_0</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> message;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> &lt;Main&gt;b__0() &#123;</span><br><span class="line">        Console.WriteLine(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实际应用场景">实际应用场景</h2>
+<h3 id="匿名函数适用场景">匿名函数适用场景：</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 事件处理</span></span><br><span class="line">button.Click += (sender, e) =&gt; MessageBox.Show(<span class="string">&quot;Clicked!&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// LINQ</span></span><br><span class="line"><span class="keyword">var</span> result = numbers.Where(x =&gt; x &gt; <span class="number">5</span>).Select(x =&gt; x * <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 回调函数</span></span><br><span class="line">Task.Run(() =&gt; DoSomething());</span><br></pre></td></tr></table></figure>
+<h3 id="闭包适用场景">闭包适用场景：</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 工厂函数</span></span><br><span class="line"><span class="function">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt; <span class="title">CreateMultiplier</span>(<span class="params"><span class="built_in">int</span> factor</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> x =&gt; x * factor;  <span class="comment">// 闭包捕获factor</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 状态保持</span></span><br><span class="line"><span class="built_in">int</span> counter = <span class="number">0</span>;</span><br><span class="line">Action increment = () =&gt; counter++;  <span class="comment">// 闭包捕获counter</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置保存</span></span><br><span class="line"><span class="built_in">string</span> connectionString = GetConnectionString();</span><br><span class="line">Action&lt;<span class="built_in">string</span>&gt; saveData = data =&gt; &#123;</span><br><span class="line">    <span class="comment">// 闭包捕获connectionString</span></span><br><span class="line">    SaveToDatabase(connectionString, data);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
 <ul>
-<li>直接用更多位来表示指令，比如 32 位甚至 64 位</li>
-<li>采用可变指令长度，比如 JUMP 指令占 8
-位，但它后面需要跟一个立即值，代表要跳转的内存地址，这样设计的话，指令长度可以是任意的，但是
-CPU 在读取阶段会更加复杂一些</li>
+<li><strong>匿名函数</strong> 是语法糖，让代码更简洁</li>
+<li><strong>闭包</strong> 是功能特性，让函数能够访问外部变量</li>
+<li>它们经常同时出现，但是独立的概念</li>
+<li>你可以有：
+<ul>
+<li>匿名函数但无闭包</li>
+<li>有名函数但有闭包</li>
+<li>匿名函数 + 闭包（最常见）</li>
+</ul></li>
 </ul>
-<p>CPU 可以识别的这样一批指令叫做指令集，现代的 CPU 拥有上千条的指令，光
-ADD 指令都有很多变种，比我们例子中的要复杂很多，但是核心原理没有变。</p>
+<p>在刚才的IL代码中，我们看到的是匿名函数和闭包的组合：编译器为闭包生成了专门的类来保存捕获的变量，这就是为什么会有<code>&lt;&gt;c__DisplayClass0_0</code>这样的类存在。</p>
 
             </div>
         
@@ -788,19 +771,10 @@ ADD 指令都有很多变种，比我们例子中的要复杂很多，但是核�
     
 <nav id="article-nav">
     
-        <a href="/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    01.方法和函数
-                
-            </div>
-        </a>
     
-    
-        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2.4-%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.4-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">2.4 空间复杂度</div>
+            <div class="article-nav-title">5.4 相关问题</div>
         </a>
     
 </nav>
