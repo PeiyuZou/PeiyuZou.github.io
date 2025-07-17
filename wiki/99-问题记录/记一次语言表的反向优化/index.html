@@ -3,24 +3,27 @@
 <head>
     <meta charset="utf-8">
     
-    <title>（七）技术拆解——绑定 | Back Number</title>
+    <title>记一次语言表的反向优化 | Back Number</title>
     
     
-        <meta name="keywords" content="UIElements">
+        <meta name="keywords" content="Issues">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="绑定是指属性和对属性进行修改的可视化控件之间建立链接，也就是将对象属性同步到可见的UI 理论上任何序列化的对象都可以和继承IBindable的VisualElement之间进行绑定 示例： 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253using">
+    <meta name="description" content="这是最近工作中遇到的一个问题，优化下来发现不如不优化，但还是有所发现，因此记录一下。 语言表过大 目前项目中的方案是从策划导出的 txt 文件解析为 lua.txt 文件，最后通过 luac 编译为二进制文件使用。 12345&#x2F;&#x2F; Language.txtID	zh-CN	zh-TW	en	th	vi	eskey1	哈哈哈	hahaha	hahaha	hahaha	hahaha	hahah">
 <meta property="og:type" content="article">
-<meta property="og:title" content="（七）技术拆解——绑定">
-<meta property="og:url" content="https://peiyuzou.github.io/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/index.html">
+<meta property="og:title" content="记一次语言表的反向优化">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="Back Number">
-<meta property="og:description" content="绑定是指属性和对属性进行修改的可视化控件之间建立链接，也就是将对象属性同步到可见的UI 理论上任何序列化的对象都可以和继承IBindable的VisualElement之间进行绑定 示例： 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253using">
+<meta property="og:description" content="这是最近工作中遇到的一个问题，优化下来发现不如不优化，但还是有所发现，因此记录一下。 语言表过大 目前项目中的方案是从策划导出的 txt 文件解析为 lua.txt 文件，最后通过 luac 编译为二进制文件使用。 12345&#x2F;&#x2F; Language.txtID	zh-CN	zh-TW	en	th	vi	eskey1	哈哈哈	hahaha	hahaha	hahaha	hahaha	hahah">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-02-05T06:30:21.000Z">
-<meta property="article:modified_time" content="2024-12-09T03:20:46.130Z">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/language_opt_0.png">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/language_opt_1.png">
+<meta property="article:published_time" content="2025-07-17T09:11:44.000Z">
+<meta property="article:modified_time" content="2025-07-17T10:10:28.887Z">
 <meta property="article:author" content="Z.P.Y">
-<meta property="article:tag" content="UIElements">
+<meta property="article:tag" content="Issues">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/language_opt_0.png">
     
 
     
@@ -376,16 +379,16 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             05-游戏编程
                         </a>
                          <ul class="unstyled" id="tree"> 
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             Unity
                         </a>
@@ -399,20 +402,20 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             UI
                         </a>
                          <ul class="unstyled" id="tree"> 
-                    <li class="directory open">
+                    <li class="directory">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder-open"></i>
+                            <i class="fa fa-folder"></i>
                             &nbsp;
                             UIElements
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file active"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
                     </li> 
                      </ul> 
                     </li> 
@@ -511,13 +514,13 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/">01.方法和函数</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             99-问题记录
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/">记一次语言表的反向优化</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  <li class="file active"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/">记一次语言表的反向优化</a></li>  </ul> 
                     </li> 
                      <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
     </div>
@@ -599,7 +602,7 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="post-05-游戏编程/Unity/UI/UIElements/（七）技术拆解——绑定" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-99-问题记录/记一次语言表的反向优化" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -609,20 +612,20 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/">05-游戏编程</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/">Unity</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/">UI</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/">UIElements</a>
+        <a class="article-category-link" href="/categories/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">99-问题记录</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/UIElements/" rel="tag">UIElements</a>
+        <a class="tag-link-link" href="/tags/Issues/" rel="tag">Issues</a>
     </div>
 
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">
-            <time datetime="2023-02-05T06:30:21.000Z" itemprop="datePublished">2023-02-05</time>
+        <a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/">
+            <time datetime="2025-07-17T09:11:44.000Z" itemprop="datePublished">2025-07-17</time>
         </a>
     </div>
 
@@ -633,13 +636,13 @@
                          -->
                         
                             <div class="article-meta-button">
-                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/05-游戏编程/Unity/UI/UIElements/（七）技术拆解——绑定.md"> Source </a>
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/99-问题记录/记一次语言表的反向优化.md"> Source </a>
                             </div>
                             <!-- <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/05-游戏编程/Unity/UI/UIElements/（七）技术拆解——绑定.md'> Edit </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/99-问题记录/记一次语言表的反向优化.md'> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/05-游戏编程/Unity/UI/UIElements/（七）技术拆解——绑定.md'> History </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/99-问题记录/记一次语言表的反向优化.md'> History </a>
                             </div> -->
                         
                     </div>
@@ -647,7 +650,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            （七）技术拆解——绑定
+            记一次语言表的反向优化
         </h1>
     
 
@@ -660,10 +663,41 @@
             
         
         
-            <p>绑定是指属性和对属性进行修改的可视化控件之间建立链接，也就是将对象属性同步到可见的UI</p>
-<p>理论上任何序列化的对象都可以和继承IBindable的VisualElement之间进行绑定</p>
-<p>示例：</p>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor.UIElements;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UIElements;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">UIElementsExamples</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SimpleBindingExample</span> : <span class="title">EditorWindow</span></span><br><span class="line">   &#123;</span><br><span class="line">       TextField m_ObjectNameBinding;</span><br><span class="line">      </span><br><span class="line">       [<span class="meta">MenuItem(<span class="string">&quot;Window/UIElements/SimpleBindingExample&quot;</span>)</span>]</span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowDefaultWindow</span>()</span></span><br><span class="line">       &#123;</span><br><span class="line">           <span class="keyword">var</span> wnd = GetWindow&lt;SimpleBindingExample&gt;();</span><br><span class="line">           wnd.titleContent = <span class="keyword">new</span> GUIContent(<span class="string">&quot;Simple Binding&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnEnable</span>()</span></span><br><span class="line">       &#123;</span><br><span class="line">           <span class="keyword">var</span> root = <span class="keyword">this</span>.rootVisualElement;</span><br><span class="line">           m_ObjectNameBinding = <span class="keyword">new</span> TextField(<span class="string">&quot;Object Name Binding&quot;</span>);</span><br><span class="line">           m_ObjectNameBinding.bindingPath = <span class="string">&quot;m_Name&quot;</span>;</span><br><span class="line">           root.Add(m_ObjectNameBinding);</span><br><span class="line">           OnSelectionChange();</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnSelectionChange</span>()</span></span><br><span class="line">       &#123;</span><br><span class="line">           GameObject selectedObject = Selection.activeObject <span class="keyword">as</span> GameObject;</span><br><span class="line">           <span class="keyword">if</span> (selectedObject != <span class="literal">null</span>)</span><br><span class="line">           &#123;</span><br><span class="line">               <span class="comment">// 创建序列化对象</span></span><br><span class="line">               SerializedObject so = <span class="keyword">new</span> SerializedObject(selectedObject);</span><br><span class="line">               <span class="comment">// 将其绑定到层级视图的根目录。它将找到要绑定的正确对象...</span></span><br><span class="line">               rootVisualElement.Bind(so);</span><br><span class="line">    </span><br><span class="line">               <span class="comment">// ... 或者，也可以将其绑定到 TextField 本身。</span></span><br><span class="line">               <span class="comment">// m_ObjectNameBinding.Bind(so);</span></span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">else</span></span><br><span class="line">           &#123;</span><br><span class="line">               <span class="comment">// 取消对象与实际视觉元素的绑定</span></span><br><span class="line">               rootVisualElement.Unbind();</span><br><span class="line">              </span><br><span class="line">               <span class="comment">// m_ObjectNameBinding.Unbind();</span></span><br><span class="line">              </span><br><span class="line">               <span class="comment">// 删除绑定后，清除 TextField</span></span><br><span class="line">               m_ObjectNameBinding.<span class="keyword">value</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <p>这是最近工作中遇到的一个问题，优化下来发现不如不优化，但还是有所发现，因此记录一下。</p>
+<h2 id="语言表过大">语言表过大</h2>
+<p>目前项目中的方案是从策划导出的 txt 文件解析为 lua.txt 文件，最后通过
+luac 编译为二进制文件使用。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Language.txt</span><br><span class="line">ID	zh-CN	zh-TW	en	th	vi	es</span><br><span class="line">key1	哈哈哈	hahaha	hahaha	hahaha	hahaha	hahaha</span><br><span class="line">key2	啊啊啊	aaa	aaa	aaa	aaa	aaa</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>项目中的语言表结构同上面（忽略上面的语言内容），因为有多语言，将非
+<code>ID</code> 这一列每一列单独解析为了一个语种对应的文件。于是得到了 6
+份文件，每个文件的内容相当于存了大量的 key-value ，key 是 Id ，value
+是语言内容，但问题不在此，这只是前置说明。</p>
+<p>核心问题在于，生成的 <code>.lua.txt</code> 每一行对应的 value
+发生了大量重复，比如 key1001、key2001、key8993 三个 key
+对应的语言包内容一模一样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">return &#123;</span><br><span class="line">    ...</span><br><span class="line">    [&quot;key1001&quot;]=&quot;每天凌晨五点刷新&quot;,</span><br><span class="line">    ...</span><br><span class="line">    [&quot;key2001&quot;]=&quot;每天凌晨五点刷新&quot;,</span><br><span class="line">    ...</span><br><span class="line">    [&quot;key8993&quot;]=&quot;每天凌晨五点刷新&quot;,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整个语言包充斥着大量这样重复的情况，加上本身语言包的物理大小很大（超
+6w 行，接近 20
+M），所以萌生了想法去优化它的内容，减小文件的物理大小，认为这样编译出来的二进制文件会跟着变小。</p>
+<h2 id="方案">方案</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">local t = &#123;</span><br><span class="line">    &quot;等会撒u活动前期红啊科&quot;,</span><br><span class="line">    &quot;每天凌晨五点刷新&quot;,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">return &#123;</span><br><span class="line">    [&quot;key1000&quot;]=&quot;但是噶寄快递哈卡&quot;,</span><br><span class="line">    [&quot;key1001&quot;]=t[2],</span><br><span class="line">    ...</span><br><span class="line">    [&quot;key2001&quot;]=t[2],</span><br><span class="line">    ...</span><br><span class="line">    [&quot;key8993&quot;]=t[2],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解析生成的 <code>.lua.txt</code> 文件结构变成了这样，本以为这样
+<code>.lua.txt</code> 和
+二进制文件的物理大小都会变小，但结果出乎意料却又在意料之中：<code>.lua.txt</code>
+文件的大小确实小了 30% 左右，但二进制文件反而变大了 10%
+左右。这也反映了我所忽略的事实：** luac 对 lua
+代码文件的编译本来就做了字符常量的去重**，刻意去做常量提取效果适得其反。</p>
+<p><img src="language_opt_0.png" alt="右边是优化后的结果"><br>
+</p>
+<p>另外，新方案中在执行时，可能由于额外分配了一个表 t
+的空间以及一些对上值的访问，内存占用上面反而上涨了 0.14 M：</p>
+<p><img src="language_opt_1.png" alt="Lua Profiler 内存占用对比"><br>
+</p>
+<h2 id="结论">结论</h2>
+<ul>
+<li>在优化文件大小时，编译带来的压缩效率需要考虑进去，而不是只考虑明文的文件内容（明文更小不代表二进制就更小）</li>
+<li>敢于尝试 + 各方面严格测算，说不定会有更深一些的领悟</li>
+</ul>
 
             </div>
         
@@ -677,19 +711,10 @@
     
 <nav id="article-nav">
     
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    （八）踩坑和可视化调试工具
-                
-            </div>
-        </a>
     
-    
-        <a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">（六）技术拆解——事件系统</div>
+            <div class="article-nav-title">匿名函数和闭包问题</div>
         </a>
     
 </nav>
