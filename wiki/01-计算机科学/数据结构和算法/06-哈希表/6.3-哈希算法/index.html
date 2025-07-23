@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>6.3 哈希算法 | Back Number</title>
+    
+    
+        <meta name="keywords" content="数据结构和算法">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="无论是开放寻址还是链式地址，它们只能保证哈希表可以在发生冲突时正常工作，而无法减少哈希冲突的发生。 如果哈希冲突过于频繁，哈希表的性能则会急剧劣化。对于链式地址哈希表，理想情况下键值对均匀分布在各个桶中，达到最佳查询效率；最差情况下所有键值对都存储到同一个桶中，时间复杂度退化至 \(O(n)\) 。   键值对的分布情况由哈希函数决定。当哈希表容量 capacity 固定时，哈希算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.3 哈希算法">
+<meta property="og:url" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.3-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Back Number">
+<meta property="og:description" content="无论是开放寻址还是链式地址，它们只能保证哈希表可以在发生冲突时正常工作，而无法减少哈希冲突的发生。 如果哈希冲突过于频繁，哈希表的性能则会急剧劣化。对于链式地址哈希表，理想情况下键值对均匀分布在各个桶中，达到最佳查询效率；最差情况下所有键值对都存储到同一个桶中，时间复杂度退化至 \(O(n)\) 。   键值对的分布情况由哈希函数决定。当哈希表容量 capacity 固定时，哈希算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.3-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/hash_func_0.png">
+<meta property="article:published_time" content="2025-07-23T08:13:25.000Z">
+<meta property="article:modified_time" content="2025-07-23T08:32:29.691Z">
+<meta property="article:author" content="Z.P.Y">
+<meta property="article:tag" content="数据结构和算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://peiyuzou.github.io/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.3-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/hash_func_0.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.1.1"><link rel="alternate" href="/atom.xml" title="Back Number" type="application/atom+xml">
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Back Number</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            01-计算机科学
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CrashCourse
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01.%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/">01.算数逻辑单元</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/02.%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E5%86%85%E5%AD%98/">02.寄存器和内存</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/03.%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">03.中央处理器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            数据结构和算法
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/01-%E6%A6%82%E8%A7%88/1.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E6%A6%82%E8%A7%88/">1.1 数据结构和算法概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-复杂度分析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2.1-%E7%AE%97%E6%B3%95%E6%95%88%E7%8E%87%E8%AF%84%E4%BC%B0/">2.1 数据结构和算法概览</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2.2-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%80%92%E5%BD%92/">2.2 迭代和递归</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2.3-%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/">2.3 时间复杂度</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/02-%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2.4-%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/">2.4 空间复杂度</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-数据结构
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/">3.1 数据结构的分类</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.2-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">3.2 基本数据类型</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/03-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.3-%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/">3.3 数字编码</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-数组与链表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.1-%E6%95%B0%E7%BB%84/">4.1 数组</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.2-%E9%93%BE%E8%A1%A8/">4.2 链表</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.3-%E5%88%97%E8%A1%A8/">4.3 列表</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.4-%E5%86%85%E5%AD%98%E4%B8%8E%E7%BC%93%E5%AD%98/">4.4 内存与缓存</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/04-%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4.5-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">4.5 相关问题</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-栈与队列
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.1-%E6%A0%88/">5.1 栈</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.2-%E9%98%9F%E5%88%97/">5.2 队列</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.3-%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/">5.3 双向队列</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/05-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5.4-%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">5.4 相关问题</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            06-哈希表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.1-%E5%93%88%E5%B8%8C%E8%A1%A8/">6.1 哈希表</a></li>  <li class="file"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.2-%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/">6.2 哈希冲突</a></li>  <li class="file active"><a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.3-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">6.3 哈希算法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-编程语言
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSharp
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/List%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">List源码浅析</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/">匿名函数和闭包问题</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Lua基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/01.Lua%E6%95%B0%E5%80%BC/">Lua数值</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/02.Lua%E5%AD%97%E7%AC%A6%E4%B8%B2/">Lua字符串</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/Lua%E5%9F%BA%E7%A1%80/03.Lua%E5%87%BD%E6%95%B0/">Lua函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            源码阅读
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            01-概览
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/01-%E6%A6%82%E8%A7%88/1.1-%E6%A6%82%E8%A7%88/">1.1 概览</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-全局状态机及内存
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98/2.1-%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81%E6%9C%BA%E5%8F%8A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">2.1 全局状态机及内存管理</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            02-数据类型
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/02-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.1-Lua%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">2.1 Lua中的数据类型</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-字符串
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">3.1 字符串的数据结构设计</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/03-%E5%AD%97%E7%AC%A6%E4%B8%B2/3.2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0/">3.2 字符串的相关实现</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-表
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.1-%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">4.1 表的数据结构</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/04-%E8%A1%A8/4.2-%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E7%AE%97%E6%B3%95/">4.2 表相关的算法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-虚拟机
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.1-Lua%E6%89%A7%E8%A1%8C%E7%9A%84%E5%A4%A7%E8%87%B4%E8%BF%87%E7%A8%8B/">5.1 Lua执行的大致过程</a></li>  <li class="file"><a href="/wiki/02-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Lua/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/05-%E8%99%9A%E6%8B%9F%E6%9C%BA/5.x-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB/">5.x 虚拟机相关函数解读</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            03-开发设计
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            游戏编程设计模式
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/03-%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01.%E6%80%BB%E8%A7%88/">01.总览</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            04-程序数学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/04-%E7%A8%8B%E5%BA%8F%E6%95%B0%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            05-游戏编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unity
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            EditorExtend
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/EditorExtend/EditorWindow%E7%9B%91%E5%90%AC%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6/">EditorWindow监听键盘事件</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UI
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            UIElements
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%80%EF%BC%89UIElements%E6%A6%82%E8%BF%B0/">（一）UIElements概述</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%8C%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94VisualTree/">（二）技术拆解——VisualTree</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%89%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E5%B8%83%E5%B1%80%E5%BC%95%E6%93%8E/">（三）技术拆解——布局引擎</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%9B%9B%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94UXML/">（四）技术拆解——UXML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%BA%94%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94USS/">（五）技术拆解——USS</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AD%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/">（六）技术拆解——事件系统</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E4%B8%83%EF%BC%89%E6%8A%80%E6%9C%AF%E6%8B%86%E8%A7%A3%E2%80%94%E2%80%94%E7%BB%91%E5%AE%9A/">（七）技术拆解——绑定</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/UI/UIElements/%EF%BC%88%E5%85%AB%EF%BC%89%E8%B8%A9%E5%9D%91%E5%92%8C%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">（八）踩坑和可视化调试工具</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unity内存管理
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/01.%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/">01.什么是内存</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/02.Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/">02.Unity内存管理</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/03.Unity%20Native%20Memory/">03.Unity Native Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/04.Unity%20Managed%20Memory/">04.Unity Managed Memory</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/05.Unity%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">05.Unity内存优化最佳实践</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            功能实例
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/%E7%9B%B8%E6%9C%BA%E9%9C%87%E5%B1%8F%E5%8F%8D%E9%A6%88/">相机震屏反馈</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            基础
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/01.Unity%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/">Unity中的文件</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/02.UnityYAML/">UnityYAML</a></li>  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E5%9F%BA%E7%A1%80/03.Unity%E4%B8%AD%E7%9A%84GUID%E3%80%81FileID%E3%80%81InstanceID/">Unity中的GUID、FileID、InstanceID</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            粒子系统
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/Unity/%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F/0.1%E7%BB%84%E4%BB%B6%E4%BD%BF%E7%94%A8/">组件使用</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            压缩算法
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/05-%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01.Lz4/">01.Lz4压缩</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            06-引擎开发
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/06-%E5%BC%95%E6%93%8E%E5%BC%80%E5%8F%91/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            07-图形学
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/07-%E5%9B%BE%E5%BD%A2%E5%AD%A6/Blank/"></a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            08-网络编程
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Socket
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/01.Socket%E6%A6%82%E8%A7%88/">01.Socket概览</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/02.%E4%BD%BF%E7%94%A8C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAWinSock%E7%AE%80%E6%98%93%E4%BE%8B%E5%AD%90/">02.使用C语言实现一个WinSock简易例子</a></li>  <li class="file"><a href="/wiki/08-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Socket/03.%E5%8D%8F%E8%AE%AE%E6%97%8F%E5%92%8C%E5%A5%97%E6%8E%A5%E5%AD%97%E7%B1%BB%E5%9E%8B/">03.协议族和套接字类型</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            98-易混淆点
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/98-%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/01.%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0/">01.方法和函数</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            99-问题记录
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E9%97%AE%E9%A2%98/">浮点数运算问题</a></li>  <li class="file"><a href="/wiki/99-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%AF%AD%E8%A8%80%E8%A1%A8%E7%9A%84%E5%8F%8D%E5%90%91%E4%BC%98%E5%8C%96/">记一次语言表的反向优化</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title"><span>标签</span></h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CS-101/" rel="tag">CS-101</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compression/" rel="tag">Compression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditorExtend/" rel="tag">EditorExtend</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Issues/" rel="tag">Issues</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UIElements/" rel="tag">UIElements</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E4%BE%8B/" rel="tag">Unity功能实例</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%93%E6%B7%B7%E6%B7%86%E7%82%B9/" rel="tag">易混淆点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">游戏编程设计模式</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-01-计算机科学/数据结构和算法/06-哈希表/6.3-哈希算法" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">01-计算机科学</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/">数据结构和算法</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/">06-哈希表</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" rel="tag">数据结构和算法</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.3-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">
+            <time datetime="2025-07-23T08:13:25.000Z" itemprop="datePublished">2025-07-23</time>
+        </a>
+    </div>
+
+
+                        <!-- 
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>
+                         -->
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/PeiyuZou/peiyuZou.github.io/raw/master/source/_posts/01-计算机科学/数据结构和算法/06-哈希表/6.3-哈希算法.md"> Source </a>
+                            </div>
+                            <!-- <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/edit/master/source/_posts/01-计算机科学/数据结构和算法/06-哈希表/6.3-哈希算法.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/PeiyuZou/peiyuZou.github.io/commits/master/source/_posts/01-计算机科学/数据结构和算法/06-哈希表/6.3-哈希算法.md'> History </a>
+                            </div> -->
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            6.3 哈希算法
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <p>无论是开放寻址还是链式地址，它们只能保证哈希表可以在发生冲突时正常工作，而无法减少哈希冲突的发生。</p>
+<p>如果哈希冲突过于频繁，哈希表的性能则会急剧劣化。对于链式地址哈希表，理想情况下键值对均匀分布在各个桶中，达到最佳查询效率；最差情况下所有键值对都存储到同一个桶中，时间复杂度退化至
+<span class="math inline">\(O(n)\)</span> 。</p>
+<p><img src="hash_func_0.png" alt="哈希冲突的最佳情况与最差情况"><br>
+</p>
+<p><strong>键值对的分布情况由哈希函数决定。</strong>当哈希表容量
+capacity 固定时，哈希算法 hash()
+决定了输出值，为了降低哈希冲突的发生概率，我们应当将注意力集中在哈希算法
+hash() 的设计上。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index = hash(key) % capacity</span><br></pre></td></tr></table></figure>
+<h1 id="哈希算法的目标">哈希算法的目标</h1>
+<p>为了实现“既快又稳”的哈希表数据结构，哈希算法应具备以下特点。</p>
+<ul>
+<li>确定性：对于相同的输入，哈希算法应始终产生相同的输出。这样才能确保哈希表是可靠的。</li>
+<li>效率高：计算哈希值的过程应该足够快。计算开销越小，哈希表的实用性越高。</li>
+<li>均匀分布：哈希算法应使得键值对均匀分布在哈希表中。分布越均匀，哈希冲突的概率就越低。</li>
+</ul>
+<p>实际上，哈希算法除了可以用于实现哈希表，还广泛应用于其他领域中。</p>
+<ul>
+<li>密码存储：为了保护用户密码的安全，系统通常不会直接存储用户的明文密码，而是存储密码的哈希值。当用户输入密码时，系统会对输入的密码计算哈希值，然后与存储的哈希值进行比较。如果两者匹配，那么密码就被视为正确。</li>
+<li>数据完整性检查：数据发送方可以计算数据的哈希值并将其一同发送；接收方可以重新计算接收到的数据的哈希值，并与接收到的哈希值进行比较。如果两者匹配，那么数据就被视为完整。</li>
+</ul>
+<p>对于密码学的相关应用，为了防止从哈希值推导出原始密码等逆向工程，哈希算法需要具备更高等级的安全特性。</p>
+<ul>
+<li>单向性：无法通过哈希值反推出关于输入数据的任何信息。</li>
+<li>抗碰撞性：应当极难找到两个不同的输入，使得它们的哈希值相同。</li>
+<li>雪崩效应：输入的微小变化应当导致输出的显著且不可预测的变化。</li>
+</ul>
+<p>请注意，“均匀分布” 与 “抗碰撞性”
+是两个独立的概念，满足均匀分布不一定满足抗碰撞性。例如，在随机输入 key
+下，哈希函数 key % 100
+可以产生均匀分布的输出。然而该哈希算法过于简单，所有后两位相等的 key
+的输出都相同，因此我们可以很容易地从哈希值反推出可用的 key
+，从而破解密码。</p>
+<h1 id="哈希算法的目标-1">哈希算法的目标</h1>
+<p>以下是一些简单的哈希算法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 加法哈希：对输入的每个字符的 ASCII 码进行相加，将得到的总和作为哈希值 */</span></span><br><span class="line"><span class="function"><span class="built_in">int</span> <span class="title">AddHash</span>(<span class="params"><span class="built_in">string</span> key</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">long</span> hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">int</span> MODULUS = <span class="number">1000000007</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="built_in">char</span> c <span class="keyword">in</span> key) &#123;</span><br><span class="line">        hash = (hash + c) % MODULUS;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">int</span>)hash;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 乘法哈希：利用乘法的不相关性，每轮乘以一个常数，将各个字符的 ASCII 码累积到哈希值中 */</span></span><br><span class="line"><span class="function"><span class="built_in">int</span> <span class="title">MulHash</span>(<span class="params"><span class="built_in">string</span> key</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">long</span> hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">int</span> MODULUS = <span class="number">1000000007</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="built_in">char</span> c <span class="keyword">in</span> key) &#123;</span><br><span class="line">        hash = (<span class="number">31</span> * hash + c) % MODULUS;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">int</span>)hash;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 异或哈希：将输入数据的每个元素通过异或操作累积到一个哈希值中 */</span></span><br><span class="line"><span class="function"><span class="built_in">int</span> <span class="title">XorHash</span>(<span class="params"><span class="built_in">string</span> key</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">int</span> hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">int</span> MODULUS = <span class="number">1000000007</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="built_in">char</span> c <span class="keyword">in</span> key) &#123;</span><br><span class="line">        hash ^= c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> hash &amp; MODULUS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 旋转哈希：将每个字符的 ASCII 码累积到一个哈希值中，每次累积之前都会对哈希值进行旋转操作 */</span></span><br><span class="line"><span class="function"><span class="built_in">int</span> <span class="title">RotHash</span>(<span class="params"><span class="built_in">string</span> key</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">long</span> hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">int</span> MODULUS = <span class="number">1000000007</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="built_in">char</span> c <span class="keyword">in</span> key) &#123;</span><br><span class="line">        hash = ((hash &lt;&lt; <span class="number">4</span>) ^ (hash &gt;&gt; <span class="number">28</span>) ^ c) % MODULUS;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">int</span>)hash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>观察发现，每种哈希算法的最后一步都是对大质数 1000000007
+取模，以确保哈希值在合适的范围内。使用大质数作为模数，可以最大化地保证哈希值的均匀分布。因为质数不与其他数字存在公约数，可以减少因取模操作而产生的周期性模式，从而避免哈希冲突。</p>
+<h1 id="常见哈希算法">常见哈希算法</h1>
+<p>在实际中，我们通常会用一些标准哈希算法，例如 MD5、SHA-1、SHA-2 和
+SHA-3 等。它们可以将任意长度的输入数据映射到恒定长度的哈希值。</p>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>MD5</th>
+<th>SHA-1</th>
+<th>SHA-2</th>
+<th>SHA-3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>推出时间</td>
+<td>1992</td>
+<td>1995</td>
+<td>2002</td>
+<td>2008</td>
+</tr>
+<tr>
+<td>输出长度</td>
+<td>128 bit</td>
+<td>160 bit</td>
+<td>256/512 bit</td>
+<td>224/256/384/512 bit</td>
+</tr>
+<tr>
+<td>哈希冲突</td>
+<td>较多</td>
+<td>较多</td>
+<td>很少</td>
+<td>很少</td>
+</tr>
+<tr>
+<td>安全等级</td>
+<td>低，已被成功攻击</td>
+<td>低，已被成功攻击</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>应用</td>
+<td>已被弃用，仍用于数据完整性检查</td>
+<td>已被弃用</td>
+<td>加密货币交易验证、数字签名等</td>
+<td>可用于替代 SHA-2</td>
+</tr>
+</tbody>
+</table>
+<h1 id="数据结构的哈希值">数据结构的哈希值</h1>
+<p>哈希表的 key
+可以是整数、小数或字符串等数据类型。编程语言通常会为这些数据类型提供内置的哈希算法，用于计算哈希表中的桶索引。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> num = <span class="number">3</span>;</span><br><span class="line"><span class="built_in">int</span> hashNum = num.GetHashCode();</span><br><span class="line"><span class="comment">// 整数的哈希值为它自己本身，3 的哈希值为 3;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">bool</span> bol = <span class="literal">true</span>;</span><br><span class="line"><span class="built_in">int</span> hashBol = bol.GetHashCode();</span><br><span class="line"><span class="comment">// 布尔量的哈希值为它自己本身，true 的哈希值为 1;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">double</span> dec = <span class="number">3.14159</span>;</span><br><span class="line"><span class="built_in">int</span> hashDec = dec.GetHashCode();</span><br><span class="line"><span class="comment">// 小数 3.14159 的哈希值为 -1340954729;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> str = <span class="string">&quot;Hello 算法&quot;</span>;</span><br><span class="line"><span class="built_in">int</span> hashStr = str.GetHashCode();</span><br><span class="line"><span class="comment">// 字符串“Hello 算法”的哈希值为 -586107568;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">object</span>[] arr = [<span class="number">12836</span>, <span class="string">&quot;小哈&quot;</span>];</span><br><span class="line"><span class="built_in">int</span> hashTup = arr.GetHashCode();</span><br><span class="line"><span class="comment">// 数组 [12836, 小哈] 的哈希值为 42931033;</span></span><br><span class="line"></span><br><span class="line">ListNode obj = <span class="keyword">new</span>(<span class="number">0</span>);</span><br><span class="line"><span class="built_in">int</span> hashObj = obj.GetHashCode();</span><br><span class="line"><span class="comment">// 节点对象 0 的哈希值为 39053774;</span></span><br></pre></td></tr></table></figure>
+<p>对象的哈希值基于其内存地址生成。通过重写对象的哈希方法，可实现基于内容生成哈希值。但列表不太一样，它的哈希值是根据内容的哈希值组合起来得到的一个哈希值。</p>
+
+            </div>
+        
+        <!-- <footer class="article-footer">
+        </footer> -->
+    </div>
+</article>
+
+<!-- zpy dont need foot nav -->
+<!-- 
+    
+<nav id="article-nav">
+    
+    
+        <a href="/wiki/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06-%E5%93%88%E5%B8%8C%E8%A1%A8/6.2-%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">6.2 哈希冲突</div>
+        </a>
+    
+</nav>
+
+
+ -->
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Z.P.Y &copy; 2025 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            <!-- 
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+             -->
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
