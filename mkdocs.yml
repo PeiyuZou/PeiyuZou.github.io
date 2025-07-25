@@ -1,0 +1,13 @@
+site_name: peiyuzou
+site_description: peiyuzou's knowledge wiki
+site_url: https://peiyuzou.github.io/
+theme:
+  name: material
+
+plugins:
+  - search
+  - blog
+  - meta
+
+markdown_extensions:
+  - admonition # 提示块
