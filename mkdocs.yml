@@ -82,14 +82,14 @@ nav:
     - CrashCourse:
       - 01_计算机科学/CrashCourse/00_导论.md
       - 01.算数逻辑单元:
-        - 01_计算机科学\CrashCourse\01.算数逻辑单元\01.算数逻辑单元.md
+        - 01_计算机科学/CrashCourse/01.算数逻辑单元/01.算数逻辑单元.md
   # - 编程语言:
   # - 数学:
   # - 游戏编程: index.md
   # - 游戏引擎: index.md
   - 实践:
     - Mkdocs:
-      - 99_实践\mkdocs\使用模板.md
+      - 99_实践/mkdocs/使用模板.md
 
 extra:
   homepage: https://peiyuzou.github.io/
