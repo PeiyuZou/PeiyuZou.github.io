@@ -13,7 +13,7 @@ theme:
     - navigation.tracking # 滚动时URL锚点自动更新
     - navigation.tabs # 一级导航显示为顶部Tab
     - navigation.tabs.sticky # 滚动时不隐藏顶部Tab
-    - navigation.sections # 侧边导航不折叠而是分组
+    # - navigation.sections # 侧边导航不折叠而是分组
     - navigation.expand # 侧边导航默认展开所有目录
     - navigation.path # 文章上方面包屑导航
     - navigation.prune # 优化选项-导航修剪（网站物理大小减少33%以上）
@@ -25,6 +25,11 @@ theme:
     - search.highlight # 搜索高亮
     - search.share # 搜索共享
     - navigation.footer # 页脚（上下页）
+    - content.code.copy # 允许代码块复制
+    - content.code.select # 允许代码块选择
+    - content.code.annotate # 代码注释
+    - content.footnote.tooltips # 脚注
+    - content.tooltips # 工具提示
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default # 日间模式
@@ -69,14 +74,22 @@ plugins:
   - meta
   - tags:
       tags_file: blog/tags.md
+  - glightbox # 图片插件
 
 nav:
-  - Home: index.md
-  - Install: install.md
-  - Usage: usage.md
-  - Blog:
-     - blog/index.md
-     - Tags: blog/tags.md
+  - 首页: index.md
+  - 计算机科学:
+    - CrashCourse:
+      - 01_计算机科学/CrashCourse/00_导论.md
+      - 01.算数逻辑单元:
+        - 01_计算机科学\CrashCourse\01.算数逻辑单元\01.算数逻辑单元.md
+  # - 编程语言:
+  # - 数学:
+  # - 游戏编程: index.md
+  # - 游戏引擎: index.md
+  - 实践:
+    - Mkdocs:
+      - 99_实践\mkdocs\使用模板.md
 
 extra:
   homepage: https://peiyuzou.github.io/
@@ -110,8 +123,37 @@ markdown_extensions:
   - pymdownx.mark:
       smart_mark: true
   - pymdownx.tilde
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      use_pygments: true
+      pygments_lang_class: true
+      auto_title: true
+      linenums: true
+      linenums_style: pymdownx-inline
+      line_spans: __span
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.keys
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: true
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.mark
 
 extra_javascript:
-  # 内联数学公式
+  # 数学公式
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
