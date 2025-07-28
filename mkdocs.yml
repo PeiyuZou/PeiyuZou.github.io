@@ -80,9 +80,13 @@ nav:
   - 首页: index.md
   - 计算机科学:
     - CrashCourse:
-      - 01_计算机科学/CrashCourse/00_导论.md
-      - 01.算数逻辑单元:
-        - 01_计算机科学/CrashCourse/01_算数逻辑单元/01_算数逻辑单元.md
+      - 01.算数逻辑单元: 01_计算机科学/CrashCourse/01_算数逻辑单元.md
+      - 02.寄存器和内存: 01_计算机科学/CrashCourse/02_寄存器和内存.md
+      - 03.中央处理器: 01_计算机科学/CrashCourse/03_中央处理器.md
+      - 04.高级CPU设计: 01_计算机科学/CrashCourse/04_高级CPU设计.md
+    - 数据结构与算法:
+      - 01.概览:
+        - 1.1 数据结构与算法概览: 01_计算机科学/数据结构和算法/01_概览/1_1_数据结构和算法概览.md
   # - 编程语言:
   # - 数学:
   # - 游戏编程: index.md
@@ -157,3 +161,6 @@ extra_javascript:
   # 数学公式
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - styles/extra.css
