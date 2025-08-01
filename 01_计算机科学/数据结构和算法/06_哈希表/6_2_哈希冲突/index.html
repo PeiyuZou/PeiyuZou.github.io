@@ -1,0 +1,1815 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="peiyuzou's knowledge wiki">
+      
+      
+      
+        <link rel="canonical" href="https://peiyuzou.github.io/01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/06_%E5%93%88%E5%B8%8C%E8%A1%A8/6_2_%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/">
+      
+      
+        <link rel="prev" href="../6_1_%E5%93%88%E5%B8%8C%E8%A1%A8/">
+      
+      
+        <link rel="next" href="../6_3_%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">
+      
+      
+      <link rel="icon" href="../../../../blog/images/peiyuzou.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>6.2 哈希冲突 - wiki of peiyuzou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="https://peiyuzou.github.io/" title="wiki of peiyuzou" class="md-header__button md-logo" aria-label="wiki of peiyuzou" data-md-component="logo">
+      
+  <img src="../../../../blog/images/peiyuzou.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            wiki of peiyuzou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6.2 哈希冲突
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换至夜间模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换至夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换至日间模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换至日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../CrashCourse/01_%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  计算机科学
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../02_%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  编程语言
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../03_%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01_Lz4/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  游戏编程
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../99_%E5%AE%9E%E8%B7%B5/mkdocs/%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://peiyuzou.github.io/" title="wiki of peiyuzou" class="md-nav__button md-logo" aria-label="wiki of peiyuzou" data-md-component="logo">
+      
+  <img src="../../../../blog/images/peiyuzou.png" alt="logo">
+
+    </a>
+    wiki of peiyuzou
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    首页
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    计算机科学
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            计算机科学
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../CrashCourse/01_%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    CrashCourse
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    数据结构与算法
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            数据结构与算法
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../01_%E6%A6%82%E8%A7%88/1_1_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E6%A6%82%E8%A7%88/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    01.概览
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../02_%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/2_1_%E7%AE%97%E6%B3%95%E6%95%88%E7%8E%87%E8%AF%84%E4%BC%B0/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    02.复杂度分析
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../03_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3_1_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    03.数据结构
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../04_%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8/4_1_%E6%95%B0%E7%BB%84/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    04.数组与链表
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../05_%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/5_1_%E6%A0%88/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    05.栈与队列
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_6" id="__nav_2_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    06.哈希表
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            06.哈希表
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_1_%E5%93%88%E5%B8%8C%E8%A1%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6.1 哈希表
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    6.2 哈希冲突
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    6.2 哈希冲突
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      链式地址
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      开放寻址
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="开放寻址">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      线性探测
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      平方探测
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      多次哈希
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_3_%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6.3 哈希算法
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../02_%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/CSharp/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E5%92%8C%E9%97%AD%E5%8C%85%E9%97%AE%E9%A2%98/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    编程语言
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../03_%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01_Lz4/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    游戏编程
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../99_%E5%AE%9E%E8%B7%B5/mkdocs/%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    实践
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      链式地址
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      开放寻址
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="开放寻址">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      线性探测
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      平方探测
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      多次哈希
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>6.2 哈希冲突</h1>
+
+<p>哈希冲突在理论上是无法完全避免的，我们只能通过一些办法来尽可能避免或者说在发生冲突时调整以确保哈希表正常工作。比如上一节提到的进行哈希表扩容直到冲突消失为止，这种办法简单粗暴且有效，但效率太低，因为哈希表扩容需要进行大量的数据搬运与哈希值计算。为了提升效率，我们可以采用以下策略：</p>
+<ul>
+<li>改良哈希表数据结构，使得哈希表可以在出现哈希冲突时正常工作。</li>
+<li>仅在必要时，即当哈希冲突比较严重时，才执行扩容操作。</li>
+</ul>
+<p>哈希表的结构改良方法主要包括 “链式地址” 和 “开放寻址” 。</p>
+<h2 id="_1">链式地址<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>在原始哈希表中，每个桶仅能存储一个键值对。链式地址（separate chaining）将单个元素转换为链表，将键值对作为链表节点，将所有发生冲突的键值对都存储在同一链表中。</p>
+<figure>
+<p><a class="glightbox" href="hash_conflict_0.png" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="链式地址哈希表" src="hash_conflict_0.png" /></a></p>
+<figcaption>
+<p>链式地址哈希表</p>
+</figcaption>
+</figure>
+<p>基于链式地址实现的哈希表的操作方法发生了以下变化。</p>
+<ul>
+<li>查询元素：输入 key ，经过哈希函数得到桶索引，即可访问链表头节点，然后遍历链表并对比 key 以查找目标键值对。</li>
+<li>添加元素：首先通过哈希函数访问链表头节点，然后将节点（键值对）添加到链表中。</li>
+<li>删除元素：根据哈希函数的结果访问链表头部，接着遍历链表以查找目标节点并将其删除。</li>
+</ul>
+<p>链式地址存在以下局限性。</p>
+<ul>
+<li>占用空间增大：链表包含节点指针，它相比数组更加耗费内存空间。</li>
+<li>查询效率降低：因为需要线性遍历链表来查找对应元素。</li>
+</ul>
+<div class="language-C# highlight"><span class="filename">C#</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="  1 "></span></a><span class="cm">/* 链式地址哈希表 */</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><a href="#__codelineno-0-2"><span class="linenos" data-linenos="  2 "></span></a><span class="k">class</span><span class="w"> </span><span class="nc">HashMapChaining</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><a href="#__codelineno-0-3"><span class="linenos" data-linenos="  3 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="c1">// 键值对数量</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><a href="#__codelineno-0-4"><span class="linenos" data-linenos="  4 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"> </span><span class="c1">// 哈希表容量</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><a href="#__codelineno-0-5"><span class="linenos" data-linenos="  5 "></span></a><span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">loadThres</span><span class="p">;</span><span class="w"> </span><span class="c1">// 触发扩容的负载因子阈值</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><a href="#__codelineno-0-6"><span class="linenos" data-linenos="  6 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">extendRatio</span><span class="p">;</span><span class="w"> </span><span class="c1">// 扩容倍数</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><a href="#__codelineno-0-7"><span class="linenos" data-linenos="  7 "></span></a><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span><span class="w"> </span><span class="c1">// 桶数组</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><a href="#__codelineno-0-8"><span class="linenos" data-linenos="  8 "></span></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><a href="#__codelineno-0-9"><span class="linenos" data-linenos="  9 "></span></a><span class="w">    </span><span class="cm">/* 构造方法 */</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><a href="#__codelineno-0-10"><span class="linenos" data-linenos=" 10 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">HashMapChaining</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a><a href="#__codelineno-0-11"><span class="linenos" data-linenos=" 11 "></span></a><span class="w">        </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><a href="#__codelineno-0-12"><span class="linenos" data-linenos=" 12 "></span></a><span class="w">        </span><span class="n">capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><a href="#__codelineno-0-13"><span class="linenos" data-linenos=" 13 "></span></a><span class="w">        </span><span class="n">loadThres</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">3.0</span><span class="p">;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><a href="#__codelineno-0-14"><span class="linenos" data-linenos=" 14 "></span></a><span class="w">        </span><span class="n">extendRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><a href="#__codelineno-0-15"><span class="linenos" data-linenos=" 15 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">capacity</span><span class="p">);</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><a href="#__codelineno-0-16"><span class="linenos" data-linenos=" 16 "></span></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><a href="#__codelineno-0-17"><span class="linenos" data-linenos=" 17 "></span></a><span class="w">            </span><span class="n">buckets</span><span class="p">.</span><span class="n">Add</span><span class="p">([]);</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><a href="#__codelineno-0-18"><span class="linenos" data-linenos=" 18 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><a href="#__codelineno-0-19"><span class="linenos" data-linenos=" 19 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><a href="#__codelineno-0-20"><span class="linenos" data-linenos=" 20 "></span></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><a href="#__codelineno-0-21"><span class="linenos" data-linenos=" 21 "></span></a><span class="w">    </span><span class="cm">/* 哈希函数 */</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><a href="#__codelineno-0-22"><span class="linenos" data-linenos=" 22 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">HashFunc</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><a href="#__codelineno-0-23"><span class="linenos" data-linenos=" 23 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><a href="#__codelineno-0-24"><span class="linenos" data-linenos=" 24 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><a href="#__codelineno-0-25"><span class="linenos" data-linenos=" 25 "></span></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><a href="#__codelineno-0-26"><span class="linenos" data-linenos=" 26 "></span></a><span class="w">    </span><span class="cm">/* 负载因子 */</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><a href="#__codelineno-0-27"><span class="linenos" data-linenos=" 27 "></span></a><span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="nf">LoadFactor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><a href="#__codelineno-0-28"><span class="linenos" data-linenos=" 28 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><a href="#__codelineno-0-29"><span class="linenos" data-linenos=" 29 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><a href="#__codelineno-0-30"><span class="linenos" data-linenos=" 30 "></span></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a><a href="#__codelineno-0-31"><span class="linenos" data-linenos=" 31 "></span></a><span class="w">    </span><span class="cm">/* 查询操作 */</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a><a href="#__codelineno-0-32"><span class="linenos" data-linenos=" 32 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><a href="#__codelineno-0-33"><span class="linenos" data-linenos=" 33 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashFunc</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><a href="#__codelineno-0-34"><span class="linenos" data-linenos=" 34 "></span></a><span class="w">        </span><span class="c1">// 遍历桶，若找到 key ，则返回对应 val</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a><a href="#__codelineno-0-35"><span class="linenos" data-linenos=" 35 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><a href="#__codelineno-0-36"><span class="linenos" data-linenos=" 36 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a><a href="#__codelineno-0-37"><span class="linenos" data-linenos=" 37 "></span></a><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="p">;</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><a href="#__codelineno-0-38"><span class="linenos" data-linenos=" 38 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a><a href="#__codelineno-0-39"><span class="linenos" data-linenos=" 39 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a><a href="#__codelineno-0-40"><span class="linenos" data-linenos=" 40 "></span></a><span class="w">        </span><span class="c1">// 若未找到 key ，则返回 null</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><a href="#__codelineno-0-41"><span class="linenos" data-linenos=" 41 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a><a href="#__codelineno-0-42"><span class="linenos" data-linenos=" 42 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><a href="#__codelineno-0-43"><span class="linenos" data-linenos=" 43 "></span></a>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a><a href="#__codelineno-0-44"><span class="linenos" data-linenos=" 44 "></span></a><span class="w">    </span><span class="cm">/* 添加操作 */</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a><a href="#__codelineno-0-45"><span class="linenos" data-linenos=" 45 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Put</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">val</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><a href="#__codelineno-0-46"><span class="linenos" data-linenos=" 46 "></span></a><span class="w">        </span><span class="c1">// 当负载因子超过阈值时，执行扩容</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><a href="#__codelineno-0-47"><span class="linenos" data-linenos=" 47 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LoadFactor</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">loadThres</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a><a href="#__codelineno-0-48"><span class="linenos" data-linenos=" 48 "></span></a><span class="w">            </span><span class="n">Extend</span><span class="p">();</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><a href="#__codelineno-0-49"><span class="linenos" data-linenos=" 49 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a><a href="#__codelineno-0-50"><span class="linenos" data-linenos=" 50 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashFunc</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><a href="#__codelineno-0-51"><span class="linenos" data-linenos=" 51 "></span></a><span class="w">        </span><span class="c1">// 遍历桶，若遇到指定 key ，则更新对应 val 并返回</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a><a href="#__codelineno-0-52"><span class="linenos" data-linenos=" 52 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a><a href="#__codelineno-0-53"><span class="linenos" data-linenos=" 53 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><a href="#__codelineno-0-54"><span class="linenos" data-linenos=" 54 "></span></a><span class="w">                </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="p">;</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><a href="#__codelineno-0-55"><span class="linenos" data-linenos=" 55 "></span></a><span class="w">                </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><a href="#__codelineno-0-56"><span class="linenos" data-linenos=" 56 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><a href="#__codelineno-0-57"><span class="linenos" data-linenos=" 57 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><a href="#__codelineno-0-58"><span class="linenos" data-linenos=" 58 "></span></a><span class="w">        </span><span class="c1">// 若无该 key ，则将键值对添加至尾部</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><a href="#__codelineno-0-59"><span class="linenos" data-linenos=" 59 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Pair</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">));</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a><a href="#__codelineno-0-60"><span class="linenos" data-linenos=" 60 "></span></a><span class="w">        </span><span class="n">size</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><a href="#__codelineno-0-61"><span class="linenos" data-linenos=" 61 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><a href="#__codelineno-0-62"><span class="linenos" data-linenos=" 62 "></span></a>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a><a href="#__codelineno-0-63"><span class="linenos" data-linenos=" 63 "></span></a><span class="w">    </span><span class="cm">/* 删除操作 */</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a><a href="#__codelineno-0-64"><span class="linenos" data-linenos=" 64 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Remove</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a><a href="#__codelineno-0-65"><span class="linenos" data-linenos=" 65 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashFunc</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a><a href="#__codelineno-0-66"><span class="linenos" data-linenos=" 66 "></span></a><span class="w">        </span><span class="c1">// 遍历桶，从中删除键值对</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a><a href="#__codelineno-0-67"><span class="linenos" data-linenos=" 67 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">ToList</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a><a href="#__codelineno-0-68"><span class="linenos" data-linenos=" 68 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a><a href="#__codelineno-0-69"><span class="linenos" data-linenos=" 69 "></span></a><span class="w">                </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">Remove</span><span class="p">(</span><span class="n">pair</span><span class="p">);</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a><a href="#__codelineno-0-70"><span class="linenos" data-linenos=" 70 "></span></a><span class="w">                </span><span class="n">size</span><span class="o">--</span><span class="p">;</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a><a href="#__codelineno-0-71"><span class="linenos" data-linenos=" 71 "></span></a><span class="w">                </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a><a href="#__codelineno-0-72"><span class="linenos" data-linenos=" 72 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a><a href="#__codelineno-0-73"><span class="linenos" data-linenos=" 73 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a><a href="#__codelineno-0-74"><span class="linenos" data-linenos=" 74 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a><a href="#__codelineno-0-75"><span class="linenos" data-linenos=" 75 "></span></a>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a><a href="#__codelineno-0-76"><span class="linenos" data-linenos=" 76 "></span></a><span class="w">    </span><span class="cm">/* 扩容哈希表 */</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a><a href="#__codelineno-0-77"><span class="linenos" data-linenos=" 77 "></span></a><span class="w">    </span><span class="k">void</span><span class="w"> </span><span class="nf">Extend</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a><a href="#__codelineno-0-78"><span class="linenos" data-linenos=" 78 "></span></a><span class="w">        </span><span class="c1">// 暂存原哈希表</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a><a href="#__codelineno-0-79"><span class="linenos" data-linenos=" 79 "></span></a><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bucketsTmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a><a href="#__codelineno-0-80"><span class="linenos" data-linenos=" 80 "></span></a><span class="w">        </span><span class="c1">// 初始化扩容后的新哈希表</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a><a href="#__codelineno-0-81"><span class="linenos" data-linenos=" 81 "></span></a><span class="w">        </span><span class="n">capacity</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">extendRatio</span><span class="p">;</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a><a href="#__codelineno-0-82"><span class="linenos" data-linenos=" 82 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">capacity</span><span class="p">);</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a><a href="#__codelineno-0-83"><span class="linenos" data-linenos=" 83 "></span></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a><a href="#__codelineno-0-84"><span class="linenos" data-linenos=" 84 "></span></a><span class="w">            </span><span class="n">buckets</span><span class="p">.</span><span class="n">Add</span><span class="p">([]);</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a><a href="#__codelineno-0-85"><span class="linenos" data-linenos=" 85 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a><a href="#__codelineno-0-86"><span class="linenos" data-linenos=" 86 "></span></a><span class="w">        </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a><a href="#__codelineno-0-87"><span class="linenos" data-linenos=" 87 "></span></a><span class="w">        </span><span class="c1">// 将键值对从原哈希表搬运至新哈希表</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a><a href="#__codelineno-0-88"><span class="linenos" data-linenos=" 88 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bucket</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bucketsTmp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a><a href="#__codelineno-0-89"><span class="linenos" data-linenos=" 89 "></span></a><span class="w">            </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bucket</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a><a href="#__codelineno-0-90"><span class="linenos" data-linenos=" 90 "></span></a><span class="w">                </span><span class="n">Put</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="p">);</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a><a href="#__codelineno-0-91"><span class="linenos" data-linenos=" 91 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a><a href="#__codelineno-0-92"><span class="linenos" data-linenos=" 92 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><a href="#__codelineno-0-93"><span class="linenos" data-linenos=" 93 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><a href="#__codelineno-0-94"><span class="linenos" data-linenos=" 94 "></span></a>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a><a href="#__codelineno-0-95"><span class="linenos" data-linenos=" 95 "></span></a><span class="w">    </span><span class="cm">/* 打印哈希表 */</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><a href="#__codelineno-0-96"><span class="linenos" data-linenos=" 96 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Print</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><a href="#__codelineno-0-97"><span class="linenos" data-linenos=" 97 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bucket</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">buckets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a><a href="#__codelineno-0-98"><span class="linenos" data-linenos=" 98 "></span></a><span class="w">            </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a><a href="#__codelineno-0-99"><span class="linenos" data-linenos=" 99 "></span></a><span class="w">            </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bucket</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100"></a><a href="#__codelineno-0-100"><span class="linenos" data-linenos="100 "></span></a><span class="w">                </span><span class="n">res</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; -&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="p">);</span>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101"></a><a href="#__codelineno-0-101"><span class="linenos" data-linenos="101 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a><a href="#__codelineno-0-102"><span class="linenos" data-linenos="102 "></span></a><span class="w">            </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">kv</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a><a href="#__codelineno-0-103"><span class="linenos" data-linenos="103 "></span></a><span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">kv</span><span class="p">);</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a><a href="#__codelineno-0-104"><span class="linenos" data-linenos="104 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a><a href="#__codelineno-0-105"><span class="linenos" data-linenos="105 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106"></a><a href="#__codelineno-0-106"><span class="linenos" data-linenos="106 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107"></a><a href="#__codelineno-0-107"><span class="linenos" data-linenos="107 "></span></a><span class="p">}</span>
+</span></code></pre></div>
+<p>值得注意的是，当链表很长时，查询效率 <span class="arithmatex">\(O(n)\)</span> 很差。此时可以将链表转换为 “AVL 树” 或 “红黑树” ，从而将查询操作的时间复杂度优化至 <span class="arithmatex">\(O(log_{2}n)\)</span> 。</p>
+<h2 id="_2">开放寻址<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>开放寻址（open addressing）不引入额外的数据结构，而是通过 “多次探测” 来处理哈希冲突，探测方式主要包括线性探测、平方探测和多次哈希等。</p>
+<h3 id="_3">线性探测<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>线性探测采用固定步长的线性搜索来进行探测，其操作方法与普通哈希表有所不同。</p>
+<ul>
+<li>插入元素：通过哈希函数计算桶索引，若发现桶内已有元素，则从冲突位置向后线性遍历（步长通常为 1 ），直至找到空桶，将元素插入其中。</li>
+<li>查找元素：若发现哈希冲突，则使用相同步长向后进行线性遍历，直到找到对应元素，返回 value 即可；如果遇到空桶，说明目标元素不在哈希表中，返回 None 。</li>
+</ul>
+<figure>
+<p><a class="glightbox" href="hash_conflict_1.png" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="线性探测" src="hash_conflict_1.png" /></a></p>
+<figcaption>
+<p>线性探测</p>
+</figcaption>
+</figure>
+<p>然而，<strong>线性探测容易产生 “聚集现象”</strong>。具体来说，数组中连续被占用的位置越长，这些连续位置发生哈希冲突的可能性越大，从而进一步促使该位置的聚堆生长，形成恶性循环，最终导致增删查改操作效率劣化。</p>
+<p>值得注意的是，我们不能在开放寻址哈希表中直接删除元素。这是因为删除元素会在数组内产生一个空桶 None ，而当查询元素时，线性探测到该空桶就会返回，因此在该空桶之后的元素都无法再被访问到，程序可能误判这些元素不存在。</p>
+<figure>
+<p><a class="glightbox" href="hash_conflict_2.png" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="在开放寻址中删除元素导致的查询问题" src="hash_conflict_2.png" /></a></p>
+<figcaption>
+<p>在开放寻址中删除元素导致的查询问题</p>
+</figcaption>
+</figure>
+<p>为了解决该问题，我们可以采用懒删除（lazy deletion）机制：它不直接从哈希表中移除元素，而是利用一个常量 TOMBSTONE 来标记这个桶。在该机制下，None 和 TOMBSTONE 都代表空桶，都可以放置键值对。但不同的是，线性探测到 TOMBSTONE 时应该继续遍历，因为其之下可能还存在键值对。</p>
+<p>然而，懒删除可能会加速哈希表的性能退化。这是因为每次删除操作都会产生一个删除标记，随着 TOMBSTONE 的增加，搜索时间也会增加，因为线性探测可能需要跳过多个 TOMBSTONE 才能找到目标元素。</p>
+<p>为此，考虑在线性探测中记录遇到的首个 TOMBSTONE 的索引，并将搜索到的目标元素与该 TOMBSTONE 交换位置。这样做的好处是当每次查询或添加元素时，元素会被移动至距离理想位置（探测起始点）更近的桶，从而优化查询效率。</p>
+<p>以下代码实现了一个包含懒删除的开放寻址（线性探测）哈希表。为了更加充分地使用哈希表的空间，我们将哈希表看作一个“环形数组”，当越过数组尾部时，回到头部继续遍历。</p>
+<div class="language-C# highlight"><span class="filename">C#</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="  1 "></span></a><span class="cm">/* 开放寻址哈希表 */</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><a href="#__codelineno-1-2"><span class="linenos" data-linenos="  2 "></span></a><span class="k">class</span><span class="w"> </span><span class="nc">HashMapOpenAddressing</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><a href="#__codelineno-1-3"><span class="linenos" data-linenos="  3 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="c1">// 键值对数量</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><a href="#__codelineno-1-4"><span class="linenos" data-linenos="  4 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="c1">// 哈希表容量</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><a href="#__codelineno-1-5"><span class="linenos" data-linenos="  5 "></span></a><span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">loadThres</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">3.0</span><span class="p">;</span><span class="w"> </span><span class="c1">// 触发扩容的负载因子阈值</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><a href="#__codelineno-1-6"><span class="linenos" data-linenos="  6 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">extendRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="c1">// 扩容倍数</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a><a href="#__codelineno-1-7"><span class="linenos" data-linenos="  7 "></span></a><span class="w">    </span><span class="n">Pair</span><span class="p">[]</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span><span class="w"> </span><span class="c1">// 桶数组</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a><a href="#__codelineno-1-8"><span class="linenos" data-linenos="  8 "></span></a><span class="w">    </span><span class="n">Pair</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-1&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// 删除标记</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a><a href="#__codelineno-1-9"><span class="linenos" data-linenos="  9 "></span></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a><a href="#__codelineno-1-10"><span class="linenos" data-linenos=" 10 "></span></a><span class="w">    </span><span class="cm">/* 构造方法 */</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a><a href="#__codelineno-1-11"><span class="linenos" data-linenos=" 11 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">HashMapOpenAddressing</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a><a href="#__codelineno-1-12"><span class="linenos" data-linenos=" 12 "></span></a><span class="w">        </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a><a href="#__codelineno-1-13"><span class="linenos" data-linenos=" 13 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pair</span><span class="p">[</span><span class="n">capacity</span><span class="p">];</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a><a href="#__codelineno-1-14"><span class="linenos" data-linenos=" 14 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15"></a><a href="#__codelineno-1-15"><span class="linenos" data-linenos=" 15 "></span></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16"></a><a href="#__codelineno-1-16"><span class="linenos" data-linenos=" 16 "></span></a><span class="w">    </span><span class="cm">/* 哈希函数 */</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17"></a><a href="#__codelineno-1-17"><span class="linenos" data-linenos=" 17 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">HashFunc</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18"></a><a href="#__codelineno-1-18"><span class="linenos" data-linenos=" 18 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19"></a><a href="#__codelineno-1-19"><span class="linenos" data-linenos=" 19 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20"></a><a href="#__codelineno-1-20"><span class="linenos" data-linenos=" 20 "></span></a>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21"></a><a href="#__codelineno-1-21"><span class="linenos" data-linenos=" 21 "></span></a><span class="w">    </span><span class="cm">/* 负载因子 */</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22"></a><a href="#__codelineno-1-22"><span class="linenos" data-linenos=" 22 "></span></a><span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="nf">LoadFactor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23"></a><a href="#__codelineno-1-23"><span class="linenos" data-linenos=" 23 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24"></a><a href="#__codelineno-1-24"><span class="linenos" data-linenos=" 24 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25"></a><a href="#__codelineno-1-25"><span class="linenos" data-linenos=" 25 "></span></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26"></a><a href="#__codelineno-1-26"><span class="linenos" data-linenos=" 26 "></span></a><span class="w">    </span><span class="cm">/* 搜索 key 对应的桶索引 */</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27"></a><a href="#__codelineno-1-27"><span class="linenos" data-linenos=" 27 "></span></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">FindBucket</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28"></a><a href="#__codelineno-1-28"><span class="linenos" data-linenos=" 28 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashFunc</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29"></a><a href="#__codelineno-1-29"><span class="linenos" data-linenos=" 29 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">firstTombstone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30"></a><a href="#__codelineno-1-30"><span class="linenos" data-linenos=" 30 "></span></a><span class="w">        </span><span class="c1">// 线性探测，当遇到空桶时跳出</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31"></a><a href="#__codelineno-1-31"><span class="linenos" data-linenos=" 31 "></span></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32"></a><a href="#__codelineno-1-32"><span class="linenos" data-linenos=" 32 "></span></a><span class="w">            </span><span class="c1">// 若遇到 key ，返回对应的桶索引</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33"></a><a href="#__codelineno-1-33"><span class="linenos" data-linenos=" 33 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34"></a><a href="#__codelineno-1-34"><span class="linenos" data-linenos=" 34 "></span></a><span class="w">                </span><span class="c1">// 若之前遇到了删除标记，则将键值对移动至该索引处</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35"></a><a href="#__codelineno-1-35"><span class="linenos" data-linenos=" 35 "></span></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">firstTombstone</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36"></a><a href="#__codelineno-1-36"><span class="linenos" data-linenos=" 36 "></span></a><span class="w">                    </span><span class="n">buckets</span><span class="p">[</span><span class="n">firstTombstone</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37"></a><a href="#__codelineno-1-37"><span class="linenos" data-linenos=" 37 "></span></a><span class="w">                    </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">;</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38"></a><a href="#__codelineno-1-38"><span class="linenos" data-linenos=" 38 "></span></a><span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="n">firstTombstone</span><span class="p">;</span><span class="w"> </span><span class="c1">// 返回移动后的桶索引</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39"></a><a href="#__codelineno-1-39"><span class="linenos" data-linenos=" 39 "></span></a><span class="w">                </span><span class="p">}</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40"></a><a href="#__codelineno-1-40"><span class="linenos" data-linenos=" 40 "></span></a><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">index</span><span class="p">;</span><span class="w"> </span><span class="c1">// 返回桶索引</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41"></a><a href="#__codelineno-1-41"><span class="linenos" data-linenos=" 41 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42"></a><a href="#__codelineno-1-42"><span class="linenos" data-linenos=" 42 "></span></a><span class="w">            </span><span class="c1">// 记录遇到的首个删除标记</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43"></a><a href="#__codelineno-1-43"><span class="linenos" data-linenos=" 43 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">firstTombstone</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44"></a><a href="#__codelineno-1-44"><span class="linenos" data-linenos=" 44 "></span></a><span class="w">                </span><span class="n">firstTombstone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index</span><span class="p">;</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45"></a><a href="#__codelineno-1-45"><span class="linenos" data-linenos=" 45 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46"></a><a href="#__codelineno-1-46"><span class="linenos" data-linenos=" 46 "></span></a><span class="w">            </span><span class="c1">// 计算桶索引，越过尾部则返回头部</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47"></a><a href="#__codelineno-1-47"><span class="linenos" data-linenos=" 47 "></span></a><span class="w">            </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48"></a><a href="#__codelineno-1-48"><span class="linenos" data-linenos=" 48 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49"></a><a href="#__codelineno-1-49"><span class="linenos" data-linenos=" 49 "></span></a><span class="w">        </span><span class="c1">// 若 key 不存在，则返回添加点的索引</span>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50"></a><a href="#__codelineno-1-50"><span class="linenos" data-linenos=" 50 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">firstTombstone</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">firstTombstone</span><span class="p">;</span>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51"></a><a href="#__codelineno-1-51"><span class="linenos" data-linenos=" 51 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52"></a><a href="#__codelineno-1-52"><span class="linenos" data-linenos=" 52 "></span></a>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53"></a><a href="#__codelineno-1-53"><span class="linenos" data-linenos=" 53 "></span></a><span class="w">    </span><span class="cm">/* 查询操作 */</span>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54"></a><a href="#__codelineno-1-54"><span class="linenos" data-linenos=" 54 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">Get</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55"></a><a href="#__codelineno-1-55"><span class="linenos" data-linenos=" 55 "></span></a><span class="w">        </span><span class="c1">// 搜索 key 对应的桶索引</span>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56"></a><a href="#__codelineno-1-56"><span class="linenos" data-linenos=" 56 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FindBucket</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57"></a><a href="#__codelineno-1-57"><span class="linenos" data-linenos=" 57 "></span></a><span class="w">        </span><span class="c1">// 若找到键值对，则返回对应 val</span>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58"></a><a href="#__codelineno-1-58"><span class="linenos" data-linenos=" 58 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59"></a><a href="#__codelineno-1-59"><span class="linenos" data-linenos=" 59 "></span></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">val</span><span class="p">;</span>
+</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60"></a><a href="#__codelineno-1-60"><span class="linenos" data-linenos=" 60 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61"></a><a href="#__codelineno-1-61"><span class="linenos" data-linenos=" 61 "></span></a><span class="w">        </span><span class="c1">// 若键值对不存在，则返回 null</span>
+</span><span id="__span-1-62"><a id="__codelineno-1-62" name="__codelineno-1-62"></a><a href="#__codelineno-1-62"><span class="linenos" data-linenos=" 62 "></span></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+</span><span id="__span-1-63"><a id="__codelineno-1-63" name="__codelineno-1-63"></a><a href="#__codelineno-1-63"><span class="linenos" data-linenos=" 63 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-64"><a id="__codelineno-1-64" name="__codelineno-1-64"></a><a href="#__codelineno-1-64"><span class="linenos" data-linenos=" 64 "></span></a>
+</span><span id="__span-1-65"><a id="__codelineno-1-65" name="__codelineno-1-65"></a><a href="#__codelineno-1-65"><span class="linenos" data-linenos=" 65 "></span></a><span class="w">    </span><span class="cm">/* 添加操作 */</span>
+</span><span id="__span-1-66"><a id="__codelineno-1-66" name="__codelineno-1-66"></a><a href="#__codelineno-1-66"><span class="linenos" data-linenos=" 66 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Put</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">val</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-67"><a id="__codelineno-1-67" name="__codelineno-1-67"></a><a href="#__codelineno-1-67"><span class="linenos" data-linenos=" 67 "></span></a><span class="w">        </span><span class="c1">// 当负载因子超过阈值时，执行扩容</span>
+</span><span id="__span-1-68"><a id="__codelineno-1-68" name="__codelineno-1-68"></a><a href="#__codelineno-1-68"><span class="linenos" data-linenos=" 68 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LoadFactor</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">loadThres</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-69"><a id="__codelineno-1-69" name="__codelineno-1-69"></a><a href="#__codelineno-1-69"><span class="linenos" data-linenos=" 69 "></span></a><span class="w">            </span><span class="n">Extend</span><span class="p">();</span>
+</span><span id="__span-1-70"><a id="__codelineno-1-70" name="__codelineno-1-70"></a><a href="#__codelineno-1-70"><span class="linenos" data-linenos=" 70 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-71"><a id="__codelineno-1-71" name="__codelineno-1-71"></a><a href="#__codelineno-1-71"><span class="linenos" data-linenos=" 71 "></span></a><span class="w">        </span><span class="c1">// 搜索 key 对应的桶索引</span>
+</span><span id="__span-1-72"><a id="__codelineno-1-72" name="__codelineno-1-72"></a><a href="#__codelineno-1-72"><span class="linenos" data-linenos=" 72 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FindBucket</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-1-73"><a id="__codelineno-1-73" name="__codelineno-1-73"></a><a href="#__codelineno-1-73"><span class="linenos" data-linenos=" 73 "></span></a><span class="w">        </span><span class="c1">// 若找到键值对，则覆盖 val 并返回</span>
+</span><span id="__span-1-74"><a id="__codelineno-1-74" name="__codelineno-1-74"></a><a href="#__codelineno-1-74"><span class="linenos" data-linenos=" 74 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-75"><a id="__codelineno-1-75" name="__codelineno-1-75"></a><a href="#__codelineno-1-75"><span class="linenos" data-linenos=" 75 "></span></a><span class="w">            </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="p">;</span>
+</span><span id="__span-1-76"><a id="__codelineno-1-76" name="__codelineno-1-76"></a><a href="#__codelineno-1-76"><span class="linenos" data-linenos=" 76 "></span></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-1-77"><a id="__codelineno-1-77" name="__codelineno-1-77"></a><a href="#__codelineno-1-77"><span class="linenos" data-linenos=" 77 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-78"><a id="__codelineno-1-78" name="__codelineno-1-78"></a><a href="#__codelineno-1-78"><span class="linenos" data-linenos=" 78 "></span></a><span class="w">        </span><span class="c1">// 若键值对不存在，则添加该键值对</span>
+</span><span id="__span-1-79"><a id="__codelineno-1-79" name="__codelineno-1-79"></a><a href="#__codelineno-1-79"><span class="linenos" data-linenos=" 79 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pair</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">);</span>
+</span><span id="__span-1-80"><a id="__codelineno-1-80" name="__codelineno-1-80"></a><a href="#__codelineno-1-80"><span class="linenos" data-linenos=" 80 "></span></a><span class="w">        </span><span class="n">size</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-1-81"><a id="__codelineno-1-81" name="__codelineno-1-81"></a><a href="#__codelineno-1-81"><span class="linenos" data-linenos=" 81 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-82"><a id="__codelineno-1-82" name="__codelineno-1-82"></a><a href="#__codelineno-1-82"><span class="linenos" data-linenos=" 82 "></span></a>
+</span><span id="__span-1-83"><a id="__codelineno-1-83" name="__codelineno-1-83"></a><a href="#__codelineno-1-83"><span class="linenos" data-linenos=" 83 "></span></a><span class="w">    </span><span class="cm">/* 删除操作 */</span>
+</span><span id="__span-1-84"><a id="__codelineno-1-84" name="__codelineno-1-84"></a><a href="#__codelineno-1-84"><span class="linenos" data-linenos=" 84 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Remove</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-85"><a id="__codelineno-1-85" name="__codelineno-1-85"></a><a href="#__codelineno-1-85"><span class="linenos" data-linenos=" 85 "></span></a><span class="w">        </span><span class="c1">// 搜索 key 对应的桶索引</span>
+</span><span id="__span-1-86"><a id="__codelineno-1-86" name="__codelineno-1-86"></a><a href="#__codelineno-1-86"><span class="linenos" data-linenos=" 86 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FindBucket</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-1-87"><a id="__codelineno-1-87" name="__codelineno-1-87"></a><a href="#__codelineno-1-87"><span class="linenos" data-linenos=" 87 "></span></a><span class="w">        </span><span class="c1">// 若找到键值对，则用删除标记覆盖它</span>
+</span><span id="__span-1-88"><a id="__codelineno-1-88" name="__codelineno-1-88"></a><a href="#__codelineno-1-88"><span class="linenos" data-linenos=" 88 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-89"><a id="__codelineno-1-89" name="__codelineno-1-89"></a><a href="#__codelineno-1-89"><span class="linenos" data-linenos=" 89 "></span></a><span class="w">            </span><span class="n">buckets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">;</span>
+</span><span id="__span-1-90"><a id="__codelineno-1-90" name="__codelineno-1-90"></a><a href="#__codelineno-1-90"><span class="linenos" data-linenos=" 90 "></span></a><span class="w">            </span><span class="n">size</span><span class="o">--</span><span class="p">;</span>
+</span><span id="__span-1-91"><a id="__codelineno-1-91" name="__codelineno-1-91"></a><a href="#__codelineno-1-91"><span class="linenos" data-linenos=" 91 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-92"><a id="__codelineno-1-92" name="__codelineno-1-92"></a><a href="#__codelineno-1-92"><span class="linenos" data-linenos=" 92 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-93"><a id="__codelineno-1-93" name="__codelineno-1-93"></a><a href="#__codelineno-1-93"><span class="linenos" data-linenos=" 93 "></span></a>
+</span><span id="__span-1-94"><a id="__codelineno-1-94" name="__codelineno-1-94"></a><a href="#__codelineno-1-94"><span class="linenos" data-linenos=" 94 "></span></a><span class="w">    </span><span class="cm">/* 扩容哈希表 */</span>
+</span><span id="__span-1-95"><a id="__codelineno-1-95" name="__codelineno-1-95"></a><a href="#__codelineno-1-95"><span class="linenos" data-linenos=" 95 "></span></a><span class="w">    </span><span class="k">void</span><span class="w"> </span><span class="nf">Extend</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-96"><a id="__codelineno-1-96" name="__codelineno-1-96"></a><a href="#__codelineno-1-96"><span class="linenos" data-linenos=" 96 "></span></a><span class="w">        </span><span class="c1">// 暂存原哈希表</span>
+</span><span id="__span-1-97"><a id="__codelineno-1-97" name="__codelineno-1-97"></a><a href="#__codelineno-1-97"><span class="linenos" data-linenos=" 97 "></span></a><span class="w">        </span><span class="n">Pair</span><span class="p">[]</span><span class="w"> </span><span class="n">bucketsTmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span>
+</span><span id="__span-1-98"><a id="__codelineno-1-98" name="__codelineno-1-98"></a><a href="#__codelineno-1-98"><span class="linenos" data-linenos=" 98 "></span></a><span class="w">        </span><span class="c1">// 初始化扩容后的新哈希表</span>
+</span><span id="__span-1-99"><a id="__codelineno-1-99" name="__codelineno-1-99"></a><a href="#__codelineno-1-99"><span class="linenos" data-linenos=" 99 "></span></a><span class="w">        </span><span class="n">capacity</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">extendRatio</span><span class="p">;</span>
+</span><span id="__span-1-100"><a id="__codelineno-1-100" name="__codelineno-1-100"></a><a href="#__codelineno-1-100"><span class="linenos" data-linenos="100 "></span></a><span class="w">        </span><span class="n">buckets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pair</span><span class="p">[</span><span class="n">capacity</span><span class="p">];</span>
+</span><span id="__span-1-101"><a id="__codelineno-1-101" name="__codelineno-1-101"></a><a href="#__codelineno-1-101"><span class="linenos" data-linenos="101 "></span></a><span class="w">        </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-102"><a id="__codelineno-1-102" name="__codelineno-1-102"></a><a href="#__codelineno-1-102"><span class="linenos" data-linenos="102 "></span></a><span class="w">        </span><span class="c1">// 将键值对从原哈希表搬运至新哈希表</span>
+</span><span id="__span-1-103"><a id="__codelineno-1-103" name="__codelineno-1-103"></a><a href="#__codelineno-1-103"><span class="linenos" data-linenos="103 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bucketsTmp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-104"><a id="__codelineno-1-104" name="__codelineno-1-104"></a><a href="#__codelineno-1-104"><span class="linenos" data-linenos="104 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-105"><a id="__codelineno-1-105" name="__codelineno-1-105"></a><a href="#__codelineno-1-105"><span class="linenos" data-linenos="105 "></span></a><span class="w">                </span><span class="n">Put</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="p">);</span>
+</span><span id="__span-1-106"><a id="__codelineno-1-106" name="__codelineno-1-106"></a><a href="#__codelineno-1-106"><span class="linenos" data-linenos="106 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-1-107"><a id="__codelineno-1-107" name="__codelineno-1-107"></a><a href="#__codelineno-1-107"><span class="linenos" data-linenos="107 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-108"><a id="__codelineno-1-108" name="__codelineno-1-108"></a><a href="#__codelineno-1-108"><span class="linenos" data-linenos="108 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-109"><a id="__codelineno-1-109" name="__codelineno-1-109"></a><a href="#__codelineno-1-109"><span class="linenos" data-linenos="109 "></span></a>
+</span><span id="__span-1-110"><a id="__codelineno-1-110" name="__codelineno-1-110"></a><a href="#__codelineno-1-110"><span class="linenos" data-linenos="110 "></span></a><span class="w">    </span><span class="cm">/* 打印哈希表 */</span>
+</span><span id="__span-1-111"><a id="__codelineno-1-111" name="__codelineno-1-111"></a><a href="#__codelineno-1-111"><span class="linenos" data-linenos="111 "></span></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Print</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-112"><a id="__codelineno-1-112" name="__codelineno-1-112"></a><a href="#__codelineno-1-112"><span class="linenos" data-linenos="112 "></span></a><span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">Pair</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">buckets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-113"><a id="__codelineno-1-113" name="__codelineno-1-113"></a><a href="#__codelineno-1-113"><span class="linenos" data-linenos="113 "></span></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-114"><a id="__codelineno-1-114" name="__codelineno-1-114"></a><a href="#__codelineno-1-114"><span class="linenos" data-linenos="114 "></span></a><span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;null&quot;</span><span class="p">);</span>
+</span><span id="__span-1-115"><a id="__codelineno-1-115" name="__codelineno-1-115"></a><a href="#__codelineno-1-115"><span class="linenos" data-linenos="115 "></span></a><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pair</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TOMBSTONE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-116"><a id="__codelineno-1-116" name="__codelineno-1-116"></a><a href="#__codelineno-1-116"><span class="linenos" data-linenos="116 "></span></a><span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;TOMBSTONE&quot;</span><span class="p">);</span>
+</span><span id="__span-1-117"><a id="__codelineno-1-117" name="__codelineno-1-117"></a><a href="#__codelineno-1-117"><span class="linenos" data-linenos="117 "></span></a><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-118"><a id="__codelineno-1-118" name="__codelineno-1-118"></a><a href="#__codelineno-1-118"><span class="linenos" data-linenos="118 "></span></a><span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">key</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; -&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">val</span><span class="p">);</span>
+</span><span id="__span-1-119"><a id="__codelineno-1-119" name="__codelineno-1-119"></a><a href="#__codelineno-1-119"><span class="linenos" data-linenos="119 "></span></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-1-120"><a id="__codelineno-1-120" name="__codelineno-1-120"></a><a href="#__codelineno-1-120"><span class="linenos" data-linenos="120 "></span></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-121"><a id="__codelineno-1-121" name="__codelineno-1-121"></a><a href="#__codelineno-1-121"><span class="linenos" data-linenos="121 "></span></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-122"><a id="__codelineno-1-122" name="__codelineno-1-122"></a><a href="#__codelineno-1-122"><span class="linenos" data-linenos="122 "></span></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="_4">平方探测<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>平方探测与线性探测类似，都是开放寻址的常见策略之一。当发生冲突时，平方探测不是简单地跳过一个固定的步数，而是跳过“探测次数的平方”的步数，即 <span class="arithmatex">\(1,4,9,...\)</span> 步。</p>
+<p>平方探测主要具有以下优势。</p>
+<ul>
+<li>平方探测通过跳过探测次数平方的距离，试图缓解线性探测的聚集效应。</li>
+<li>平方探测会跳过更大的距离来寻找空位置，有助于数据分布得更加均匀。</li>
+</ul>
+<p>然而，平方探测并不是完美的。</p>
+<ul>
+<li>仍然存在聚集现象，即某些位置比其他位置更容易被占用。</li>
+<li>由于平方的增长，平方探测可能不会探测整个哈希表，这意味着即使哈希表中有空桶，平方探测也可能无法访问到它。</li>
+</ul>
+<h3 id="_5">多次哈希<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>多次哈希方法使用多个哈希函数 <span class="arithmatex">\(f_{1}(x)\)</span>、<span class="arithmatex">\(f_{2}(x)\)</span>、<span class="arithmatex">\(f_{3}(x)\)</span>、... 进行探测。</p>
+<ul>
+<li>插入元素：若哈希函数 <span class="arithmatex">\(f_{1}(x)\)</span> 出现冲突，则尝试 <span class="arithmatex">\(f_{2}(x)\)</span> ，以此类推，直到找到空位后插入元素。</li>
+<li>查找元素：在相同的哈希函数顺序下进行查找，直到找到目标元素时返回；若遇到空位或已尝试所有哈希函数，说明哈希表中不存在该元素，则返回 None 。</li>
+</ul>
+<p>与线性探测相比，多次哈希方法不易产生聚集，但多个哈希函数会带来额外的计算量。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>请注意，开放寻址（线性探测、平方探测和多次哈希）哈希表都存在 “不能直接删除元素” 的问题。</li>
+<li>C# 采用的是链式地址、Python 采用的是开放寻址</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../6_1_%E5%93%88%E5%B8%8C%E8%A1%A8/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 6.1 哈希表">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                6.1 哈希表
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../6_3_%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" class="md-footer__link md-footer__link--next" aria-label="下一页: 6.3 哈希算法">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                6.3 哈希算法
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 - 2025 peiyuzou
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/peiyuzou" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "toc.follow", "navigation.top", "search.suggest", "search.highlight", "search.share", "navigation.footer", "content.code.copy", "content.code.select", "content.code.annotate", "content.footnote.tooltips", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.50899def.min.js"></script>
+      
+        <script src="../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
