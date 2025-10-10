@@ -143,6 +143,9 @@ nav:
     - Unity内存管理:
       - 01.什么是内存: 04_性能优化/Unity内存管理/01_什么是内存.md
       - 02.Android内存管理: 04_性能优化/Unity内存管理/02_Android内存管理.md
+      - 03.Unity内存简介: 04_性能优化/Unity内存管理/03_Unity内存简介.md
+      - 04.Unity Native Memory: 04_性能优化/Unity内存管理/04_Unity_Native_Memory.md
+      - 05.Unity Managed Memory: 04_性能优化/Unity内存管理/05_Unity_Managed_Memory.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
