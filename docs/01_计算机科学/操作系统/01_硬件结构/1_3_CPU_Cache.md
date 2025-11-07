@@ -56,7 +56,7 @@ CPU Cache 按照单个块来读取数据，单个这样的块称为一个 Cache 
 
 第二个问题是，一个 CPU Cache Line 的数据有 64 字节，除了目标数据，其它内存地址的数据也连带被加载进来了，CPU 是如何从中找到目标数据的呢？CPU 从 Cache Line 读取数据时，不会读取整个 Data Block，而是按照单个**“字”（Word）**读取，整个 Data Block 被划分为若干的字，只需要一个偏移量，CPU 就知道到底读哪个字。
 
-所以，一个内存地址被设计为由 **CPU Cache Line 索引**、**组标记**、**偏移量** 三个部分组成。整合前面的三个问题，我们可以得到 CPU 从 Cache Line 读取数据的全貌：
+所以，一个内存地址被拆分成三个部分，作为 **CPU Cache Line 索引**、**组标记**、**偏移量** 三个部分的值。整合前面的三个问题，我们可以得到 CPU 从 Cache Line 读取数据的全貌：
 
 ![从 Cache Line 读取数据](cpu_cache_02.png)
 /// caption
