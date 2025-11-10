@@ -1,0 +1,6 @@
+/* 二级标题样式，自动添加下划线 */
+h2 {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 0.2em;
+  margin-bottom: 1em;
+}
