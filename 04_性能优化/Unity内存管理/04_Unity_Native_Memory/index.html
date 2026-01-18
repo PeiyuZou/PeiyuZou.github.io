@@ -1,0 +1,1856 @@
+<!DOCTYPE html><html lang="zh" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="peiyuzou's knowledge wiki">
+      
+      
+      
+        <link rel="canonical" href="https://peiyuzou.github.io/04_%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/04_Unity_Native_Memory/">
+      
+      
+        <link rel="prev" href="../03_Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/">
+      
+      
+        <link rel="next" href="../05_Unity_Managed_Memory/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../blog/images/peiyuzou.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>04.Unity Native Memory - wiki of peiyuzou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#native-memory" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="https://peiyuzou.github.io/" title="wiki of peiyuzou" class="md-header__button md-logo" aria-label="wiki of peiyuzou" data-md-component="logo">
+      
+  <img src="../../../blog/images/peiyuzou.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            wiki of peiyuzou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              04.Unity Native Memory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo" aria-label="切换至夜间模式" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换至夜间模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo" aria-label="切换至日间模式" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换至日间模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01_%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  计算机科学
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../02_%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/C/%E5%8F%98%E9%87%8F%E5%92%8C%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  编程语言
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../03_%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01_Lz4/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  游戏编程
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../01_%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  性能优化
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../99_%E5%AE%9E%E8%B7%B5/mkdocs/%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://peiyuzou.github.io/" title="wiki of peiyuzou" class="md-nav__button md-logo" aria-label="wiki of peiyuzou" data-md-component="logo">
+      
+  <img src="../../../blog/images/peiyuzou.png" alt="logo">
+
+    </a>
+    wiki of peiyuzou
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/CrashCourse/01_%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E5%85%83/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    计算机科学
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../02_%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/C/%E5%8F%98%E9%87%8F%E5%92%8C%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    编程语言
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../03_%E6%B8%B8%E6%88%8F%E7%BC%96%E7%A8%8B/%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95/01_Lz4/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    游戏编程
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    性能优化
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    性能优化
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unity内存管理
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Unity内存管理
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01.什么是内存
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_Android%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02.Android内存管理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03.Unity内存简介
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04.Unity Native Memory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04.Unity Native Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#native-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Native Memory 介绍
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native Memory 介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-allocatormemory-label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Allocator与Memory Label
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-getruntimememory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GetRuntimeMemory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-newasroot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. NewAsRoot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 返还操作系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#native-memory_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Native Memory 最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native Memory 最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Audio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Audio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-dsp-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 DSP buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-audio-import-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Audio Import Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-code-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Code Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-assetbundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AssetBundle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AssetBundle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-typetree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 TypeTree
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-lz4-lzma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 压缩方式（Lz4 和 Lzma）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 大小和数量
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-texture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Texture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-mesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Mesh
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Unity_Managed_Memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05.Unity Managed Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../99_%E5%AE%9E%E8%B7%B5/mkdocs/%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#native-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Native Memory 介绍
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native Memory 介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-allocatormemory-label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Allocator与Memory Label
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-getruntimememory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GetRuntimeMemory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-newasroot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. NewAsRoot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 返还操作系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#native-memory_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Native Memory 最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native Memory 最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Audio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Audio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-dsp-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 DSP buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-audio-import-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Audio Import Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-code-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Code Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-assetbundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AssetBundle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AssetBundle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-typetree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 TypeTree
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-lz4-lzma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 压缩方式（Lz4 和 Lzma）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 大小和数量
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-texture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Texture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-mesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Mesh
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="导航栏">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    首页
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../01_%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    性能优化
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../01_%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Unity内存管理
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>04.Unity Native Memory</h1>
+
+<h2 id="native-memory">Native Memory 介绍<a class="headerlink" href="#native-memory" title="Permanent link">¶</a></h2>
+<h3 id="1-allocatormemory-label">1. Allocator与Memory Label<a class="headerlink" href="#1-allocatormemory-label" title="Permanent link">¶</a></h3>
+<p>Unity 在里面重载了 C++ 的所有分配内存的操作符，例如 alloc，new 等。每个操作符在被使用的时候要求有一个额外的参数就是 Memory Label，在 Memory Profiler （Windows/Analysis/Memory Profiler）中查看 Memory Details 里的 Name 很多就是 Memory Label。它指的就是当前的这一块内存内存要分配到哪个类型池里。</p>
+<h3 id="2-getruntimememory">2. GetRuntimeMemory<a class="headerlink" href="#2-getruntimememory" title="Permanent link">¶</a></h3>
+<p>Unity 在底层会用 Allocator，使用重载过的分配符分配内存的时候，会根据 Memory Label 分配到不同的 Allocator池 里面。每个 Allocator 池，单独做自己的跟踪。当要在 Runtime 去 Get 一个 Memory Label 下面池的时候，可以从对应的 Allocator 中取，可以从中知道有什么东西，有多少兆。</p>
+<h3 id="3-newasroot">3. NewAsRoot<a class="headerlink" href="#3-newasroot" title="Permanent link">¶</a></h3>
+<p>前面提到的 Allocator 的生成是使用 NewAsRoot，生成一个所谓的 Memory Island，它下面会有很多的子内存。例如一个 Shader，当加载一个 shader 进内存的时候，首先会生成一个 shader 的 Root，也就是 Memory Island。然后 Shader 底下的数据，例如 Subshader，Pass，Parameters 等，会作为该 Root 底下的成员，依次的分配。所以最后统计 Runtime 的内存时，统计这些 Root 即可。</p>
+<h3 id="4">4. 返还操作系统<a class="headerlink" href="#4" title="Permanent link">¶</a></h3>
+<p>因为是 C++ 的，所以当 delete 或 free 一个内存的时候，会立刻返回给系统。这和托管内存不一样，托管内存需要 GC 后才返回。</p>
+<h2 id="native-memory_1">Native Memory 最佳实践<a class="headerlink" href="#native-memory_1" title="Permanent link">¶</a></h2>
+<p>在使用Unity的时候，如果某些方面使用不当，会造成 Native Memory 的增长，所以这部分也是可以优化调整的。</p>
+<h3 id="1-scene">1. Scene<a class="headerlink" href="#1-scene" title="Permanent link">¶</a></h3>
+<p>首当其冲，最常见的导致 Native Memory 增长的原因，就是Scene。因为 Unity 是 C++ 引擎，所有的实体最终都会反映在 C++ 上，而不会反映在托管堆上。所以当 Scene 构建一个 GameObject 的时候，实际上在 Unity 的底层会构建一个或多个 Object 来存储这一个 GameObject 的信息（Component信息等）。所以当一个 Scene 里面有过多的 GameObject 存在的时候，Native Memory 就会显著的上升，甚至可能导致内存溢出。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>所以这里有一个经验之谈：当发现 Native Memory 大量上升时，首先去着重检查你的 Scene</p>
+</div>
+<h3 id="2-audio">2. Audio<a class="headerlink" href="#2-audio" title="Permanent link">¶</a></h3>
+<h4 id="21-dsp-buffer">2.1 DSP buffer<a class="headerlink" href="#21-dsp-buffer" title="Permanent link">¶</a></h4>
+<p>指一个声音的缓冲，当一个声音要播放的时候，需要向 CPU 去发送指令。如果声音的数据量非常的小，会造成频繁的向 CPU 发指令，造成 IO 压力。在 Unity 的 FMOD 声音引擎里面，一般会有一个 Buffer，当 Buffer 填充满了才会去向 CPU 发送一次播放声音的指令。所以 DSP Buffer大小的设置非常考究，一般会导致两种问题：</p>
+<ul>
+<li>设置的值过大，会导致声音的延迟，因为填充满需要很多的声音数据，当我们声音数据不大的时候，就会产生延时。</li>
+<li>设置的值过小，会导致 CPU 负担上升，因为会频繁的发送。</li>
+</ul>
+<h4 id="22-audio-import-settings">2.2 Audio Import Settings<a class="headerlink" href="#22-audio-import-settings" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Force To Mono</strong>：​这个选项作用是强制单声道，很多声音为了追求质量会设置成双声道，导致声音在包体和内存中，占用的空间加倍，但是95%以上的声音，两个声道是完全一样的数据。因此对声音不是很敏感的项目建议勾选此项，来降低内存的占用。</li>
+<li><strong>Compression Format</strong>：不同的平台有不同的声音格式的支持，iOS 对 MP3 有硬件支持，Android 暂时没有硬件支持。建议 iOS 使用 ADPCM 和 MP3 格式，Android 使用 Vorbis 格式。</li>
+<li><strong>Load Type</strong>：决定声音在内存中的存在形态：<ul>
+<li>Decompress On Load：当audio clip被加载时，解压声音数据，适用于小型音频文件（&lt; 200kb）</li>
+<li>Compressed In Memory：声音数据将以压缩的形式保存在内存当中，适用于中型音频文件（&gt;= 200kb）</li>
+<li>Streaming：从磁盘读取声音数据，适用于大型音频文件，例如背景音</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<ul>
+<li>Decompress On Load，要求文件必须小于 200kb，因为内部内存管理的问题，如果是大于 200kb 的文件，那么也还是只会被分配到不足 200kb 的内存。</li>
+<li>Bitrate：可以对音频文件本身进行压缩，降低文件的比特率（bitrate），前提音频品质不会被破坏太严重。</li>
+</ul>
+</div>
+<h3 id="3-code-size">3. Code Size<a class="headerlink" href="#3-code-size" title="Permanent link">¶</a></h3>
+<p>代码文件也是占内存的，需要加载进内存执行。一个典型的例子是模板泛型的滥用，例如一个模板函数有四五个不同的泛型参数，类型也不尽相同（float，int，double等），最后展开得到的一个 cpp 文件可能会很大。因为实际上 C++ 编译的时候用的所有的 Class，所有的 Template 最终都会被展开成静态类型。因此当模板函数有很多排列组合时，最后编译会得到所有的排列组合代码，导致文件很大。</p>
+<p>这不光会影响到最终代码文件的大小，导致 Native Memory 间接增长，同时也会影响IL2CPP编译速度，接触过 C++ 编译应该知道，单一一个 cpp 文件编译的话是没办法并行的，只能单核处理，所以也间接地导致打包慢。</p>
+<h3 id="4-assetbundle">4. AssetBundle<a class="headerlink" href="#4-assetbundle" title="Permanent link">¶</a></h3>
+<h4 id="41-typetree">4.1 TypeTree<a class="headerlink" href="#41-typetree" title="Permanent link">¶</a></h4>
+<p>这个东西存在是为了做这件事：Unity前后有很多的版本，不同的版本中很多的类型可能会有数据结构的改变，为了做数据结构的兼容，会在生成数据类型序列化的时候，顺便生成一个叫 TypeTree 的东西。就是当前这个版本用到了哪些变量，它们对应的数据类型是什么，当进行反序列化的时候，根据 TypeTree 去做反序列化。如果上一个版本的类型在这个版本没有，那 TypeTree 里就没有它，所以不会去碰到它。如果有新的 TypeTree，但是在当前版本不存在的话，那要用它的默认值来序列化。从而保证了在不同版本之间不会序列化出错。</p>
+<p>在构建 AssetBundle 的时候，可以通过以下代码关掉 TypeTree 的生成：</p>
+<div class="language-cs copy annotate highlight"><span class="filename">C#</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">BuildAssetBundleOptions</span><span class="p">.</span><span class="n">DisableWriteTypeTree</span>
+</span></code></pre></div>
+<p>什么时候可以关呢？当你可以保证构建 AssetBundle 的 Unity版本和使用它的 Unity 的版本是一模一样的时候（对兼容性不会有影响），就可以关闭。这样有三个好处：一、可以减少内存；二、AssetBundle 包大小会减少；三、build 和 Runtime 会变快，因为不会去序列化和反序列化 TypeTree（如果开了 TypeTree，序列化会做两步，首先去序列化 TypeTree，然后再去序列化实际的东西，反序列化也一样）</p>
+<h4 id="42-lz4-lzma">4.2 压缩方式（Lz4 和 Lzma）<a class="headerlink" href="#42-lz4-lzma" title="Permanent link">¶</a></h4>
+<p>Unity 目前主推 Lz4（也就是ChunkBased，BuildAssetBundleOptions.ChunkBasedCompression），Lz4 非常快，大概是 Lzma 的十倍以上的速度，但平均压缩比例比 Lzma 差 30% 左右，即包体更大。但 Lzma 基本可以不用了，因为 Lzma 解压和读取速度都非常慢，并且内存占比高，因为它的读取不是基于 ChunkBased，而是 Stream，也就是一次全解压出来。ChunkBased 可以逐块解压，每次解压可以重用之前的内存，减少内存的峰值。</p>
+<div class="admonition note">
+<p class="admonition-title">Lz4开源仓库</p>
+<p>Lz4目前是开源的，可以了解下它的原理：https://github.com/lz4/lz4</p>
+</div>
+<h4 id="43">4.3 大小和数量<a class="headerlink" href="#43" title="Permanent link">¶</a></h4>
+<p>AssetBundle 分两部分，一部分是头（用于索引），一部分是实际的打包的数据部分。如果每个 Asset 都单独打成一个 AssetBundle，那么可能所有问题加起来头的部分比数据还大。所以这个大小不适合太大也不能太小，官方建议一个AssetBundle在 1-2M，但是现在进入 5g 时代的话，可以适当加大，因为网络带宽更大了。</p>
+<h3 id="5-resources">5. Resources<a class="headerlink" href="#5-resources" title="Permanent link">¶</a></h3>
+<p>如果使用 Resources 模式打包，Resources 文件夹里的内容被打进包的时候会做一个红黑树（R-B Tree）用做索引，即检索资源到底在什么位置。所以Resource越大，红黑树越大，它不可卸载，并在刚刚加载游戏的时候就会被一直加在内存里，极大的拖慢游戏的启动时间，因为红黑树没有分析和加载完，游戏是不会启动的，并造成持续的内存压力。所以建议不要使用Resource，使用AssetBundle。</p>
+<h3 id="6-texture">6. Texture<a class="headerlink" href="#6-texture" title="Permanent link">¶</a></h3>
+<ul>
+<li>Upload Buffer：和声音的Buffer类似，填满后向 GPU push 一次</li>
+<li>Read/Write：没必要的话就关闭，正常情况，Texture 读进内存解析完了搁到 Upload Buffer 里之后，内存里那部分就会 delete 掉。除非开了Read/Write，那就不会 delete 了，会在显存和内存里各一份。前面说过手机内存显存通用的，所以内存里会有两份。</li>
+<li>​Mip Maps：例如 UI 元素这类相对于相机Z轴的值不会有任何变化的纹理，关闭该选项。</li>
+<li>Alpha Source：对于不透明纹理，关闭其alpha通道。
+​​- Max Size：根据平台不同，纹理的Max Size设成该平台最小值。</li>
+<li>POT：纹理的大小尽量为2的幂次方（POT），因为有些压缩格式可能不支持非2的幂次方的。</li>
+<li>压缩格式：<ul>
+<li>Android<ul>
+<li>支持 OpenGL ES 3.0 的使用 ETC2，RGB 压缩为 RGB Compressed ETC2 4bits，RGBA 压缩为 RGBA Compressed ETC2 8bits</li>
+<li>需要兼容 OpenGL ES 2.0 的使用 ETC，RGB 压缩为 RGB Compressed ETC 4bits，RGBA 压缩为 RGBA 16bits。（压缩大小不能接受的情况下，压缩为 2 张 RGB Compressed ETC 4bits）</li>
+<li>目前主流正在从 ETC2 向 ASTC 转变，后者的压缩质量和大小上都有优势。它支持 OpenGL ES 3.1 和部分 OpenGL ES 3.0 的设备。目前市面上绝大多数安卓设备都支持，已经可以普及使用</li>
+</ul>
+</li>
+<li>iOS<ul>
+<li>支持 OpenGL ES 3.0 的使用ASTC，RGB 压缩为RGB CompressedASTC 6x6 block，RGBA 压缩为 RGBA Compressed ASTC 4x4 block。</li>
+<li>对于法线贴图的压缩精度较高可以选择 RGB CompressedASTC 5x5 block。</li>
+<li>需要兼容OpenGLES 2.0 的使用 PVRTC，RGB 压缩为PVRTC 4bits，RGBA压缩为 RGBA 16bits。（压缩大小不能接受的情况下，压缩为 2 张 RGB Compressed PVRTC 4bits）</li>
+<li>截止目前 ASTC 合并了 RGB 和 RGBA 格式，压缩格式的选择上面更加方便了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-mesh">7. Mesh<a class="headerlink" href="#7-mesh" title="Permanent link">¶</a></h3>
+<ul>
+<li>Read/Write：同Texture，若开启，Unity会存储两份Mesh，导致运行时的内存用量变成两倍。</li>
+<li>Compression：Mesh Compression 是使用压缩算法将Mesh数据进行压缩，结果是会减少占用硬盘的空间，但是在 Runtime 的时候会被解压为原始精度的数据，因此内存占用并不会减少。需要注意的是有些版本开了，实际解压之后内存占用大小会更严重。</li>
+<li>Rig：如果没有使用动画，请关闭Rig，例如房子，石头这些。</li>
+<li>​​Blendshapes：如果没有用到Blendshapes，也关闭。</li>
+<li>Material设置：如果Material没有用到法向量和切线信息，关闭可以减少额外信息。</li>
+</ul>
+<h3 id="8-assets">8. Assets<a class="headerlink" href="#8-assets" title="Permanent link">¶</a></h3>
+<p>和整个的 Asset 管理有关系，Unity 官网上有关于资源管理的文章，找到再补充。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚">
+        
+          
+          <a href="../03_Unity%E5%86%85%E5%AD%98%E7%AE%80%E4%BB%8B/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 03.Unity内存简介">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                03.Unity内存简介
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../05_Unity_Managed_Memory/" class="md-footer__link md-footer__link--next" aria-label="下一页: 05.Unity Managed Memory">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                05.Unity Managed Memory
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2023 - 2025 peiyuzou
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/peiyuzou" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "toc.follow", "navigation.top", "search.suggest", "search.highlight", "search.share", "navigation.footer", "content.code.copy", "content.code.select", "content.code.annotate", "content.footnote.tooltips", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
