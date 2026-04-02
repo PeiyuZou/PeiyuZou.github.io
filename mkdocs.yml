@@ -154,9 +154,12 @@ nav:
       - 01.Lz4: 03_游戏编程/压缩算法/01_Lz4.md
     - 框架设计:
       - GameFramework浅析:
-        - 01.GameFramework总览: 03_游戏编程/框架设计/GameFramework浅析/01_GameFramework总览.md
-        - 02.Event: 03_游戏编程/框架设计/GameFramework浅析/02_Event.md
-        # - 19.Procedure: 03_游戏编程/框架设计/GameFramework浅析/19_Procedure.md
+        - 一、总览: 03_游戏编程/框架设计/GameFramework浅析/01_GameFramework总览.md
+        - 二、基础:
+          - 1.ReferencePool: 03_游戏编程/框架设计/GameFramework浅析/02_Base/02_01_ReferencePool.md
+        - 三、模块:
+          - 1.Event: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_01_Event.md
+        # - 19.Procedure: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_19_Procedure.md
   - 性能优化:
     - Unity内存管理:
       - 01.什么是内存: 04_性能优化/Unity内存管理/01_什么是内存.md
