@@ -46,7 +46,8 @@ theme:
         icon: material/lightbulb-outline
         name: 切换至日间模式
   font:
-    text: "Maple Mono NF CN"
+    text: Inter
+    code: JetBrains Mono
   language: zh # 一些提示性的文字会变成中文
   icon:
     repo: fontawesome/brands/github #右上角图标
