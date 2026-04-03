@@ -45,8 +45,8 @@ theme:
       toggle:
         icon: material/lightbulb-outline
         name: 切换至日间模式
-  # font:
-  #   text: Roboto
+  font:
+    text: "Maple Mono NF CN"
   language: zh # 一些提示性的文字会变成中文
   icon:
     repo: fontawesome/brands/github #右上角图标
@@ -159,6 +159,7 @@ nav:
           - 1.ReferencePool: 03_游戏编程/框架设计/GameFramework浅析/02_Base/02_01_ReferencePool.md
         - 三、模块:
           - 1.Event: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_01_Event.md
+          - 2.ObjectPool: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_02_ObjectPool.md
         # - 19.Procedure: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_19_Procedure.md
   - 性能优化:
     - Unity内存管理:
