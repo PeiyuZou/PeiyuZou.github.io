@@ -158,6 +158,7 @@ nav:
         - 一、总览: 03_游戏编程/框架设计/GameFramework浅析/01_GameFramework总览.md
         - 二、基础:
           - 1.ReferencePool: 03_游戏编程/框架设计/GameFramework浅析/02_Base/02_01_ReferencePool.md
+          - 2.TaskPool: 03_游戏编程/框架设计/GameFramework浅析/02_Base/02_02_TaskPool.md
         - 三、模块:
           - 1.Event: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_01_Event.md
           - 2.ObjectPool: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_02_ObjectPool.md
