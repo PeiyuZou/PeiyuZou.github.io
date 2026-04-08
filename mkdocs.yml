@@ -162,6 +162,7 @@ nav:
         - 三、模块:
           - 1.Event: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_01_Event.md
           - 2.ObjectPool: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_02_ObjectPool.md
+          - 3.Download: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_03_Download.md
         # - 19.Procedure: 03_游戏编程/框架设计/GameFramework浅析/03_Module/03_19_Procedure.md
   - 性能优化:
     - Unity内存管理:
