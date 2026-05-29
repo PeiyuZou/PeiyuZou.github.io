@@ -172,6 +172,10 @@ nav:
       - 03.Unity内存简介: 04_性能优化/Unity内存管理/03_Unity内存简介.md
       - 04.Unity Native Memory: 04_性能优化/Unity内存管理/04_Unity_Native_Memory.md
       - 05.Unity Managed Memory: 04_性能优化/Unity内存管理/05_Unity_Managed_Memory.md
+  - Unity:
+    - 资源管理:
+      - UnityAsset:
+        - 01.Unity资产文件分类: 05_Unity/资源管理/UnityAsset/01_Unity资产文件分类.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
