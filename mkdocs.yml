@@ -229,7 +229,11 @@ markdown_extensions:
       linenums_style: pymdownx-inline
       line_spans: __span
   - pymdownx.inlinehilite
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.keys
   - pymdownx.smartsymbols
   - pymdownx.snippets

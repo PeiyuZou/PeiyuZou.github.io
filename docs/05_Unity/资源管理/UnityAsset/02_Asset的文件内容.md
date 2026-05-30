@@ -1,3 +1,24 @@
+## 总结
+
+```mermaid
+graph LR
+  A[Unity Asset 文件内容]
+  A --> B[Unity 内置文件_YAML]
+  A --> C[非 Unity 内置文件]
+  A --> D[定位机制: GUID + FileID]
+  B --> E[meta 文件]
+  E --> E1[fileFormatVersion]
+  E --> E2[GUID]
+  E --> E3[Importer 参数]
+  B --> F[序列化文件]
+  F --> F1[YAML 头部]
+  F --> F2[若干数据块]
+  F2 --> F2a[ClassID]
+  F2 --> F2b[FileID]
+  F2 --> F2c[成员字段]
+  C --> C1[特定规则内容]
+```
+
 ## 一、不同Asset，内容格式不同
 
 Unity 自己生产的 Asset 的格式内容，都使用 YAML 格式，按文件类型来说：
