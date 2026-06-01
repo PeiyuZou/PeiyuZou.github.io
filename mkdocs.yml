@@ -178,6 +178,13 @@ nav:
         - 01.Unity资产文件分类: 05_Unity/资源管理/UnityAsset/01_Unity资产文件分类.md
         - 02.Asset的文件内容: 05_Unity/资源管理/UnityAsset/02_Asset的文件内容.md
         - 03.Unity资产系统工作原理: 05_Unity/资源管理/UnityAsset/03_Unity资产系统工作原理.md
+      - AssetBundle:
+        - 01.AB基础原理: 05_Unity/资源管理/AssetBundle/01_AssetBundle基础原理.md
+        - 02.AB压缩方式: 05_Unity/资源管理/AssetBundle/02_AssetBundle压缩方式.md
+        - 03.AB加载和卸载: 05_Unity/资源管理/AssetBundle/03_AssetBundle加载卸载.md
+        - 04.AB打包策略: 05_Unity/资源管理/AssetBundle/04_AssetBundle打包策略.md
+        - 05.AB常见问题: 05_Unity/资源管理/AssetBundle/05_AssetBundle常见问题.md
+        - 06.AB运行时管理与热更新: 05_Unity/资源管理/AssetBundle/06_AssetBundle运行时管理与热更新.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
