@@ -34,7 +34,7 @@
 
 当我们用 AssetStudio 等工具解包一个 AB 包后，会得到下面这样的若干文件：
 
-![AssetBundle解包结果](asset_bundle_00.png)
+![AssetBundle解包结果](asset_bundle_01.png)
 /// caption
 AssetBundle解包结果
 ///
@@ -75,8 +75,14 @@ AssetBundle解包结果
 
 ### 主文件的结构
 
-![主文件的结构](asset_bundle_01.png)
+![主文件的结构](asset_bundle_06.png)
 /// caption
 主文件的结构
 ///
 
+### 资源流文件的结构
+
+![资源流文件的结构](asset_bundle_07.png)
+/// caption
+资源流文件的结构
+///
