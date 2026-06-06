@@ -181,7 +181,12 @@ nav:
       - AssetBundle:
         - 01.AB基础原理: 05_Unity/资源管理/AssetBundle/01_AssetBundle基础原理.md
         - 02.AB压缩方式: 05_Unity/资源管理/AssetBundle/02_AssetBundle压缩方式.md
-        - 03.AB加载和卸载: 05_Unity/资源管理/AssetBundle/03_AssetBundle加载卸载.md
+        - 03.AB加载方式:
+          - 加载方式总览: 05_Unity/资源管理/AssetBundle/03_00_AssetBundle加载方式.md
+          - LoadFromFile: 05_Unity/资源管理/AssetBundle/03_01_LoadFromFile.md
+          - LoadFromMemory: 05_Unity/资源管理/AssetBundle/03_02_LoadFromMemory.md
+          - LoadFromStream: 05_Unity/资源管理/AssetBundle/03_03_LoadFromStream.md
+          - UnityWebRequest: 05_Unity/资源管理/AssetBundle/03_04_UnityWebRequest.md
         - 04.AB打包策略: 05_Unity/资源管理/AssetBundle/04_AssetBundle打包策略.md
         - 05.AB常见问题: 05_Unity/资源管理/AssetBundle/05_AssetBundle常见问题.md
         - 06.AB运行时管理与热更新: 05_Unity/资源管理/AssetBundle/06_AssetBundle运行时管理与热更新.md
