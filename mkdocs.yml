@@ -190,6 +190,8 @@ nav:
         - 04.AB打包策略: 05_Unity/资源管理/AssetBundle/04_AssetBundle打包策略.md
         - 05.AB常见问题: 05_Unity/资源管理/AssetBundle/05_AssetBundle常见问题.md
         - 06.AB运行时管理与热更新: 05_Unity/资源管理/AssetBundle/06_AssetBundle运行时管理与热更新.md
+      - 资源管理框架:
+        - 01.商业框架设计思路: 05_Unity/资源管理/资源管理框架/商用框架思路/note.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md

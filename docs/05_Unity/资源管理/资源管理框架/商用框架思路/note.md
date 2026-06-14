@@ -1,0 +1,123 @@
+### 一、前言
+
+这个框架思路只是本人目前公司所用的框架的思路，考虑到保密和财产安全问题，不开源任何代码，只对整体思路作阐释、必要时用伪代码做举例。另外，该思路并不代表市面主流思路，可能思路有些老旧，请自主辨别。
+
+### 一、总体策略
+
+``` title="全局视角"
+                ResourceManager
+         （作为对外唯一门面，供外部使用）
+                       |
+                       | 持有
+                       v
+                IManageResource
+ （抽象接口，不同使用场景可选择使用不同的策略）
+                       |
+                       | 实现
+                       v
+         ┌─────────────┴───────────────┐
+         |                             |
+         v                             v
+     AbManager                     ResManager
+(AssetBundle 模式)              (Resources 模式)
+        |                              |
+        v                              v
+ AbInfo / AssetInfo                 ResInfo
+ CustomMainManifest       (薄壳，多数靠Resources.Load)
+ 依赖图 / 回收站
+```
+
+`ResourceManager` 作为门面，使用 DataSingleton 模式，生命周期由框架控制；而内部持有的真正实现 AbManager/ResManager 都是 MonoSingleton， 因为它们需要 Update() 帧驱动（驱动异步加载和回收检查）
+
+单次加载链路：
+
+```
+[上层] LoadObject("ui/icon_xxx", cb)
+   │
+   ▼
+ResourceManager.LoadObject
+   │ 1) rawPath = GetRawPath(path)   // 多语言映射
+   │ 2) 是否暂停？
+   │      ├─ 是 → waitingQueue.Add(...) 存起来等恢复
+   │      └─ 否 → 继续
+   ▼
+mIMgr.LoadObject(rawPath, cb, sync)
+   │
+   ├─ 若 IS_BUNDLE: AbManager.LoadObject
+   └─ 否          : ResManager.LoadObject
+```
+
+### 二、路径转换
+
+```
+上层传入逻辑路径，比如："Art/Animals/Bear/Prefab/Bear_01"
+
+ResourceManager.LoadObject
+（这里完成本地化的转换，比如"Art/CN/Animals/Bear/Prefab/Bear_01"）
+|
+|
+v
+
+
+```
+
+### 三、等待队列
+
+有一些特殊时机不允许加载新资源，比如热更新完成之后重启整个资源环境和Lua虚拟机，这个重启需要一定时间完成，在此期间如果有新的资源加载发生，原本异步加载完成后要去访问的业务态，很可能因为重启被干掉了，所以使用了一个等待队列去缓存住这期间发生的所有加载调用，在重启完成后，再一次性执行。当然这里有一个问题，这期间不允许闭包作为回调函数被缓存，因为闭包包含了重启前的业务态。
+
+当然，这个重启是因为我们的框架设计遇到的问题，在启动流程中，我们的Lua和资源模块在热更新之前就启动了，并且加载了一些资源内容，而我们的LuaScripts是打的一个整AB包，所以整包直接进入内存了。在热更完成后，需要把Lua虚拟机终止掉，然后卸载Lua代码的AB包，把热更路径设置好，再重启Lua虚拟机加载代码，就会加载到热更路径下的Lua代码的AB包，由此才能正确使用到热更文件。而资源环境也整体重启了，大多是因为一些配置表等内容被提前加载，而配置表也一样的，也是一个整包。
+
+当然，如果对热更发生之前与发生之后加载的东西作严格区分，分别打入不同的AB包，或者热更发生前的资源不打AB直接作为启动资源进包，这个问题就不会存在，但总体来说还是需要很严谨的设计，然后我们受限于公司一些技术决策也没有按理想化的方式去做，所以才有重启资源和Lua虚拟机的问题。
+
+核心伪代码：
+
+```cs title="加入等待队列"
+public void Add(Action<string, LoadCb, bool> action,
+                string path, LoadCb cb， bool sync)
+{
+    Add(new LoadCbEntry(action, path, cb, sync));
+}
+```
+
+```cs title="一次性执行，在合适的时机调用"
+public void ExecuteAll()
+{
+    bool b = true;
+    while (b)
+    {
+        b = ExecuteOneIfExist();
+    }
+}
+
+public bool ExecuteOneIfExist()
+{
+    Entry entry = null;
+    lock (mList)
+    {
+        if (mList.Count > 0)
+            entry = mList.Dequeue();
+    }
+
+    if (entry == null) return false;
+    Execute(entry);
+    return true;
+}
+```
+
+<div class="grid" markdown>
+
+
+```lua
+local a = 1
+print(a)
+```
+
+=== "说明"
+
+    内容1
+
+=== "原理"
+
+    内容2
+
+</div>
