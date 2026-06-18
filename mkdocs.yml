@@ -201,6 +201,8 @@ nav:
       - xLua:
         - xLua源码解读:
           - 01.概述和前置知识: 05_Unity/热更新/xLua/xLua源码解读/01_概述和前置知识.md
+          - 02.五层结构和常见NativeAPI: 05_Unity/热更新/xLua/xLua源码解读/02_五层结构和常见NativeAPI.md
+          - 03.C#调用Lua: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
