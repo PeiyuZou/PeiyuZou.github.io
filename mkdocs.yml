@@ -55,7 +55,7 @@ theme:
     # top: fontawesome/solid/angles-up
     alternate: fontawesome/solid/language
 
-copyright: Copyright &copy; 2023 - 2025 peiyuzou
+copyright: Copyright &copy; 2023 - 2026 peiyuzou
 
 plugins:
   - search

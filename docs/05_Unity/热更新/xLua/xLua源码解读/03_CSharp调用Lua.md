@@ -159,3 +159,90 @@ public void Get<TKey, TValue>(TKey key, out TValue value)
 === "Step 5"
 
     ![Step 5](xLua_12.png)
+
+Lua 的所有对象本质上都是一个 Table，而执行一个特定的 Lua 逻辑，本质上就是 `LuaTable.LuaFunction()`，有了 `LuaTable.Get` 既可以获取一个 LuaTable，又可以从 LuaTable 中获取指定的 LuaFunction ，所以 C# 调用 Lua 是可行的。现在比较常用的方式有两种：
+
+- **Get<LuaFunction\>**：将获得的 Lua 函数作为 LuaFunction 使用
+- **Get<强类型委托>**：比较推荐的做法，自定义委托类型
+
+下面逐个讲解。
+
+## 获取 LuaFunction 并调用
+
+整个流程分两个阶段：获取和调用
+
+### 1. 获取 LuaFunction
+
+这部分就是 LuaTable.Get ，泛型传的是 `LuaFunction`，不过这里要细讲下 `translator.Get(L, -1, out value);` 是如何返回一个 `LuaFunction` 对象的。
+
+=== "Step 1"
+
+    ```cs title="ObjectTranslator.cs:957"
+    // 泛型分发：快路径 vs 慢路径
+    public void Get<T>(RealStatePtr L, int index, out T v)
+    {
+        Func<RealStatePtr, int, T> get_func;
+        if (tryGetGetFuncByType(typeof(T), out get_func))
+        {
+            v = get_func(L, index); // 快路径：直接调对应的 lua_toxxx
+        }
+        else
+        {
+            v = (T)GetObject(L, index, typeof(T)); // 慢路径：走通用 caster
+        }
+    }
+    ```
+
+    !!! note "注解"
+        基础类型（包括byte[]、IntPtr）走的快路径，直接 P/Invoke 得到返回值；而向 LuaTable、LuaFunction、自定义类等走慢路径，这里我们是 `LuaFunction`，所以继续看慢路径。
+
+=== "Step 2"
+
+    ```cs title="ObjectTranslator.cs:925"
+    // 看是不是 userdata
+    public object GetObject(RealStatePtr L, int index, Type type)
+    {
+        int udata = LuaAPI.xlua_tocsobj_safe(L, index);
+
+        if (udata != -1) // 是有效的 C# 引用类型对象
+        {
+            // 从对象池拿出来，返回
+            object obj = objects.Get(udata);
+            RawObject rawObject = obj as RawObject;
+            return rawObject == null ? obj : rawObject.Target;
+        }
+        else
+        {
+            // 除了 C# 引用类型对象，userdata 还可能是其他 C# 值类型，检查一下
+            if (LuaAPI.lua_type(L, index) == LuaTypes.LUA_TUSERDATA)
+            {
+                GetCSObject get;
+                int type_id = LuaAPI.xlua_gettypeid(L, index);
+                if (type_id != -1 && type_id == decimal_type_id)
+                {
+                    // 是 decimal 类型
+                    decimal d;
+                    Get(L, index, out d);
+                    return d;
+                }
+                Type type_of_struct;
+                if (type_id != -1 && typeMap.TryGetValue(type_id, out type_of_struct) && type.IsAssignableFrom(type_of_struct) && custom_get_funcs.TryGetValue(type, out get))
+                {
+                    // 是别的 C# 值类型，比如
+                    // 1. C# struct
+                    // 2. 自定义值类型
+                    // 3. 其它通过 custom_get_funcs 注册的类型
+                    return get(L, index);
+                }
+            }
+            // 都没命中，走通用转换器
+            return (objectCasters.GetCaster(type)(L, index, null));
+        }
+    }
+    ```
+
+    !!! note "注解"
+        前面讲过 C# 持有 Lua 对象实际上是持有 Lua 注册表的整数句柄，并没有真的持有 Lua 对象。反过来，这里有检查 Lua 持有 C# 对象的情况，这里也类似，Lua 也仅仅持有一个 int 索引，只不过这个索引被包了一层变成了一个 userdata ，userdata 体里只存了那个 int 索引。这里的 `objects` 类似 Lua 的注册表，通过这个 int 索引就可以取对应的 C# 对象。
+        这里我们取的是一个 Lua 原生的 function，并不是 userdata，所以走的是通用转换器。
+
+## 使用强类型委托（推荐）
