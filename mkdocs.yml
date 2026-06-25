@@ -203,10 +203,11 @@ nav:
           - 01.概述和前置知识: 05_Unity/热更新/xLua/xLua源码解读/01_概述和前置知识.md
           - 02.五层结构和常见NativeAPI: 05_Unity/热更新/xLua/xLua源码解读/02_五层结构和常见NativeAPI.md
           - 03.C#调用Lua:
-            - 03.01.LuaEnv.DoString: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_01_LuaEnv_DoString.md
-            - 03.02.LuaTable.Get: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_02_LuaTable_Get.md
-            - 03.03.LuaFunction的方式调用: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_03_LuaFunction的方式调用.md
-            - 03.04.使用强类型委托: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_04_使用强类型委托.md
+            - LuaEnv.DoString: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_01_LuaEnv_DoString.md
+            - LuaTable.Get: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_02_LuaTable_Get.md
+            - LuaFunction的方式调用: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_03_LuaFunction的方式调用.md
+            - 使用强类型委托: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_04_使用强类型委托.md
+            - 把C#对象传给Lua: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_05_把C#对象传给Lua.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
