@@ -208,6 +208,10 @@ nav:
             - LuaFunction的方式调用: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_03_LuaFunction的方式调用.md
             - 使用强类型委托: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_04_使用强类型委托.md
             - 把C#对象传给Lua: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_05_把C#对象传给Lua.md
+            - 把结构体传给Lua: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_06_把结构体传给Lua.md
+            - 把枚举传给Lua: 05_Unity/热更新/xLua/xLua源码解读/03_CSharp调用Lua/03_07_把枚举传给Lua.md
+          - 04.Lua调用C#:
+            - CS.UnityEngine.GameObject: 05_Unity/热更新/xLua/xLua源码解读/04_Lua调用CSharp/04_01_CS_UnityEngine_GameObject.md
   - 实践:
     - Mkdocs:
       - 使用模板: 99_实践/mkdocs/使用模板.md
