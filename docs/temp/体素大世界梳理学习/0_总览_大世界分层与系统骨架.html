@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 0 篇 · 总览 —— 大世界分层与系统骨架</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --primary-light: #dbeafe;
+    --text: #1f2937;
+    --text-light: #4b5563;
+    --bg: #ffffff;
+    --bg-soft: #f9fafb;
+    --code-bg: #f3f4f6;
+    --border: #e5e7eb;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    margin: 0;
+    line-height: 1.75;
+    font-size: 15.5px;
+  }
+  .layout { display: flex; max-width: 1280px; margin: 0 auto; }
+  .sidebar {
+    width: 248px; flex-shrink: 0; position: sticky; top: 0;
+    align-self: flex-start; height: 100vh; overflow-y: auto;
+    border-right: 1px solid var(--border);
+    padding: 24px 18px; background: var(--bg-soft);
+  }
+  .sidebar h3 {
+    font-size: 12px; color: var(--text-light); text-transform: uppercase;
+    letter-spacing: .08em; margin: 18px 0 8px;
+  }
+  .sidebar ul { list-style: none; padding: 0; margin: 0; }
+  .sidebar li { margin: 4px 0; }
+  .sidebar a {
+    color: var(--text-light); text-decoration: none; font-size: 13.5px;
+    display: block; padding: 4px 8px; border-radius: 6px;
+  }
+  .sidebar a:hover { background: var(--primary-light); color: var(--primary-dark); }
+  .sidebar li.active a { background: var(--primary); color: #fff; font-weight: 500; }
+  .main { flex: 1; min-width: 0; padding: 0 48px 80px; }
+  header.hero {
+    border-bottom: 2px solid var(--primary-light);
+    padding: 40px 0 28px; margin-bottom: 8px;
+  }
+  .badge {
+    display: inline-block; background: var(--primary); color: #fff;
+    font-size: 12px; padding: 3px 10px; border-radius: 999px;
+    letter-spacing: .04em; margin-bottom: 14px;
+  }
+  h1 { font-size: 30px; margin: 0 0 12px; color: var(--text); line-height: 1.3; }
+  .tagline { color: var(--text-light); font-size: 15px; margin: 0; }
+  h2 {
+    font-size: 22px; color: var(--primary-dark); margin: 48px 0 14px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    scroll-margin-top: 20px;
+  }
+  h3 { font-size: 17px; margin: 26px 0 10px; color: var(--text); }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+  p { margin: 10px 0; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 4px 0; }
+  code {
+    font-family: "JetBrains Mono", Consolas, "Cascadia Code", monospace;
+    background: var(--code-bg); padding: 1.5px 6px; border-radius: 4px;
+    font-size: 13px; color: #be185d;
+  }
+  pre {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; font-size: 12.5px; line-height: 1.55;
+    border: 1px solid var(--border); margin: 14px 0;
+  }
+  pre code { background: none; padding: 0; color: var(--text); font-size: inherit; }
+  .ascii {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 12.5px; line-height: 1.45; color: var(--text);
+    background: #0f172a; color: #e2e8f0; padding: 16px 18px;
+    border-radius: 8px; overflow-x: auto; white-space: pre;
+  }
+  .ascii .hi { color: #60a5fa; }
+  .ascii .em { color: #fbbf24; }
+  .ascii .dim { color: #94a3b8; }
+  .note {
+    background: var(--primary-light); border-left: 4px solid var(--primary);
+    padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0;
+    font-size: 14px;
+  }
+  .note.warn { background: #fef3c7; border-left-color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  th { background: var(--bg-soft); color: var(--primary-dark); }
+  .path { color: var(--text-light); font-family: monospace; font-size: 12.5px; word-break: break-all; }
+  .ref { font-family: monospace; font-size: 12.5px; color: #0e7490; background: #ecfeff; padding: 1px 5px; border-radius: 3px; }
+  .map-card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px;
+    margin: 12px 0; background: var(--bg-soft);
+  }
+  .map-card h4 { margin-top: 0; color: var(--primary-dark); }
+  .map-card .meta { font-size: 12.5px; color: var(--text-light); margin-left: 6px; }
+  footer.nav {
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer.nav a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  footer.nav a:hover { text-decoration: underline; }
+  .toc-current { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+  a.anch { scroll-margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <nav class="sidebar">
+    <h3>系列目录</h3>
+    <ul>
+      <li class="active"><a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a></li>
+      <li><a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a></li>
+      <li><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a></li>
+      <li><a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</a></li>
+      <li><a href="4_Chunk动态加载与释放.html">第 4 篇 · Chunk 动态加载与释放</a></li>
+      <li><a href="#">第 5 篇 · 场景加载状态机与登录时序</a></li>
+      <li><a href="#">第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</a></li>
+      <li><a href="#">第 7 篇 · 物件模型 LOD 与实体显隐</a></li>
+      <li><a href="#">第 8 篇 · Voxel 占位 · Placeholder 与 Collision</a></li>
+      <li><a href="#">第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</a></li>
+      <li><a href="#">第 10 篇 · 大世界网络数据流</a></li>
+      <li><a href="#">第 11 篇 · 玩家传送与场景切换</a></li>
+    </ul>
+    <h3>本篇锚点</h3>
+    <ul>
+      <li><a href="#sec-1">1 三层架构总图</a></li>
+      <li><a href="#sec-2">2 IGameSystem 框架与事件总线</a></li>
+      <li><a href="#sec-3">3 启动到 LoadScene 时序</a></li>
+      <li><a href="#sec-4">4 本系列 12 篇阅读地图</a></li>
+    </ul>
+  </nav>
+
+  <main class="main">
+    <header class="hero" id="top">
+      <span class="badge">第 0 篇 / 共 12 篇</span>
+      <h1>总览 —— 大世界分层与系统骨架</h1>
+      <p class="tagline">这一篇是地图，不是工程手册：先看清整个体素大世界是怎么分层的、靠什么机制驱动、主角是怎么进来的，再逐篇深入各子系统。</p>
+    </header>
+
+    <p>在开始拆细节之前，先回答三个问题：<strong>大世界的代码分成哪几层、各层之间靠什么通信、玩家从点进游戏到看见主角站在世界上经历了哪条主链路</strong>。把这三件事在脑子里搭好框架，后面 11 篇每读一篇都能挂回这张地图上。</p>
+
+    <!-- =================== 1 =================== -->
+    <h2 id="sec-1" class="anch">1. 三层架构总图</h2>
+
+    <p>整个体素大世界在工程上被切成<strong>三层</strong>，从下往上依次是：引擎场景底座、MC 体素引擎、业务系统层。每一层只对上一层暴露少量入口，对下一层只依赖明确的接口，这种分层是后面所有内容的地基。</p>
+
+    <div class="ascii">
+<span class="dim">┌─────────────────────────────────────────────────────────────────────────────┐</span>
+<span class="dim">│</span>  <span class="em">上层 · 业务系统层 (GameWorld.System)</span>                                          <span class="dim">│</span>
+<span class="dim">│</span>  WorldSceneSystem  ──统一对外封装 MCScene 接口（SetBlock / TryGetBlock / SetEntity …）<span class="dim">│</span>
+<span class="dim">│</span>       │  兄弟系统：WorldNetSystem / BattlePlayerSystem / CameraSystem /           <span class="dim">│</span>
+<span class="dim">│</span>       │              ObjectConfigSystem / LuEntityVoxelSystem / ChunkSystem …      <span class="dim">│</span>
+<span class="dim">│</span>       ▼  对下：调用 m_McScene（MCScene）/ m_MCNetManager（MCManager）            <span class="dim">│</span>
+<span class="dim">├─────────────────────────────────────────────────────────────────────────────┤</span>
+<span class="dim">│</span>  <span class="em">中层 · MC 体素引擎</span>                                                            <span class="dim">│</span>
+<span class="dim">│</span>  <span class="hi">Assets.Scripts.MC</span>  MCScene / MCManager / MCNetworkManager / MCPlaceholderManager<span class="dim">│</span>
+<span class="dim">│</span>        │  MCManager 内部挂 5 层 MCWorld（m_Worlds[5]，blockSize=1&lt;&lt;i，chunkSize=32）<span class="dim">│</span>
+<span class="dim">│</span>        ▼  对下：把 MCWorld / MCChunk / MCBlock 作为体素数据原语                  <span class="dim">│</span>
+<span class="dim">│</span>  <span class="hi">MCCore (Packages)</span>  MCWorld / MCChunk / MCBlock —— 纯体素数据结构             <span class="dim">│</span>
+<span class="dim">├─────────────────────────────────────────────────────────────────────────────┤</span>
+<span class="dim">│</span>  <span class="em">底层 · 引擎场景框架底座 (UnityEngine.Scene.Universal)</span>                          <span class="dim">│</span>
+<span class="dim">│</span>  UniversalScene / UniversalSceneManager / SceneObjectManager / SceneComponent    <span class="dim">│</span>
+<span class="dim">│</span>  职责：场景生命周期、加载回调、SceneObject 管理、组件化调度                       <span class="dim">│</span>
+<span class="dim">│</span>  对上：UniversalSceneManager.CreateScene&lt;T&gt;(...) 工厂方法创建场景               <span class="dim">│</span>
+<span class="dim">└─────────────────────────────────────────────────────────────────────────────┘</span>
+    </div>
+
+    <h3>1.1 三层各自的“职责与边界”</h3>
+
+    <table>
+      <tr><th>层</th><th>代表类</th><th>对上提供什么</th><th>对下依赖什么</th></tr>
+      <tr>
+        <td>业务系统层</td>
+        <td><code>WorldSceneSystem</code> 等</td>
+        <td>给上层（含 Lua）一套业务语义接口：放块、取块、摆物件、跳转坐标、loading 进度</td>
+        <td>调用 MCScene / MCManager；通过 <code>Owner.GetSystem&lt;T&gt;()</code> 拿兄弟系统</td>
+      </tr>
+      <tr>
+        <td>MC 体素引擎</td>
+        <td><code>MCScene</code> / <code>MCManager</code> / <code>MCWorld</code></td>
+        <td>体素世界的数据与流程：chunk 的加载/卸载、block 的读写、LOD 多世界、物件占位</td>
+        <td>继承自底层的 UniversalScene；用 SceneObjectManager 管理物件</td>
+      </tr>
+      <tr>
+        <td>引擎场景底座</td>
+        <td><code>UniversalSceneManager</code> / <code>UniversalScene</code></td>
+        <td>场景工厂 <code>CreateScene&lt;T&gt;</code>、加载完成回调、SceneObject 增删查、组件化</td>
+        <td>不依赖上层，是整个体系的“地基”</td>
+      </tr>
+    </table>
+
+    <p>关键的一点：<strong>业务层从来不直接 new 场景，也不直接碰 MCWorld/Chunk/Block 的原始结构</strong>。它通过 <code>UniversalSceneManager.CreateScene&lt;MCScene&gt;(...)</code> 拿到一个 <code>MCScene</code> 实例，之后所有操作都走 <code>WorldSceneSystem</code> 这一层封装。<span class="ref">WorldSceneSystem.cs:176</span> 这一行就是业务层“踩进”引擎层的入口：</p>
+    <pre><code>m_McScene = UniversalSceneManager.CreateScene&lt;MCScene&gt;(path, scene =&gt; { OnLoadingFinishAction(); }, true, isNetManager);</code></pre>
+
+    <div class="note">
+      <strong>为什么要分三层？</strong>底层 <code>UniversalScene</code> 是通用的“场景 + 物件 + 组件”框架，不绑定体素语义；中层的 <code>MC*</code> 在它之上叠出“按 chunk 切分、按 block 寻址、按 LOD 分辨率”的体素世界；上层再把这套东西包装成业务能直接调的接口。这样体素数据结构可以单独演进，业务逻辑也不必关心 chunk 怎么切。
+    </div>
+
+    <h3>1.2 各层源码位置一览</h3>
+    <ul>
+      <li>底层：<span class="path">Assets\Scripts\Engine\UniversalScene\</span>（<code>UniversalScene.cs</code> / <code>UniversalSceneManager.cs</code>，namespace <code>UnityEngine.Scene.Universal</code>）</li>
+      <li>中层（场景侧）：<span class="path">Assets\Scripts\Core\MCCore\Scene\</span>（<code>MCScene.cs</code> / <code>MCManager.cs</code> / <code>MCNetworkManager.cs</code>，namespace <code>Assets.Scripts.MC</code>）</li>
+      <li>中层（体素数据）：<span class="path">Packages\com.unity.mccore\Runtime\</span>（<code>MCWorld.cs</code> / <code>MCChunk</code> / <code>MCBlock</code>，namespace <code>MCCore</code>）</li>
+      <li>上层：<span class="path">Assets\Scripts\Game\GameWorld\Game\OpenWorldGameSystem\</span>（<code>WorldSceneSystem.cs</code>，namespace <code>GameWorld.System</code>）</li>
+    </ul>
+
+    <p>各层内部如何组织、关键方法做什么，分别在<strong>第 1 篇（底层）</strong>、<strong>第 2 篇（体素数据）</strong>、<strong>第 3 篇（MCManager）</strong>展开。本篇只标位置，不展开实现。</p>
+
+    <!-- =================== 2 =================== -->
+    <h2 id="sec-2" class="anch">2. IGameSystem 框架与事件总线</h2>
+
+    <p>业务系统层不是一个松散的目录，而是一个被统一驱动的小框架。所有业务系统都继承自 <code>IGameSystem</code>，被宿主 <code>GameBase</code> 持有一份 list，按统一的生命周期被驱动；系统之间不直接互调，而是通过事件总线发布/订阅消息。</p>
+
+    <h3>2.1 IGameSystem 的生命周期</h3>
+
+    <p><code>IGameSystem</code> 是个抽象类（不是接口），构造时把宿主 <code>GameBase</code> 作为 <code>Owner</code> 注入进来。<span class="ref">IGameSystem.cs:27</span> 提供了五个生命周期钩子，都是 <code>internal virtual</code>，子类按需 override：</p>
+
+    <ul>
+      <li><code>Initialize()</code>：初始化，拿兄弟系统引用、订阅事件</li>
+      <li><code>Update()</code> / <code>LateUpdate()</code> / <code>FixedUpdate()</code>：每帧驱动</li>
+      <li><code>Shutdown()</code>：卸载，反向清理（先加的后卸）</li>
+      <li><code>ReLogin(callback)</code> / <code>ReLoginComplete()</code>：断线重连专用</li>
+    </ul>
+
+    <p><code>GameBase</code> 用一个 <code>List&lt;IGameSystem&gt;</code> + <code>Dictionary&lt;Type, IGameSystem&gt;</code> 同时持有所有系统，前者保证遍历顺序、后者保证按类型 O(1) 取用。<span class="ref">GameBase.cs:36</span>。所有系统通过 <code>AddSystem&lt;T&gt;()</code> 注册，<code>GetSystem&lt;T&gt;()</code> 拿兄弟系统：</p>
+
+    <pre><code>// GameBase 统一驱动所有 System
+foreach (var system in m_GameSystems) system.Initialize();   // 正向初始化
+foreach (var system in m_GameSystems) system.Update();        // 每帧
+for (int i = m_GameSystems.Count-1; i >= 0; i--) system.Shutdown(); // 反向卸载</code></pre>
+
+    <p><code>WorldSceneSystem</code> 就是个典型例子：它在 <code>Initialize()</code> 里通过 <code>Owner.GetSystem&lt;...&gt;()</code> 把 CameraSystem、ObjectConfigSystem 等兄弟系统拿过来缓存，再订阅自己关心的事件。<span class="ref">WorldSceneSystem.cs:85</span>。</p>
+
+    <div class="note">
+      <strong>设计要点</strong>：系统之间<strong>不互相持有</strong>，只通过 <code>Owner.GetSystem&lt;T&gt;()</code> 拿引用；事件<strong>不直接回调</strong>，只通过 <code>Owner.Subscribe</code> / <code>Owner.FireNow</code>。这样加一个新系统、或换一个系统的实现，都不需要改别的系统。
+    </div>
+
+    <h3>2.2 事件总线：Subscribe / FireNow</h3>
+
+    <p><code>GameBase</code> 内部持有一个 <code>EventManager</code>（来自 <code>com.unity.youkiaenginecore</code> 包），对外暴露三个方法：<span class="ref">GameBase.cs:192</span></p>
+
+    <ul>
+      <li><code>Subscribe(int evtID, EventHandler&lt;GameEventArgs&gt; handler)</code>：按事件 ID 订阅</li>
+      <li><code>Unsubscribe(int evtID, handler)</code>：取消订阅</li>
+      <li><code>FireNow(object sender, GameEventArgs e)</code>：立即同步派发（注意不是下一帧）</li>
+    </ul>
+
+    <p><code>EventManager</code> 内部是个 <code>EventPool&lt;GameEventArgs&gt;</code>，模式为 <code>AllowNoHandler | AllowMultiHandler</code>——<strong>一个事件可以没人订阅，也可以被多个系统订阅</strong>，都不会报错。<span class="ref">EventManager.cs:14</span>。这正是“主角入场”这类事件能被多个系统同时关心的基础。</p>
+
+    <h3>2.3 事件 Args 的写法与对象池复用</h3>
+
+    <p>每一个具体事件都在 <span class="path">Assets\Scripts\Game\GameWorld\Game\Events\</span> 下定义（namespace <code>GameWorld.Events</code>），继承自 <code>GameEventArgs</code>，写法高度统一。以 <code>WorldSceneSystemInitSceneArgs</code> 为例 <span class="ref">WorldSceneSystemInitSceneArgs.cs:15</span>：</p>
+
+    <pre><code>public class WorldSceneSystemInitSceneArgs : GameEventArgs
+{
+    public static readonly int EventID = typeof(WorldSceneSystemInitSceneArgs).GetHashCode();
+    public override int Id => EventID;
+    public override void Clear() { }
+    public static WorldSceneSystemInitSceneArgs Create()
+    {
+        return ReferencePool.Acquire&lt;WorldSceneSystemInitSceneArgs&gt;();
+    }
+}</code></pre>
+
+    <p>三个固定套路：</p>
+    <ol>
+      <li><strong>EventID</strong>：用类型本身的 <code>GetHashCode()</code> 当事件 ID，保证全局唯一、不用手维护枚举。订阅和派发都引用同一个 <code>EventID</code> 字段。</li>
+      <li><strong>Create()</strong>：不 <code>new</code>，而是从 <code>ReferencePool.Acquire&lt;T&gt;()</code> 取一个复用对象（避免每次派发事件都产生 GC）。</li>
+      <li><strong>Clear()</strong>：对象归还池子前重置字段，由 ReferencePool 框架在 <code>Release</code> 时回调。</li>
+    </ol>
+
+    <p>带数据的事件多一个字段 + 在 <code>Create</code> 里赋值 + 在 <code>Clear</code> 里置空。比如 <code>WorldSceneSystemSetMainPlayerArgs</code> <span class="ref">WorldSceneSystemSetMainPlayerArgs.cs:28</span> 在 <code>Create(BattleRole role)</code> 时把主角塞进去，订阅方 <code>(e as XxxArgs)?.MainPlayer</code> 取出来用。</p>
+
+    <h4>WorldSceneSystem 相关的几个代表事件</h4>
+    <table>
+      <tr><th>事件 Args</th><th>含义</th><th>谁派发</th></tr>
+      <tr><td><code>WorldSceneSystemInitSceneArgs</code></td><td>引擎场景已创建、开始扫描</td><td>LoadScene 内部 <span class="ref">WorldSceneSystem.cs:183</span></td></tr>
+      <tr><td><code>WorldSceneSystemMcSceneLoadFinishArgs</code></td><td>场景数据加载完成</td><td>CheckLoadingFinish 内部 <span class="ref">WorldSceneSystem.cs:254</span></td></tr>
+      <tr><td><code>WorldSceneSystemSetMainPlayerArgs</code></td><td>主角装配完成</td><td>BattlePlayerSystem <span class="ref">BattlePlayerSystem.cs:471</span></td></tr>
+      <tr><td><code>WorldSceneSystemRenderSceneArgs</code></td><td>场景可渲染、准备关 loading</td><td>MainPlayerJoin 内部 <span class="ref">WorldSceneSystem.cs:226</span></td></tr>
+    </table>
+
+    <p>整个事件目录有几十个，本篇不一一列举，<strong>第 8 篇</strong>会专门把事件总线和 IGameSystem 框架讲透。</p>
+
+    <!-- =================== 3 =================== -->
+    <h2 id="sec-3" class="anch">3. 从启动到 LoadScene 的进入时序</h2>
+
+    <p>这是本篇最重要的一节：把“玩家点进大世界 → 主角站在地上”这条主链路一次性画出来。细节留给第 5 篇，这里只让你拿到“全局路线感”。</p>
+
+    <h3>3.1 WorldSceneSystem 怎么被初始化</h3>
+
+    <p><code>WorldSceneSystem.Initialize()</code> <span class="ref">WorldSceneSystem.cs:85</span> 做了四件事，为后续 LoadScene 铺好上下文：</p>
+    <ol>
+      <li>通过 <code>Owner.GetSystem&lt;T&gt;()</code> 拿到 5 个兄弟系统引用并缓存（Camera、ObjectConfig、McEntityTimeState、ClientScanner、LuEntityVoxel）。</li>
+      <li>从相机系统取 <code>SceneCamera</code>，后续扫描中心点要用。</li>
+      <li><code>Owner.Subscribe(WorldSceneSystemSetMainPlayerArgs.EventID, OnWorldSceneSystemSetMainPlayer)</code>——订阅“主角装配完成”事件，这是进入链路最后一环的入口。</li>
+      <li><code>EntityInjectUtility.Init()</code>——初始化物件注入工具。</li>
+    </ol>
+
+    <h3>3.2 LoadScene 主链路时序图</h3>
+
+    <p>当主角坐标从服务器拿到后，外部调用 <code>WorldSceneSystem.LoadScene(path, px, py, pz, isNet)</code> <span class="ref">WorldSceneSystem.cs:171</span>，之后链路自动推进到主角入场。整条链如下：</p>
+
+    <div class="ascii">
+<span class="em">外部触发</span>  WorldSceneSystem.LoadScene(path, px, py, pz, isNet)        <span class="ref">WorldSceneSystem.cs:171</span>
+   │
+   ├─① ChangeScanTypeToLocation(px,py,pz)   把扫描中心先钉在“登录坐标”
+   ├─② UniversalSceneManager.CreateScene&lt;MCScene&gt;(path, OnLoadingFinishAction, true, isNet)
+   │       底层工厂创建 MCScene；加载完成回调 = OnLoadingFinishAction
+   ├─③ MCScene.LoadingType = LoadingType.Login        标记这是“登录式”加载
+   ├─④ m_MCNetManager = m_McScene.MCManager           拿到中层 MCManager 引用
+   ├─⑤ MCScene.SetLodInfo(m_LodInfo) / SetScanCenterLocation()
+   │       把相机视锥/扫描中心交给引擎
+   ├─⑥ Owner.FireNow(WorldSceneSystemInitSceneArgs)   广播“场景已创建”
+   ├─⑦ 注册 GameWorkChunkPressureSystem / GameWorldServerChunkEntitySystem
+   │       让两个兄弟系统挂上 chunk 压力 / 服务器 chunk 物件 回调
+   ▼
+<span class="em">引擎加载完成回调</span>  OnLoadingFinishAction()  ──&gt;  CheckLoadingFinish()    <span class="ref">WorldSceneSystem.cs:242</span>
+   │
+   ├─⑧ sceneFinished = MCScene.IsLoadingStateFinish()   引擎自报“数据都到齐了吗”
+   │       是 → 进度推到 SCENELOADFINISH(85%)
+   │            Owner.FireNow(WorldSceneSystemMcSceneLoadFinishArgs)
+   │            WorldNetSystem.SendJoinScene(null)      请求服务器“主角入场”
+   │       否 → 留在 loading，等下一帧 Update 再 Check
+   ▼
+<span class="em">服务器回：主角装配完成</span>  BattlePlayerSystem.MainRoleInitFinish()
+   │  Owner.FireNow(WorldSceneSystemSetMainPlayerArgs.Create(m_MainRole))   <span class="ref">BattlePlayerSystem.cs:471</span>
+   ▼
+<span class="em">WorldSceneSystem 收到事件</span>  OnWorldSceneSystemSetMainPlayer(e)  <span class="ref">WorldSceneSystem.cs:105</span>
+   │  m_MainPlayer = args.MainPlayer
+   ▼
+<span class="em">主角入场收尾</span>  MainPlayerJoin()    <span class="ref">WorldSceneSystem.cs:219</span>
+   ├─⑨ ChangeScanTypeToRole()  扫描中心从“登录坐标”切到“跟着主角”
+   ├─⑩ IsLoadingFinish = true；开海平面；FireNow(WorldSceneSystemRenderSceneArgs)
+   └─⑪ ManualLoadingProgress(CLOSELOADING) → CsCallLuaBridge.SceneLoadFinish()
+              通知 Lua 关掉 loading UI
+    </div>
+
+    <h3>3.3 每一步在干什么（一句话版）</h3>
+    <ul>
+      <li><strong>LoadScene</strong>：把扫描中心钉在登录坐标，用底层工厂造出 MCScene，标记登录式加载，把 LOD/扫描信息喂给引擎，广播“场景已建好”，并把两个 chunk 相关兄弟系统挂上去。</li>
+      <li><strong>OnLoadingFinishAction → CheckLoadingFinish</strong>：引擎把玩家附近的 chunk 数据加载完会回调这里，这里再问一次引擎“真的都到齐了吗”，到齐就推 loading 进度、广播完成事件、向服务器请求主角入场。</li>
+      <li><strong>SendJoinScene</strong>：通过 WorldNetSystem 走 Lua 桥让服务器装配主角；主角装好后由 <code>BattlePlayerSystem</code> 派发 <code>SetMainPlayer</code> 事件。</li>
+      <li><strong>OnWorldSceneSystemSetMainPlayer</strong>：WorldSceneSystem 收到事件，把主角存下来，调 <code>MainPlayerJoin</code>。</li>
+      <li><strong>MainPlayerJoin</strong>：扫描中心切到“跟着主角跑”，置完成标志，广播“场景可渲染”，把 loading 进度推到关 UI 档位，通知 Lua 收尾。</li>
+    </ul>
+
+    <div class="note warn">
+      <strong>这里有个刻意设计</strong>：链路不是“场景加载”和“主角装配”并行，而是<strong>先等场景数据完全到齐，再请求主角入场</strong>（代码注释也写明了这个方案，见 <span class="ref">WorldSceneSystem.cs:215</span>）。原因是为了把 CPU 先让给场景逻辑，避免主角数据和 chunk 数据抢资源导致卡顿。注释里也提到后续可以改成并行。这个设计的来龙去脉和各判定条件会在<strong>第 5 篇</strong>和<strong>第 9 篇</strong>展开。
+    </div>
+
+    <!-- =================== 4 =================== -->
+    <h2 id="sec-4" class="anch">4. 本系列 12 篇阅读地图</h2>
+
+    <p>下面是 0~11 共 12 篇的主题。每篇配一句话定位 + 读完能掌握什么，方便你按需跳读。</p>
+
+    <div class="map-card">
+      <h4>第 0 篇 · 总览 · 大世界分层与系统骨架 <span class="meta">（本篇）</span></h4>
+      三层架构、IGameSystem 框架、事件总线、进入时序总图。读完能拿到整张大世界的地图，知道每个子系统挂在哪里。
+    </div>
+    <div class="map-card">
+      <h4>第 1 篇 · 引擎场景底座 UniversalScene</h4>
+      场景基类、SceneComponent 组件化、自有工作线程与任务分发、SetLocation 驱动重加载、UniversalSceneManager。读完能理解“场景是怎么被造出来、谁在驱动它移动、物件怎么挂”。
+    </div>
+    <div class="map-card">
+      <h4>第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</h4>
+      体素怎么存：MCBlock 的 struct 设计、MCChunk 的 32³ 数组与坐标↔下标换算、MCWorld 的 Dictionary&lt;long,MCChunk&gt; 与 chunkIndex 编码、完整查询链。读完能看懂体素世界最底下的数据原语。
+    </div>
+    <div class="map-card">
+      <h4>第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</h4>
+      5 层 MCWorld（blockSize=1,2,4,8,16，chunkSize 恒 32）、层间一拆八对齐、异形块只在 LOD0、LOD 距离动态调整。读完能理解“远处看粗、近处看细”的分层是怎么组织的。
+    </div>
+    <div class="map-card">
+      <h4>第 4 篇 · Chunk 动态加载与释放</h4>
+      SetLocation 触发重加载后引擎内部怎么决定加载哪些 chunk、Patch/八叉树查询、差集比对、mesh 分帧构建、卸载回池、脏标记驱动局部刷新。读完能跟上“玩家移动时地形怎么动态进出”。
+    </div>
+    <div class="map-card">
+      <h4>第 5 篇 · 场景加载状态机与登录时序</h4>
+      LoadingType/LoadingState 位标记、IsLoadingStateFinish 的三要素、loading 进度分段、LoadScene→OnLoadingFinishAction→SendJoinScene→MainPlayerJoin 完整时序。读完能完整跟下“点进游戏到看见主角”全过程。
+    </div>
+    <div class="map-card">
+      <h4>第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</h4>
+      SceneEntity / SceneEntityView / TransformEntity 等物件抽象、IEntityState / IBlink 接口、四叉树入树出树、增删更新。读完能搞懂“世界上摆的物件是什么对象、怎么被管理”。
+    </div>
+    <div class="map-card">
+      <h4>第 7 篇 · 物件模型 LOD 与实体显隐</h4>
+      3 级 entity 模型 LOD、EntityLodInfo 相机视锥来源、MCScene.UpdateLod 节流、近大远小机制、与 chunk 地形 LOD 的分离。读完能理解“场景 LOD 无缝切换”里物件那一半。
+    </div>
+    <div class="map-card">
+      <h4>第 8 篇 · Voxel 占位 · Placeholder 与 Collision</h4>
+      修建体素/碰撞体素、PlaceholderVoxel / CollisionVoxel、与真实 Block 查询的关系、为什么用“占位”抽象表达 entity 占据空间。读完能理解“一个物件占了哪些格子、怎么按坐标反查”。
+    </div>
+    <div class="map-card">
+      <h4>第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</h4>
+      四叉树附近扫描、NearEntityAdd/Remove 事件、MainPlayerChunkIdChange、为什么需要 AOI（不进显示区不处理）。读完能理解“哪些东西该出现在玩家附近、谁在算”。
+    </div>
+    <div class="map-card">
+      <h4>第 10 篇 · 大世界网络数据流</h4>
+      服务器 chunk block 下发、ChunkNetInfo 合并、MCNetworkManager vs 本地 MCManager、按 chunk 维护的 entity 在 chunk 移除时清理。读完能分清“中层引擎”的网络/本地两条路。
+    </div>
+    <div class="map-card">
+      <h4>第 11 篇 · 玩家传送与场景切换</h4>
+      JumpToPosition 的长/短距离两条路径、LoadingType.Transfer、主角坐标与物理 lastPos 协同、PlayerTransferSystem。读完能理解“玩家在大世界里怎么位移、传送时引擎做了什么”。
+    </div>
+
+    <footer class="nav">
+      <span>本篇完</span>
+      <a href="1_引擎场景底座_UniversalScene.html">下一篇：第 1 篇 · 引擎场景底座 UniversalScene →</a>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

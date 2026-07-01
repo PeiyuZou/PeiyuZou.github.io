@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram name="第 1 页" id="LJ-mFvN5fKI3XIKUqMv6">
+    <mxGraphModel dx="1426" dy="889" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-15" edge="1" parent="1" source="2nQ4Qv5VxkoLvWoakMd1-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="2nQ4Qv5VxkoLvWoakMd1-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" value="UniversalScene : MonoBehavior" vertex="1">
+          <mxGeometry height="40" width="200" x="120" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-2" parent="1" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;labelPosition=left;verticalLabelPosition=middle;align=right;verticalAlign=middle;" value="" vertex="1">
+          <mxGeometry height="340" width="20" x="330" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="可加载、可卸载" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="自带一个工作线程" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="处理Chunk的网格构建、数据解压等耗时操作" vertex="1">
+          <mxGeometry height="40" width="280" x="560" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="组件化能力" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="物件管理、MC 管理、遮挡剔除等等能力都组件化" vertex="1">
+          <mxGeometry height="40" width="280" x="560" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="有 LOD 更新入口" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="每帧根据相机位置更新物件的 LOD 级别" vertex="1">
+          <mxGeometry height="40" width="280" x="560" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="有加载状态机" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="chunk、物件、地形 patch，全好了才通知上层&quot;场景加载完成&quot;" vertex="1">
+          <mxGeometry height="40" width="280" x="560" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" value="有一个&quot;扫描中心&quot;概念" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" value="MCScene : UniversalScene" vertex="1">
+          <mxGeometry height="40" width="200" x="120" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQ4Qv5VxkoLvWoakMd1-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="体素能力" vertex="1">
+          <mxGeometry height="40" width="160" x="360" y="520" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

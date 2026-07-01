@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第 3 篇 · 多 LOD 体素世界 —— MCManager 的 5 层设计 — 体素大世界系列</title>
+<style>
+:root {
+    --bg: #f7f8fa;
+    --content-bg: #ffffff;
+    --text: #1f2937;
+    --text-light: #4b5563;
+    --text-muted: #6b7280;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --border: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --code-text: #1f2937;
+    --pre-bg: #1e293b;
+    --pre-text: #e2e8f0;
+    --pre-accent: #93c5fd;
+    --tag-bg: #eff6ff;
+    --tag-text: #1d4ed8;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+    --sidebar-bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 顶部标题区 */
+header.top {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    padding: 32px 40px 28px 40px;
+    border-bottom: 1px solid var(--border);
+}
+header.top .badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+header.top h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+header.top .tagline {
+    font-size: 14px;
+    color: #dbeafe;
+    max-width: 900px;
+}
+
+/* 布局 */
+.layout {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+nav.sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px 60px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 13.5px;
+}
+nav.sidebar h3 {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 22px 0 10px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+}
+nav.sidebar h3:first-child { margin-top: 0; }
+nav.sidebar ul { list-style: none; padding: 0; margin: 0; }
+nav.sidebar li { margin: 3px 0; }
+nav.sidebar li a {
+    display: block;
+    color: var(--text-light);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+nav.sidebar li a:hover { background: var(--primary-light); color: var(--primary-dark); text-decoration: none; }
+nav.sidebar li.active a {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 主内容 */
+main {
+    flex: 1;
+    min-width: 0;
+    background: var(--content-bg);
+    padding: 36px 48px 60px 48px;
+    max-width: 920px;
+}
+main h2 {
+    font-size: 22px;
+    color: #111827;
+    margin: 40px 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    font-weight: 600;
+}
+main h2:first-of-type { margin-top: 8px; }
+main h3 {
+    font-size: 17.5px;
+    color: #1e3a8a;
+    margin: 28px 0 10px 0;
+    font-weight: 600;
+}
+main h4 {
+    font-size: 15.5px;
+    color: var(--text);
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+main p { margin: 10px 0; color: var(--text); }
+main ul, main ol { margin: 10px 0 10px 22px; padding: 0; }
+main li { margin: 5px 0; }
+main strong { color: #111827; }
+
+/* 代码块 */
+code.inline {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+}
+pre.code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0;
+}
+pre.ascii {
+    background: var(--pre-bg);
+    color: var(--pre-text);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 14px 0;
+    white-space: pre;
+}
+pre.ascii .accent { color: var(--pre-accent); font-weight: bold; }
+
+/* 提示框 */
+.note {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--text);
+    font-size: 14px;
+}
+.note .label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-right: 6px;
+}
+.warn {
+    background: var(--warn-bg);
+    border-left: 3px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--warn-text);
+    font-size: 14px;
+}
+.warn .label { color: #b45309; font-weight: 600; margin-right: 6px; }
+
+/* 表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 13.5px;
+}
+table th, table td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+table th { background: var(--tag-bg); color: var(--primary-dark); font-weight: 600; }
+table tr:nth-child(even) td { background: #fafbfc; }
+
+/* 锚点定位偏移 */
+.anchor { display: block; position: relative; top: -20px; visibility: hidden; }
+
+/* 页脚 */
+footer.nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    background: var(--content-bg);
+    font-size: 14px;
+}
+footer.nav .prev, footer.nav .next {
+    flex: 1;
+    max-width: 46%;
+}
+footer.nav .next { text-align: right; }
+footer.nav .lbl { color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 2px; }
+footer.nav a { font-weight: 500; }
+
+@media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+    <div class="badge">第 3 篇 / 共 12 篇 · 体素大世界梳理学习</div>
+    <h1>多 LOD 体素世界 —— MCManager 的 5 层设计</h1>
+    <div class="tagline">体素大世界的"分层骨架"：为什么把世界叠成 5 层、每层 block 多大、层与层之间怎么对齐。本篇只讲"分层结构和层间关系"，不讲 chunk 的动态加载/卸载调度（第 4 篇）和 mesh 怎么构建（也归第 4 篇）。</div>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+    <h3>系列目录</h3>
+    <ul>
+        <li><a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a></li>
+        <li><a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a></li>
+        <li><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a></li>
+        <li class="active"><a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</a></li>
+        <li><a href="4_Chunk动态加载与释放.html">第 4 篇 · Chunk 动态加载与释放</a></li>
+        <li><a href="#">第 5 篇 · 场景加载状态机与登录时序</a></li>
+        <li><a href="#">第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</a></li>
+        <li><a href="#">第 7 篇 · 物件模型 LOD 与实体显隐</a></li>
+        <li><a href="#">第 8 篇 · Voxel 占位 · Placeholder 与 Collision</a></li>
+        <li><a href="#">第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</a></li>
+        <li><a href="#">第 10 篇 · 大世界网络数据流</a></li>
+        <li><a href="#">第 11 篇 · 玩家传送与场景切换</a></li>
+    </ul>
+
+    <h3>本篇锚点</h3>
+    <ul>
+        <li><a href="#sec-why">1. 为什么体素大世界需要多 LOD</a></li>
+        <li><a href="#sec-five">2. 5 层结构：blockSize = 1 &lt;&lt; i</a></li>
+        <li><a href="#sec-align">3. 层间对齐：一拆八</a></li>
+        <li><a href="#sec-entity">4. 异形块 / Entity 只在 LOD0</a></li>
+        <li><a href="#sec-manager">5. MCManager 还管什么（概览）</a></li>
+        <li><a href="#sec-distance">6. LOD 距离的动态调整（概览）</a></li>
+        <li><a href="#sec-summary">7. 小结与下一站</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<!-- ===================== 1 ===================== -->
+<span class="anchor" id="sec-why"></span>
+<h2>1. 为什么体素大世界需要多 LOD</h2>
+
+<p>第 2 篇我们看清了<strong>单层</strong> MCWorld 怎么存方块：一个 chunk 是 32×32×32 = 32768 个 block，世界坐标一路换算到 chunkIndex → blockIndex。但那只解决了"方块怎么存"，没解决一个更扎心的问题：<strong>方块太小了，整张地图全用最精细的方块去渲染，根本扛不住</strong>。</p>
+
+<p>体素世界里最小方块是米级的（LOD0 的 <code class="inline">BlockSize = 1</code>，一个 block 代表 1 米）。一个 32³ 的 chunk 就有 32768 个 block，如果玩家视野能看出去几公里，那远处也按 1 米一个 block 去摆数据、去构网格、去画，数据量和绘制量都会爆炸——你根本不需要在 500 米外看清 1 米级的细节，但引擎却在为这些看不清的细节付全额代价。</p>
+
+<p>多 LOD 的思路就是：<strong>远处用"大 block"来代表一片区域</strong>。同样一个 32³ 的 chunk，如果每个 block 代表 16 米（而不是 1 米），那这个 chunk 就覆盖 32×16 = 512 米见方的范围，顶点数却和近处 32 米的 chunk 差不多。于是世界从近到远用不同尺寸的 block：近处 1 米（精细），往外 2 米、4 米、8 米，最远 16 米（粗略）。同样大小的 chunk 容器，靠 block 实际尺寸变大来覆盖更远的范围，顶点数却随距离递减。</p>
+
+<div class="note"><span class="label">和普通模型 LOD 的本质区别：</span>普通模型的 LOD 是"同一套网格，远处用减面后的版本"——几何体不变，三角面数递减。体素世界的 LOD 不一样：它<strong>不改网格拓扑，而是改 block 的实际尺寸</strong>。LOD0 的一个 block 是 1 立方米，LOD4 的一个 block 是 16 立方米（边长 16 米）。换句话说，远处不是"近处地形的简化版"，而是"用更粗的方块重新采样了一遍地形"。这是"用精度换性能"的 LOD 思路，但实现手段是"block 尺寸递增"而不是"同一套网格减面"。</div>
+
+<p>所以体素大世界不是一层 MCWorld，而是<strong>5 层 MCWorld 叠在一起</strong>，由一个管理者统一持有。这个管理者就是 <code class="inline">MCManager</code>。本篇就讲它怎么把这 5 层组织起来、层与层之间怎么对齐。</p>
+
+<!-- ===================== 2 ===================== -->
+<span class="anchor" id="sec-five"></span>
+<h2>2. 5 层结构：blockSize = 1 &lt;&lt; i</h2>
+
+<h3>2.1 MCManager 持有 5 个 MCWorld</h3>
+
+<p>MCManager 是体素引擎的主控，定义在 <code class="inline">Assets\Scripts\Core\MCCore\Scene\MCManager.cs</code>（namespace <code class="inline">Assets.Scripts.MC</code>，继承 <code class="inline">SceneComponent</code>）。它内部持有一个 MCWorld 数组，长度就是 5：</p>
+
+<pre class="code">public static int MaxMCWorldLodLevel = 5;          // MCManager.cs:40
+
+protected MCWorld[] m_Worlds;                       // MCManager.cs:42
+
+public MCManager(UniversalScene scene) : base(scene)
+{
+    m_Worlds = new MCWorld[5];                      // MCManager.cs:115
+    m_ChunkGameObjects = new Dictionary&lt;YKVector3i, List&lt;MCGameObjectBase&gt;&gt;[5];
+    for (int i = 0; i &lt; MaxMCWorldLodLevel; i++)
+    {
+        int blockSize = 1 &lt;&lt; i;                    // 关键：blockSize 按 2 的幂递增
+        m_Worlds[i] = new MCWorld(blockSize, 32);   // MCManager.cs:122  chunkSize 恒为 32
+        m_ChunkGameObjects[i] = new Dictionary&lt;YKVector3i, List&lt;MCGameObjectBase&gt;&gt;();
+    }
+    ...
+}</pre>
+
+<p>循环体只有一行是核心：<code class="inline">m_Worlds[i] = new MCWorld(blockSize=1&lt;&lt;i, chunkSize=32)</code>。第 <code class="inline">i</code> 层（LOD i）的 <code class="inline">blockSize</code> 就是 <code class="inline">1 &lt;&lt; i</code>——位左移，等价于 2 的 i 次方。MCWorld 构造函数（<code class="inline">Packages\com.unity.mccore\Runtime\MCWorld.cs:21</code>）只是把这两个值存成只读字段：</p>
+
+<pre class="code">public readonly float BlockSize = 1;
+public readonly int ChunkSize = 32;
+
+public MCWorld(float blockSize, int chunkSize)
+{
+    BlockSize = blockSize;
+    ChunkSize = chunkSize;
+    ...
+}</pre>
+
+<p>所以 5 层 MCWorld 的<strong>结构完全一样</strong>（都是"字典里放一堆 32³ chunk"），唯一的差别就是 <code class="inline">BlockSize</code> 不同。这正是第 2 篇强调的"单层 MCWorld 的存储结构是一样的"——5 层共用同一套存储逻辑，只是 block 实际尺寸递增。</p>
+
+<h3>2.2 5 层参数表</h3>
+
+<p>把循环展开，5 层的参数一目了然：</p>
+
+<table>
+<tr><th>LOD 层号</th><th>blockSize (米)</th><th>chunkSize (恒)</th><th>单 chunk 覆盖边长 (米)</th><th>典型用途</th></tr>
+<tr><td>LOD 0</td><td>1 (= 1&lt;&lt;0)</td><td>32</td><td>32 × 1 = <strong>32</strong></td><td>近处精细表现</td></tr>
+<tr><td>LOD 1</td><td>2 (= 1&lt;&lt;1)</td><td>32</td><td>32 × 2 = <strong>64</strong></td><td>中近距离</td></tr>
+<tr><td>LOD 2</td><td>4 (= 1&lt;&lt;2)</td><td>32</td><td>32 × 4 = <strong>128</strong></td><td>中距离</td></tr>
+<tr><td>LOD 3</td><td>8 (= 1&lt;&lt;3)</td><td>32</td><td>32 × 8 = <strong>256</strong></td><td>中远距离</td></tr>
+<tr><td>LOD 4</td><td>16 (= 1&lt;&lt;4)</td><td>32</td><td>32 × 16 = <strong>512</strong></td><td>远处粗略表现</td></tr>
+</table>
+
+<p>"单 chunk 覆盖边长" = <code class="inline">chunkSize × blockSize</code>，也就是一个 chunk 在世界里实际占多大地。可以看到随着 LOD 升高，一个 chunk 覆盖的范围以 2 倍递增：32 → 64 → 128 → 256 → 512 米。同样 32³ 个方块，远处一个 chunk 顶 16 个近处 chunk 的覆盖面积（边长 4 倍，体积 64 倍）。</p>
+
+<h3>2.3 5 层同心结构</h3>
+
+<p>从玩家所在位置往外看，5 层是<strong>同心嵌套</strong>的：最内圈用 LOD0 精细方块，往外一圈切到 LOD1，再往外 LOD2、LOD3，最外圈是 LOD4 的粗略方块。哪一圈用哪一层，由 LOD 距离决定（见第 6 节），本节只看"叠起来长什么样"：</p>
+
+<pre class="ascii">                     <span class="accent">LOD4 (blockSize=16, chunk=512m)</span>
+          ┌──────────────────────────────────────────┐
+          │              <span class="accent">LOD3 (blockSize=8, chunk=256m)</span>          │
+          │     ┌────────────────────────────────┐     │
+          │     │          <span class="accent">LOD2 (blockSize=4, chunk=128m)</span>      │     │
+          │     │     ┌──────────────────────┐     │     │
+          │     │     │    <span class="accent">LOD1 (blockSize=2, chunk=64m)</span>  │     │     │
+          │     │     │   ┌──────────────┐   │     │     │
+          │     │     │   │ <span class="accent">LOD0 (1m, 32m)</span>│   │     │     │
+          │     │     │   │   ★ 玩家      │   │     │     │
+          │     │     │   └──────────────┘   │     │     │
+          │     │     └──────────────────────┘     │     │
+          │     └────────────────────────────────┘     │
+          └──────────────────────────────────────────┘
+
+   越往外 block 越大、chunk 覆盖越广、顶点越少 → 用精度换性能</pre>
+
+<p>这张图是"概念示意"——实际不是规则的同心方框，而是由八叉树按距离动态切层的（第 4 篇展开扫描流程）。但分层关系就是这样：同一片世界空间，在 5 层 MCWorld 里各有一份"不同精度的采样"，近处用 LOD0 那份，远处用 LOD4 那份。</p>
+
+<h3>2.4 为什么 chunkSize 恒为 32、只让 blockSize 递增</h3>
+
+<p>这是一个值得讲清的设计选择。5 层里 <code class="inline">chunkSize</code> 写死 32，只有 <code class="inline">blockSize</code> 在变。为什么不让 chunk 也变大、或者干脆让高 LOD 用更稀疏的 chunk？</p>
+
+<p>原因在于<strong>统一逻辑</strong>。chunk 是 mesh 构建和内存管理的基本单位：构网格时遍历一个 32³ 数组、邻居标脏时按 chunk 边界判定、对象池按 chunk 回收。如果 chunkSize 也变，那 mesh 构建循环、邻居边界检查、blockIndex 计算全得按 LOD 写成 5 套分支，维护成本很高。把 chunkSize 钉死在 32，意味着<strong>所有层的 chunk 内部逻辑完全一致</strong>——构网格、查 block、标脏、回收都共用同一套代码，只有"每个 block 代表几米"这一个参数在变。用 blockSize 一个参数调控覆盖范围，换来了 chunk 处理逻辑的完全统一。</p>
+
+<div class="note"><span class="label">一句话总结：</span>chunk 是"逻辑单元"（mesh 构建、内存管理的粒度），尺寸恒定保证逻辑统一；block 是"采样粒度"（一个方块代表几米），尺寸递增实现远处粗略。两者职责分离，5 层只调后者。</div>
+
+<!-- ===================== 3 ===================== -->
+<span class="anchor" id="sec-align"></span>
+<h2>3. 层间对齐：一拆八</h2>
+
+<p>5 层 MCWorld 各存各的 chunk，但它们描述的是<strong>同一片世界空间</strong>，只是精度不同。所以层与层之间必须能换算："高层这一个 chunk，对应低层哪几个 chunk？" 这是 LOD 体系里最基础的父子映射。</p>
+
+<h3>3.1 一拆八的几何关系</h3>
+
+<p>每降一层，blockSize 减半（16→8→4→2→1）。chunkSize 恒为 32，所以高层一个 chunk 的覆盖边长 = 32 × blockSize，低层一个 chunk 覆盖边长 = 32 × (blockSize/2) = 高层的一半。三维各减半，意味着高层一个 chunk 的空间，正好被低层 <strong>2×2×2 = 8 个 chunk</strong> 填满。每降一层就一拆八：</p>
+
+<pre class="ascii">   LOD1 的一个 chunk (blockSize=2, 覆盖 64m)
+   ┌──────────────────────────────┐
+   │         │         │          │   ← 沿 X 拆成 2 份
+   │  LOD0-0 │  LOD0-1 │          │
+   │         │         │          │
+   ├─────────┼─────────┤  ...     │   ← 沿 Y 拆成 2 份
+   │         │         │          │
+   │  LOD0-2 │  LOD0-3 │          │
+   │         │         │          │
+   └──────────────────────────────┘
+        ↑
+        沿 Z 还有一层（向纸内/外），共 2×2×2 = 8 个 LOD0 chunk
+
+   LOD1 的 1 个 chunk  ──&gt;  LOD0 的 8 个 chunk
+   LOD2 的 1 个 chunk  ──&gt;  LOD1 的 8 个  ──&gt;  LOD0 的 64 个
+   LOD3 的 1 个 chunk  ──&gt;  LOD0 的 512 个
+   LOD4 的 1 个 chunk  ──&gt;  LOD0 的 4096 个</pre>
+
+<p>跨多层时就是连续一拆八：LOD2 的一个 chunk 对应 LOD0 的 8×8 = 64 个，LOD4 一个 chunk 对应 LOD0 的 8⁴ = 4096 个。这个 8 的幂次关系，正是 blockSize 按 2 的幂递增的直接几何后果。</p>
+
+<h3>3.2 GetChildChunkIndexList：算出子 chunk 的索引列表</h3>
+
+<p>把这个拆分关系写成代码的是 <code class="inline">MCManager.GetChildChunkIndexList</code>（<code class="inline">MCManager.cs:251</code>）。给定高层 LOD 的一个 chunkIndex，算出它在低层 LOD 对应的全部 chunkIndex：</p>
+
+<pre class="code">// 根据 sourceLod 的 chunkIndex 获取对应 destLod 的 chunkIndex 列表
+public void GetChildChunkIndexList(int sourceLod, int destLod, long chunkIndex,
+                                   ref List&lt;long&gt; destChunkIndexList)
+{
+    if (destLod >= sourceLod)                       // destLod 必须更精细（更小）
+    {
+        Debug.LogError("destLod 必须小于 sourceLod !");
+        return;
+    }
+
+    MCWorld world = m_Worlds[sourceLod];            // 取高层世界
+    int blockSize = (int)world.BlockSize;           // 高层 blockSize（如 LOD2 = 4）
+    int chunkSize = world.ChunkSize;                // 32
+    int chunkWith = blockSize * chunkSize;          // 高层 chunk 实际边长（如 128）
+
+    YKVector3d chunkId = NetWorkUtility.ToYKVector3_20(chunkIndex);
+    YKVector3d chunkOffsetOrigin = chunkId * chunkWith;   // 高层 chunk 的世界坐标原点
+
+    int destBlockSize = (int)Math.Pow(2, destLod);  // 低层 blockSize（如 LOD0 = 1）
+
+    // 递归拆分：从高层的 blockSize 一路对半切到 destBlockSize
+    GetLodChunksLoop((int)chunkOffsetOrigin.x, (int)chunkOffsetOrigin.y,
+                     (int)chunkOffsetOrigin.z, chunkWith, blockSize,
+                     destBlockSize, ref destChunkIndexList);
+}</pre>
+
+<p>核心是递归函数 <code class="inline">GetLodChunksLoop</code>（<code class="inline">MCManager.cs:222</code>）。它每降一层就把当前空间沿 x/y/z 各切两份（共 8 份），对每一份继续递归，直到 blockSize 切到目标 <code class="inline">destBlockSize</code> 才把对应的 chunkIndex 收进结果列表：</p>
+
+<pre class="code">private void GetLodChunksLoop(int x, int y, int z, int chunkSize, int blockSize,
+                              int destBlockSize, ref List&lt;long&gt; mcChunks)
+{
+    int subBlockSize = blockSize / 2;               // 降一层：blockSize 减半
+    int subChunkSize = chunkSize / 2;               // 对应 chunk 实际边长也减半
+    float subChunkSizeInverse = 1.0f / subChunkSize;
+    for (int w = 0; w &lt; 2; w++)                     // 2×2×2 八方向
+      for (int v = 0; v &lt; 2; v++)
+        for (int u = 0; u &lt; 2; u++)
+        {
+            int offsetX = x + u * subChunkSize;     // 子 chunk 的世界坐标原点
+            int offsetY = y + v * subChunkSize;
+            int offsetZ = z + w * subChunkSize;
+
+            if (destBlockSize &lt; subBlockSize)       // 还没切到目标层，继续递归
+                GetLodChunksLoop(offsetX, offsetY, offsetZ, subChunkSize,
+                                 subBlockSize, destBlockSize, ref mcChunks);
+            else if (destBlockSize == subBlockSize) // 切到目标层，收一个 chunkIndex
+                mcChunks.Add(NetWorkUtility.ConvertXYZ_20(
+                    (int)(offsetX * subChunkSizeInverse),
+                    (int)(offsetY * subChunkSizeInverse),
+                    (int)(offsetZ * subChunkSizeInverse)));
+        }
+}</pre>
+
+<p>三层嵌套 <code class="inline">for</code>（2×2×2）就是"一拆八"的代码化身；外层 <code class="inline">if/else if</code> 决定"继续往下拆"还是"到底了收结果"。如果 sourceLod 和 destLod 之间隔了好几层，递归就会层层往下拆，最终收进 8 的若干次方个 chunkIndex。</p>
+
+<h3>3.3 这个映射用来干嘛</h3>
+
+<p>父子映射在 LOD 体系里是"基础设施"，典型用途有两类：</p>
+
+<ul>
+<li><strong>高层 chunk 数据变了，要通知低层刷新</strong>：远处 LOD4 的一个粗略 chunk 改了，它对应的 4096 个 LOD0 chunk 里那些还存在的，可能需要重新构网格。这时先用 <code class="inline">GetChildChunkIndexList</code> 算出子 chunk 列表，再逐个标脏。</li>
+<li><strong>低层 chunk 要找对应的高层父块</strong>：反向查"我这个精细 chunk 归哪个粗略 chunk 管"，用于跨层引用、遮挡判定等。反向方向是除以 2 的幂、向下取整。</li>
+</ul>
+
+<p>本篇只讲<strong>这个映射关系怎么算</strong>——即"高层 1 个 chunk 对应低层 8ⁿ 个 chunk"的几何和代码。至于"什么时候真的去触发跨层刷新、刷新走哪条调度路径"，那是 chunk 动态加载调度的事，留到第 4 篇展开。</p>
+
+<h3>3.4 blockSize 和 lod 一一对应：Math.Log 反算层号</h3>
+
+<p>因为 blockSize 严格按 <code class="inline">1 &lt;&lt; i</code> 递增，blockSize 和 lod 是一一对应的：blockSize=1 ↔ lod=0，blockSize=2 ↔ lod=1，……，blockSize=16 ↔ lod=4。所以代码里经常看到<strong>用 blockSize 反算 lod</strong> 的写法：</p>
+
+<pre class="code">int lod = (int)Mathf.Log(blockSize, 2);   // MCManager.cs:404 (SetBlock 里)
+// 等价写法：(int)Math.Log(lod, 2)  —— 注意这里的形参 lod 其实是 blockSize
+
+int index = (int)Mathf.Log(chunkEntity.BlockSize, 2);  // MCManager.cs:997 (AddChunk 里)
+int index = (int)Math.Log(lod, 2);                     // MCManager.cs:1437, 1472</pre>
+
+<p><code class="inline">Math.Log(blockSize, 2)</code> 就是"blockSize 是 2 的几次方"，结果正好是 lod 层号。这个写法在 MCManager 里反复出现（SetBlock、AddChunk、RemoveChunk、RemoveGameObject 都有），它把"blockSize 这个实际尺寸"和"lod 这个数组下标"两个表达统一起来：你给我一个 blockSize，我就能算出它在 <code class="inline">m_Worlds[?]</code> 的哪一层。</p>
+
+<div class="note"><span class="label">一一对应的代价：</span>这个反算能成立，前提是 blockSize 严格是 2 的幂且和 lod 严格对应。一旦未来想插入一个 blockSize=3 的中间层，所有 <code class="inline">Math.Log(blockSize, 2)</code> 都会算出非整数、直接破。所以"5 层 + blockSize=1&lt;&lt;i"不只是一个初始化习惯，而是一个<strong>被全代码依赖的不变量</strong>。</div>
+
+<!-- ===================== 4 ===================== -->
+<span class="anchor" id="sec-entity"></span>
+<h2>4. 异形块 / Entity 只在 LOD0</h2>
+
+<p>5 层 LOD 不只是"block 尺寸递增"，还有一个容易忽略的分层约束：<strong>异形块（非标准立方体的装饰方块）只在 LOD0 实例化</strong>。这是"连内容类型都分层"的设计——远处不仅方块变大，连异形块这种额外内容都直接不画了。</p>
+
+<h3>4.1 BuildMeshEx 里的 BlockSize==1 判定</h3>
+
+<p>构网格的入口 <code class="inline">BuildMeshEx</code>（<code class="inline">MCManager.cs:1144</code>）在构完普通 mesh 后，有一段只对 LOD0 生效的额外逻辑：</p>
+
+<pre class="code">public void BuildMeshEx(object obj)
+{
+    MCChunkRenderData data = (MCChunkRenderData)obj;
+    ...
+    if (bShow)
+    {
+        data.RenderWrap.LoadingStates = LoadingSessionStates.Finished;
+        data.BuildMesh(_addGameObjectAction);          // 普通 mesh：所有层都构
+        if (data.Chunk.BlockSize == 1)                 // 只有 LOD0 才做下面两件事
+        {
+            // 异形块实例化（走几何实例化的非标准方块）
+            if (data.RenderWrap.IsEntityDirty)
+            {
+                data.BuildEntityInstance(_addEntityInstance);
+            }
+            // 装饰 entity 实例化
+            Scene.ExecuteInThread(new UniversalScene.ThreadTask(data, _buildDecorationEntity));
+        }
+        data.RenderWrap.Source?.OnRenderTaskFinish(this);
+    }
+    ...
+}</pre>
+
+<p>关键就是 <code class="inline">if (data.Chunk.BlockSize == 1)</code> 这一句。<code class="inline">BlockSize == 1</code> 就是 LOD0（见第 2 节参数表）。只有 LOD0 的 chunk 才会调用 <code class="inline">BuildEntityInstance</code>（异形块实例化）和 <code class="inline">BuildDecorationEntity</code>（装饰 entity 实例化）。LOD1~LOD4 的 chunk 只构普通 mesh，跳过这两步。新版渲染路径 <code class="inline">BuildMeshExNew</code>（<code class="inline">MCManager.cs:1099</code>）的判定完全一样：<code class="inline">if (data.Chunk.BlockSize == 1)</code>。</p>
+
+<h3>4.2 为什么只在 LOD0</h3>
+
+<p>异形块是"非标准立方体"的方块——斜坡、装饰物、特殊造型之类，通常走几何实例化（instancing）画出来。这些东西的实例化开销不小（要建 SceneEntity、要进渲染列表、要管生命周期），而且<strong>只有玩家凑近了才看得清造型</strong>。远处一个 LOD4 chunk 的 block 已经是 16 米一个的粗方块了，把里面的斜坡也用异形块画出来，既看不清也浪费——直接用一个粗略方块代表这一片就够了。</p>
+
+<p>所以设计上做了取舍：<strong>异形块/装饰 entity 只在最近的 LOD0 实例化，LOD1 及以外统统不画</strong>。这样大部分远处 chunk 只构一份简单 mesh，省下大量实例化和 entity 管理开销。这是 LOD 体系里"内容也分层"的体现：不仅 block 尺寸递增，连"要不要画异形块"这件事也按层裁剪。</p>
+
+<h3>4.3 RemoveGameObject 里的对称判定 —— 命名陷阱</h3>
+
+<p>有构就有删。对称地，移除显示对象时也只在 LOD0 移除 entity。但这里的代码有一个<strong>非常容易踩坑的命名</strong>：</p>
+
+<pre class="code">private bool RemoveGameObject(float lod, YKVector3i posIndex)
+{
+    if (lod == 1)                       // MCManager.cs:1529  ← 注意这个 lod 是 BlockSize！
+    {
+        RemoveChunkEntityObject(lod, posIndex);
+    }
+    return RemoveChunkBlockObject(lod, posIndex);
+}</pre>
+
+<p>这个方法形参叫 <code class="inline">lod</code>，但传进来的实际是 <code class="inline">chunk.BlockSize</code>（见 <code class="inline">MCManager.cs:1523</code>：<code class="inline">RemoveGameObject((int)chunk.BlockSize, chunk.Index)</code>）。所以 <code class="inline">if (lod == 1)</code> 真正的意思是 <strong>"如果 BlockSize == 1"，也就是 LOD0</strong>。同样地，<code class="inline">RemoveChunkEntityObject</code> 内部（<code class="inline">MCManager.cs:1477</code>）的 <code class="inline">if (index == 0)</code> 才是真正的"lod == 0"——那里 <code class="inline">index</code> 是 <code class="inline">(int)Math.Log(lod, 2)</code> 算出来的真 lod。</p>
+
+<p>更迷惑的是，<code class="inline">BuildMeshEx</code> 里那条注释写的是"只有Lod1的Chunk才会显示异型块"（<code class="inline">MCManager.cs:1112, 1158</code>），但代码判定的是 <code class="inline">BlockSize == 1</code>，对应的是 <strong>LOD0</strong>。</p>
+
+<div class="warn"><span class="label">命名陷阱，务必当心：</span>在这套代码里，"<code class="inline">lod</code>" 这个变量名有时指真正的 LOD 层号（0~4，用 <code class="inline">Math.Log(blockSize, 2)</code> 算出来），有时却被直接拿来装 <code class="inline">BlockSize</code>（1/2/4/8/16）。注释里说的"Lod1"指的是 <strong>BlockSize==1 即 LOD0</strong>，不是 LOD 层号 1。判定"是不是最精细层"时，<code class="inline">BlockSize == 1</code>、<code class="inline">lod == 1</code>（这里 lod 是 blockSize 形参）、<code class="inline">index == 0</code>（这里 index 是真 lod）三种写法都在用，说的却是同一件事。读这段代码时一定要先确认形参里那个 <code class="inline">lod</code> 到底是 blockSize 还是真层号，否则会把"LOD0 专属"误读成"LOD1 专属"。</div>
+
+<p>这个陷阱的存在，本质上是因为 blockSize 和 lod 一一对应（见 3.4），早期写代码时直接拿 blockSize 当 lod 用、省一次 <code class="inline">Math.Log</code>，结果变量名就留下了歧义。读代码时记住"<code class="inline">lod == 1</code> 在这里 = BlockSize==1 = LOD0"就不会被注释带偏。</p>
+
+<h3>4.4 entity 的模型 LOD 是另一套系统</h3>
+
+<p>这里说的"异形块只在 LOD0"是<strong>chunk 地形/方块</strong>这一侧的事——只跟 5 层 MCWorld 有关。另外还有一套<strong>entity 自身的模型 LOD</strong>（同一个装饰物有 3 级精细模型，按距离切换），那是 <code class="inline">SceneObjectManager</code> 管的另一套系统，和这里的 chunk 地形 LOD 是分离的。本篇只讲地形/方块的 5 层 LOD，entity 模型 LOD 留到第 7 篇展开。</p>
+
+<!-- ===================== 5 ===================== -->
+<span class="anchor" id="sec-manager"></span>
+<h2>5. MCManager 还管什么（概览）</h2>
+
+<p>本篇把 MCManager 当作"5 层 MCWorld 的持有者"在讲，但它实际是体素引擎的主控，管的远不止 5 层世界。这里只做<strong>本篇范围内的概览</strong>，让你知道它还挂着哪些职责，但每项的具体调度细节都留到后面几篇。</p>
+
+<h3>5.1 MCManager 是体素引擎主控</h3>
+
+<p>MCManager 的类声明（<code class="inline">MCManager.cs:22</code>）挂了一长串接口：</p>
+
+<pre class="code">public class MCManager : SceneComponent, ISchedulable, IThreadRunnable,
+                         IRefreshable, IOnTerrainRangeChanged</code></pre>
+
+<p>可以看出它是个 <code class="inline">SceneComponent</code>（挂在场景上，第 1 篇讲过的场景组件机制），能被调度（<code class="inline">ISchedulable</code>）、能跑线程（<code class="inline">IThreadRunnable</code>）、能响应刷新（<code class="inline">IRefreshable</code>）、能响应画质档位变化（<code class="inline">IOnTerrainRangeChanged</code>，第 6 节会用到）。它手里攥着的体素相关资产，本篇范围内能点出来的有：</p>
+
+<ul>
+<li><strong>5 层 MCWorld</strong>（<code class="inline">m_Worlds</code>）——本篇主角。</li>
+<li><strong>Patch 缓存</strong> <code class="inline">PatchesCache</code>（<code class="inline">MCManager.cs:148</code>）——地块（MCPatch）的容器，chunk 的动态加载/卸载都围绕 Patch 的八叉树展开。本篇不展开，第 4、5 篇详讲。</li>
+<li><strong>SetBlock</strong>（<code class="inline">MCManager.cs:402</code>）——改方块入口，内部按 blockSize 算出 lod，再落到对应 MCWorld 的 chunk。</li>
+<li><strong>邻居刷新</strong> <code class="inline">CheckRefreshNeighbors</code>（<code class="inline">MCManager.cs:857</code>）——block 改在 chunk 边界时，要给相邻 chunk 标脏。</li>
+<li><strong>mesh 构建调度</strong> <code class="inline">RefreshChunk</code> / <code class="inline">RendererChunk</code> / <code class="inline">BuildMeshEx</code>——把脏 chunk 推给图形线程构网格。调度流程归第 4 篇。</li>
+<li><strong>CurrentMCWorld</strong> 属性——常用访问入口，下面单独讲。</li>
+</ul>
+
+<h3>5.2 GetMcWorld(lod)：按层取用</h3>
+
+<p>既然 MCManager 持有 5 层 MCWorld，外部自然要能按层取用。取用接口就是 <code class="inline">GetMcWorld</code>（<code class="inline">MCManager.cs:171</code>），非常直白：</p>
+
+<pre class="code">public MCWorld GetMcWorld(int lod)
+{
+    return m_Worlds[lod];
+}</pre>
+
+<p>给个 lod 层号（0~4），返回对应的 MCWorld。WorldSceneSystem 里就有按指定 lod 查 chunk 的用法（<code class="inline">WorldSceneSystem.cs:1058, 1072, 1083, 1090, 1099</code> 一带），都是 <code class="inline">MCScene.MCManager.GetMcWorld(lod).TryGetChunk(...)</code> 这种套路——想查非 LOD0 的 chunk，就显式传 lod。</p>
+
+<h3>5.3 CurrentMCWorld：默认走 LOD0</h3>
+
+<p>大多数业务查方块不需要指定 lod，因为玩家日常交互（点击、放置、射线检测）都发生在玩家附近的精细区域，也就是 LOD0。MCManager 暴露了一个快捷属性 <code class="inline">CurrentMCWorld</code>（<code class="inline">MCManager.cs:108</code>），固定指向 LOD0：</p>
+
+<pre class="code">public MCWorld CurrentMCWorld => m_Worlds[0];   // 永远是 LOD0</pre>
+
+<p>于是最常见的"查一个方块"访问路径就是 <strong>MCScene.MCManager.CurrentMCWorld.TryGetBlock</strong>。WorldSceneSystem 的 <code class="inline">TryGetBlock</code>（<code class="inline">WorldSceneSystem.cs:561</code>）就是这么走的：</p>
+
+<pre class="code">public bool TryGetBlock(float x, float y, float z, out MCBlock block)
+{
+    if (MCScene == null || MCScene.MCManager == null
+        || MCScene.MCManager.CurrentMCWorld == null) { ... }
+    if (MCScene.MCManager.CurrentMCWorld.TryGetBlock(x, y, z, out block))   // ← 走 LOD0
+    { ... }
+    ...
+}</pre>
+
+<p>这条路径你已经在第 2 篇末尾见过了——<code class="inline">WorldSceneSystem.TryGetBlock</code> 内部就是调 <code class="inline">CurrentMCWorld.TryGetBlock</code>，而 <code class="inline">CurrentMCWorld</code> 就是 <code class="inline">m_Worlds[0]</code>。把这条路径记住：<strong>默认查询都走 LOD0，要查别的层才显式 <code class="inline">GetMcWorld(lod)</code></strong>。</p>
+
+<div class="note"><span class="label">本篇边界：</span>MCManager 作为"5 层 MCWorld 持有者"和"按层取用入口"这两个角色，是本篇讲清的内容。Patch 缓存怎么用、mesh 构建怎么调度、chunk 怎么动态加载卸载，都是建立在 5 层结构之上的<strong>调度层</strong>话题，留到第 4 篇起展开。</div>
+
+<!-- ===================== 6 ===================== -->
+<span class="anchor" id="sec-distance"></span>
+<h2>6. LOD 距离的动态调整（概览）</h2>
+
+<p>第 2 节那张同心结构图是"概念示意"，真实世界里哪一圈用哪层 LOD，是由<strong>每层的查询距离</strong>决定的——"离玩家多近才用 LOD0、多远才切到 LOD1"这些阈值不是写死的，而是可调的。本节只点出"这套不是写死的、有画质档位、有特殊场景调整"，让你知道有这回事；具体 Patch 怎么拿这些距离去做加载判定，留到第 4、5 篇。</p>
+
+<h3>6.1 OctreeQueryByLod 与 _lodDis</h3>
+
+<p>LOD 距离的具体载体是 <code class="inline">OctreeQueryByLod</code>（定义在 <code class="inline">Assets\Scripts\Core\MCCore\Octree\Octree.cs:650</code>），它核心持有两个东西：</p>
+
+<pre class="code">public class OctreeQueryByLod
+{
+    public YKVector3d _pos;   // 观察位置（查询中心，一般是玩家位置）
+    public float[] _lodDis;   // 各层 LOD 的查询距离阈值（按八叉树深度索引）
+    public bool Contain(...)  // 判定一个节点中心是否落在某层 LOD 范围内
+    ...
+}</pre>
+
+<p><code class="inline">_lodDis</code> 是一个 float 数组，存的是"各层 LOD 的查询距离"。每个 MCPatch 持有一个这样的查询器（<code class="inline">MCPatch.m_Query</code>，<code class="inline">MCPatch.cs:258</code>），MCManager 自己也缓存了一份（<code class="inline">MCManager.m_PatchQuery</code>，<code class="inline">MCManager.cs:111</code>，在 <code class="inline">OnPatchFill</code> 里从 patch 复制过来）。</p>
+
+<div class="note"><span class="label">数组下标的小坑：</span><code class="inline">_lodDis</code> 的下标是<strong>八叉树深度</strong>，不是直接是 LOD 层号。从 MCPatch 里的注释（<code class="inline">MCPatch.cs:826-849</code>）可以看出，下标 4~8 对应 blockSize 16/8/4/2/1，也就是 LOD 4/3/2/1/0（下标越大、层越精细、距离阈值越小）。下标 0~3 是给八叉树上层大节点用的占位（统一给 8000 这种大值，相当于"永远在范围内"）。所以读 <code class="inline">_lodDis[8]</code> 要知道它说的是 LOD0 的距离，不是第 8 层 LOD。</div>
+
+<h3>6.2 画质档位缩放：OnTerrainRangeChanged</h3>
+
+<p>LOD 距离会跟着画质档位缩放。MCManager 实现了 <code class="inline">IOnTerrainRangeChanged</code>，对应方法 <code class="inline">OnTerrainRangeChanged</code>（<code class="inline">MCManager.cs:1796</code>）：</p>
+
+<pre class="code">public virtual void OnTerrainRangeChanged()
+{
+    TerrainConfig config = Scene.SceneConfig.terrainInfo;
+    m_TerrainRange = UniversalRenderPipeline.asset.PipelineRenderSettingData.TerrainRange;
+    Vector2 scheduleRange = new Vector2(config.BlockConfig.XLoadRange, config.BlockConfig.ZLoadRange);
+    switch (m_TerrainRange)
+    {
+        case LowMemory:
+        case Low:        scheduleRange *= 0.5f;  break;   // 低画质：加载范围砍半
+        case Medium:
+        case High:       scheduleRange *= 1.0f;  break;   // 中/高：基准
+        case Ultra:      scheduleRange *= 2.0f;  break;   // 极高：翻倍
+    }
+    ...
+    // 同步把每层 LOD 的查询距离更新到各 patch
+    foreach (var it in PatchesCache.Patches)
+        ((MCPatch)it.Value).SetQueryLodDistance(m_TerrainRange);
+}</pre>
+
+<p>这里有 5 个档位：<code class="inline">Low / LowMemory / Medium / High / Ultra</code>。<code class="inline">ScheduleRange</code>（整体调度范围）按档位 0.5x / 1x / 2x 缩放，同时调用每个 patch 的 <code class="inline">SetQueryLodDistance</code> 重设 <code class="inline">_lodDis</code>。<code class="inline">SetQueryLodDistance</code>（<code class="inline">MCPatch.cs:857</code>）内部也是按这 5 个档位给 <code class="inline">_lodDis[4~8]</code> 填不同的距离值——比如 Ultra 档 LOD0(<code class="inline">_lodDis[8]</code>) 给 128，Low 档只给 96，意味着低画质下玩家更近才会加载 LOD0 精细块。</p>
+
+<h3>6.3 特殊场景的 LOD 调整</h3>
+
+<p>除了画质档位，还有两种针对特殊场景的 LOD 微调入口：</p>
+
+<ul>
+<li><strong><code class="inline">EnlargeLod0Distance</code></strong>（<code class="inline">MCPatch.cs:979</code>）：编辑器单机模式下，把 LOD0 的可见距离放大（<code class="inline">_lodDis[8]</code> 从 96 提到 512），让美术在编辑器里能看到更远处的精细地形。</li>
+<li><strong><code class="inline">SetSkiBattleLodDistance</code></strong>（<code class="inline">MCScene.cs:1040</code>，内部调 <code class="inline">MCPatch.SkiBattleLodSetting</code> <code class="inline">MCPatch.cs:966</code>）：滑雪单局场景专用的一组 LOD 距离，因为滑雪玩法视角和移动速度跟主城不一样，需要单独调一套阈值。调用方在 <code class="inline">LuSkiSceneSystem.cs:43</code>。</li>
+</ul>
+
+<p>这两个入口都是直接改 <code class="inline">_lodDis</code> 数组的几个槽位，本质上就是"换一套距离阈值"。本篇只要知道：<strong>LOD 距离不是常量，有画质档位统一缩放、有特殊场景单独覆盖</strong>。至于 patch 怎么用这些距离、在八叉树上怎么扫描出该加载哪些 chunk，是第 4、5 篇的调度话题。</p>
+
+<!-- ===================== 7 ===================== -->
+<span class="anchor" id="sec-summary"></span>
+<h2>7. 小结与下一站</h2>
+
+<p>本篇把体素大世界的<strong>分层骨架</strong>讲清了，核心就三件事：</p>
+
+<ul>
+<li><strong>5 层 MCWorld，blockSize = 1 &lt;&lt; i</strong>：MCManager 持有 <code class="inline">m_Worlds[5]</code>，第 i 层 blockSize 是 2 的 i 次方（1/2/4/8/16），chunkSize 恒为 32。chunk 是"逻辑单元"尺寸恒定保证处理逻辑统一，block 是"采样粒度"尺寸递增实现远处粗略。这是"用精度换性能"的体素 LOD，和普通模型 LOD 的本质区别在于"改 block 尺寸"而不是"减面"。</li>
+<li><strong>层间对齐靠一拆八</strong>：每降一层 blockSize 减半，三维各减半 → 一个高层 chunk 对应低层 2×2×2 = 8 个。跨多层就是 8 的幂次。<code class="inline">GetChildChunkIndexList</code> + <code class="inline">GetLodChunksLoop</code> 用递归三层 for 把这个拆分关系算出来。blockSize 和 lod 一一对应，所以代码里到处用 <code class="inline">Math.Log(blockSize, 2)</code> 反算层号。</li>
+<li><strong>异形块只在 LOD0</strong>：<code class="inline">BuildMeshEx</code> 里 <code class="inline">BlockSize == 1</code> 才实例化异形块/装饰 entity，LOD1 及以上不画，省下大量实例化开销。注意 <code class="inline">RemoveGameObject</code> 里的命名陷阱——形参 <code class="inline">lod</code> 实际是 BlockSize，<code class="inline">lod == 1</code> 指 LOD0，注释里"Lod1"也是指 BlockSize==1，别被带偏。</li>
+</ul>
+
+<p>另外点出了两个概览：MCManager 是体素引擎主控，本篇只讲它"5 层 MCWorld 持有者"的角色，<code class="inline">GetMcWorld(lod)</code> 按层取用、<code class="inline">CurrentMCWorld</code>（永远 LOD0）是默认查询入口（<code class="inline">WorldSceneSystem.TryGetBlock</code> 就走这条）；LOD 距离不是写死的，靠 <code class="inline">OctreeQueryByLod._lodDis</code> 存阈值，有 5 档画质缩放和滑雪等特殊场景覆盖。</p>
+
+<p>到这里，体素大世界的<strong>静态分层结构</strong>就讲完了——5 层世界怎么叠、怎么对齐、各自存什么。但有一个问题一直没回答：这 5 层的 chunk 是什么时候被创建出来、什么时候被回收？玩家走动时，近处的 LOD0 chunk 怎么随着距离动态出现、远处的又怎么消失？这就是第 4 篇要讲的 <strong>Chunk 动态加载与释放</strong>——把这套静态骨架变成"跟着玩家跑的动态世界"。</p>
+
+<div class="note"><span class="label">下一篇：</span><a href="#">第 4 篇 · Chunk 动态加载与释放</a> —— Patch 八叉树怎么按 LOD 距离扫描出该加载的 chunk、chunk 的生命周期怎么走、mesh 构建怎么调度。</div>
+
+</main>
+</div>
+
+<footer class="nav">
+    <div class="prev">
+        <span class="lbl">上一篇</span>
+        <a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld / MCChunk / MCBlock</a>
+    </div>
+    <div class="next">
+        <span class="lbl">下一篇</span>
+        <a href="#">第 4 篇 · Chunk 动态加载与释放 →</a>
+    </div>
+</footer>
+
+</body>
+</html>
