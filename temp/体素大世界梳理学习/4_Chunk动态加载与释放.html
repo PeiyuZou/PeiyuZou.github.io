@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第 4 篇 · Chunk 动态加载与释放 — 体素大世界系列</title>
+<style>
+:root {
+    --bg: #f7f8fa;
+    --content-bg: #ffffff;
+    --text: #1f2937;
+    --text-light: #4b5563;
+    --text-muted: #6b7280;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --border: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --code-text: #1f2937;
+    --pre-bg: #1e293b;
+    --pre-text: #e2e8f0;
+    --pre-accent: #93c5fd;
+    --tag-bg: #eff6ff;
+    --tag-text: #1d4ed8;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+    --sidebar-bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 顶部标题区 */
+header.top {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    padding: 32px 40px 28px 40px;
+    border-bottom: 1px solid var(--border);
+}
+header.top .badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+header.top h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+header.top .tagline {
+    font-size: 14px;
+    color: #dbeafe;
+    max-width: 900px;
+}
+
+/* 布局 */
+.layout {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+nav.sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px 60px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 13.5px;
+}
+nav.sidebar h3 {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 22px 0 10px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+}
+nav.sidebar h3:first-child { margin-top: 0; }
+nav.sidebar ul { list-style: none; padding: 0; margin: 0; }
+nav.sidebar li { margin: 3px 0; }
+nav.sidebar li a {
+    display: block;
+    color: var(--text-light);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+nav.sidebar li a:hover { background: var(--primary-light); color: var(--primary-dark); text-decoration: none; }
+nav.sidebar li.active a {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 主内容 */
+main {
+    flex: 1;
+    min-width: 0;
+    background: var(--content-bg);
+    padding: 36px 48px 60px 48px;
+    max-width: 920px;
+}
+main h2 {
+    font-size: 22px;
+    color: #111827;
+    margin: 40px 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    font-weight: 600;
+}
+main h2:first-of-type { margin-top: 8px; }
+main h3 {
+    font-size: 17.5px;
+    color: #1e3a8a;
+    margin: 28px 0 10px 0;
+    font-weight: 600;
+}
+main h4 {
+    font-size: 15.5px;
+    color: var(--text);
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+main p { margin: 10px 0; color: var(--text); }
+main ul, main ol { margin: 10px 0 10px 22px; padding: 0; }
+main li { margin: 5px 0; }
+main strong { color: #111827; }
+
+/* 代码块 */
+code.inline {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+}
+pre.code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0;
+}
+pre.ascii {
+    background: var(--pre-bg);
+    color: var(--pre-text);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 14px 0;
+    white-space: pre;
+}
+pre.ascii .accent { color: var(--pre-accent); font-weight: bold; }
+
+/* 提示框 */
+.note {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--text);
+    font-size: 14px;
+}
+.note .label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-right: 6px;
+}
+.warn {
+    background: var(--warn-bg);
+    border-left: 3px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--warn-text);
+    font-size: 14px;
+}
+.warn .label { color: #b45309; font-weight: 600; margin-right: 6px; }
+
+/* 表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 13.5px;
+}
+table th, table td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+table th { background: var(--tag-bg); color: var(--primary-dark); font-weight: 600; }
+table tr:nth-child(even) td { background: #fafbfc; }
+
+/* 锚点定位偏移 */
+.anchor { display: block; position: relative; top: -20px; visibility: hidden; }
+
+/* 页脚 */
+footer.nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    background: var(--content-bg);
+    font-size: 14px;
+}
+footer.nav .prev, footer.nav .next {
+    flex: 1;
+    max-width: 46%;
+}
+footer.nav .next { text-align: right; }
+footer.nav .lbl { color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 2px; }
+footer.nav a { font-weight: 500; }
+
+@media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+    <div class="badge">第 4 篇 / 共 12 篇 · 体素大世界梳理学习</div>
+    <h1>Chunk 动态加载与释放</h1>
+    <div class="tagline">体素大世界的"动态核心"：玩家移动 → 引擎判定哪些 chunk 该加载/卸载 → 数据填充 → mesh 构建 → 显示。前 3 篇搭好了静态结构（数据结构、5 层 LOD），本篇讲这些结构怎么随玩家移动而动态进出。SetLocation 触发重加载的总开关第 1 篇讲过，本篇从"重加载后引擎内部怎么决定加载哪些 chunk"切入。</div>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+    <h3>系列目录</h3>
+    <ul>
+        <li><a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a></li>
+        <li><a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a></li>
+        <li><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a></li>
+        <li><a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</a></li>
+        <li class="active"><a href="4_Chunk动态加载与释放.html">第 4 篇 · Chunk 动态加载与释放</a></li>
+        <li><a href="#">第 5 篇 · 场景加载状态机与登录时序</a></li>
+        <li><a href="#">第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</a></li>
+        <li><a href="#">第 7 篇 · 物件模型 LOD 与实体显隐</a></li>
+        <li><a href="#">第 8 篇 · Voxel 占位 · Placeholder 与 Collision</a></li>
+        <li><a href="#">第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</a></li>
+        <li><a href="#">第 10 篇 · 大世界网络数据流</a></li>
+        <li><a href="#">第 11 篇 · 玩家传送与场景切换</a></li>
+    </ul>
+
+    <h3>本篇锚点</h3>
+    <ul>
+        <li><a href="#sec-overview">1. 动态加载整体流程总览</a></li>
+        <li><a href="#sec-patch">2. Patch 与 MCPatch —— 调度单元</a></li>
+        <li><a href="#sec-diff">3. 加载判定：哪些 chunk 该存在</a></li>
+        <li><a href="#sec-load">4. chunk 加载与数据填充</a></li>
+        <li><a href="#sec-mesh">5. mesh 构建与分帧调度</a></li>
+        <li><a href="#sec-unload">6. chunk 卸载与资源释放</a></li>
+        <li><a href="#sec-dirty">7. 脏标记驱动的局部刷新</a></li>
+        <li><a href="#sec-summary">8. 串起第 1~4 篇</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<!-- ===================== 1 ===================== -->
+<span class="anchor" id="sec-overview"></span>
+<h2>1. 动态加载整体流程总览</h2>
+
+<p>第 1 篇讲过 <code class="inline">MCScene.SetLocation</code> 是驱动重加载的<strong>总开关</code>：玩家位置变化超过一个 chunk（32 米）时，切换到 loading 态，在工作线程上重新扫描。本篇从这之后接着讲——<strong>SetLocation 触发重加载后，引擎内部怎么一步步把"该加载哪些 chunk"算出来、把数据填进去、把 mesh 建好、把不用的 chunk 卸掉</strong>。</p>
+
+<p>先看整条链路的全景图，每一步都标了关键代码位置，细节在后面小节展开：</p>
+
+<pre class="ascii">玩家/相机移动
+   │
+   ▼
+<span class="accent">SetLocation</span> (MCScene.cs:849)  ── 距离 &gt; 32 触发重加载，切 loading 态
+   │   工作线程上 ResetLoadingState，注册 OnLoaded 回调
+   ▼
+<span class="accent">TiledScheduler.PatchScan</span> (TiledScheduler.cs:80)  ── 场景工作线程
+   │   按当前中心点算出该加载的 Patch(UV) 网格
+   │   超出 ScheduleRange 的 Patch → 入卸载队列
+   │   新进入的 UV → 创建 MCPatch，入加载队列
+   ▼
+<span class="accent">MCManager.ThreadUpdate</span> (MCManager.cs:1537)  ── 遍历 PatchesCache
+   │   对每个 Finished 态的 Patch 调 UpdateLod()
+   ▼
+<span class="accent">MCPatch.UpdateLod</span> (MCPatch.cs:408)  ── 本篇核心
+   │   1. m_Query._pos = 当前中心点
+   │   2. m_Octree.Query(m_Query, listBuffer1)  ── 八叉树范围查询
+   │   3. 用 LoadFlag 做差集：新集合中没标 Flag 的 → 待加载
+   │      旧集合中 Flag 被清的 → 待卸载
+   │   4. m_AddEntities / m_RemoveEntities 分两堆
+   ▼
+┌───────────────────────┬────────────────────────┐
+│  待加载 (Add)          │  待卸载 (Remove)        │
+│  OnChunkAdded          │  OnChunkRemoved         │
+│  (MCManager.cs:757)    │  (MCManager.cs:1384)    │
+│   ├ Chunk==null?       │   ├ source.OnChunkRemoved│
+│   │  LoadChunkData     │   │  (移出 MCWorld.Chunks)│
+│   │  └ Uncompress      │   ├ m_OnChunkRemoveAction│
+│   │     └ AddChunk     │   │  (服务器 entity 清理) │
+│   │        SetMCWorldChunk │ ├ ReleaseMCResRef     │
+│   │        Render ──┐  │   └ RemoveGameObject     │
+│   │                 │  │      (mesh/entity 回收)  │
+│   └ 已有 Chunk:     │  │                          │
+│      AddChunk ──────┤  │                          │
+│                      ▼  │                          │
+│              <span class="accent">AddChunkRender</span>      │                          │
+│              (MCGraphicsQueue)│                    │
+│               按 LOD 入队 │                          │
+│                      ▼  │                          │
+│              <span class="accent">BuildMeshEx</span> (工作线程)│                    │
+│              (MCManager.cs:1144)│                  │
+│               建网格 + 异形块(仅LOD0)│              │
+│                      ▼  │                          │
+│              主线程挂 GameObject │                  │
+└───────────────────────┴────────────────────────┘
+   │
+   ▼
+OnLoaded 回调触发 → loading 态结束 → 通知 loadingUi 关闭
+</pre>
+
+<p>这条链上有几个关键设计点，是本篇要讲透的：</p>
+
+<ul>
+<li><strong>分片调度</strong>：世界不是一整块，而是切成一个个 Patch（TD 块，512×512 米），每个 Patch 自己管一片区域的 chunk 加载。这样可以按区域分别调度、控制单帧加载量。</li>
+<li><strong>差集比对</strong>：每帧重扫描时，不是"推倒重来"，而是把"该存在的 chunk 集合"和"当前已加载的 chunk 集合"做差集，只处理增量。</li>
+<li><strong>脏标记驱动</strong>：chunk 不是每次都全量重建 mesh，而是靠脏标记只重建变动的那部分。</li>
+<li><strong>mesh 分帧构建</strong>：一个 chunk 32768 个 block，一次建完会卡，所以 mesh 构建扔到工作线程按 LOD 分队列、限流消费。</li>
+</ul>
+
+<!-- ===================== 2 ===================== -->
+<span class="anchor" id="sec-patch"></span>
+<h2>2. Patch 与 MCPatch —— chunk 加载的调度单元</h2>
+
+<p>先回答一个自然会问的问题：<strong>为什么不直接用一个全局列表管所有 chunk，而要先切成 Patch？</strong></p>
+
+<p>体素大世界很大（几公里见方），chunk 数量动辄上万。如果只有一个全局列表，玩家每移动一次就要对全量 chunk 做一次"该不该加载"的判定，单帧成本会随世界尺寸线性增长。更麻烦的是<strong>分帧分摊</strong>——你想"这一帧只加载 3 个 chunk"，但全局列表里 chunk 混在一起，你很难按"区域远近"来排队。所以引擎把世界切成一个个 <strong>Patch</strong>（也叫 TD 块，每块 512×512 米），让调度按 Patch 分片进行。</p>
+
+<h3>2.1 MCPatch 是什么</h3>
+
+<p><code class="inline">MCPatch</code>（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCPatch.cs:208</code>）继承自引擎层的 <code class="inline">TiledPatch</code>，是体素侧的 Patch 实现。一个 MCPatch 管一片 512×512 米区域的 chunk 加载，核心持有三样东西：</p>
+
+<pre class="code">public class MCPatch : TiledPatch
+{
+    protected Octree m_Octree;            // 这片区域的八叉树（覆盖 8192 见方，最小划分到 32）
+    protected OctreeQueryByLod m_Query;   // 八叉树查询器（持有 _pos 观察点 + _lodDis[] 各层距离）
+    // ...
+    public const int ChunkSize = 32;
+}</pre>
+
+<p>注意 <code class="inline">m_Octree</code> 不是只装 512×512 这一小块的 chunk——它在 <code class="inline">InitOctree</code>（<code class="inline">MCPatch.cs:795</code>）里建的是一棵覆盖 <strong>8192 见方</strong>的八叉树（<code class="inline">size = 8192</code>，<code class="inline">maxdepth</code> 一路除到 32 为止）。也就是说每个 Patch 的八叉树其实比 Patch 自身大得多，这是为了容纳跨 Patch 边界的 chunk 数据。每个 chunk 在八叉树里是一个节点（<code class="inline">ChunkEntity</code>），按它的中心坐标和 size（blockSize×32）落到对应深度的位置。</p>
+
+<h3>2.2 MCManager.PatchesCache —— Patch 的容器</h3>
+
+<p><code class="inline">MCManager</code>（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCManager.cs:148</code>）持有 <code class="inline">PatchesCache</code>，里面是一个 <code class="inline">ConcurrentDictionary&lt;long, TiledPatch&gt;</code>，key 是 Patch 的 UV 编码（<code class="inline">TiledScheduler.GetBlockIndex(u, v)</code>，把 u/v 压进一个 long）。所有当前已加载的 Patch 都在这里。</p>
+
+<pre class="code">// ISchedulable.cs:28
+public class PatchesCache
+{
+    public ConcurrentDictionary&lt;long, TiledPatch&gt; Patches { get; }
+}
+
+// MCManager.cs:136
+PatchesCache = new PatchesCache();</pre>
+
+<p>所以分片调度的层次是：<strong>MCManager → PatchesCache → 多个 MCPatch → 每个 MCPatch 一棵八叉树 → 八叉树里挂 ChunkEntity</strong>。玩家移动时，先按距离决定哪些 Patch 该进/该出（粗筛），再在每个 Patch 内部按 LOD 距离决定哪些 chunk 该加载（细筛）。</p>
+
+<h3>2.3 OctreeQueryByLod —— 八叉树空间查询器</h3>
+
+<p><code class="inline">OctreeQueryByLod</code>（<code class="inline">Assets/Scripts/Core/MCCore/Octree/Octree.cs:650</code>）是"按 LOD 距离做范围查询"的查询器，结构极简：</p>
+
+<pre class="code">public class OctreeQueryByLod
+{
+    public YKVector3d _pos;        // 观察位置（当前中心点）
+    public float[] _lodDis;        // 各八叉树深度对应的查询距离
+}</pre>
+
+<p>核心方法 <code class="inline">Contain(OctreeNode node)</code>（<code class="inline">Octree.cs:675</code>）判定一个节点该不该被纳入扫描结果：<strong>取节点所在深度对应的距离阈值 <code class="inline">_lodDis[node.Depth]</code>，若节点中心到观察点三轴距离都 ≤ 这个阈值，就纳入</strong>。</p>
+
+<pre class="code">public bool Contain(OctreeNode node)
+{
+    float fRange = _lodDis[node.Depth];   // 按深度取距离
+    float disX = Math.Abs((float)(node.Center.x - _pos.x));
+    float disY = Math.Abs((float)(node.Center.y - _pos.y));
+    float disZ = Math.Abs((float)(node.Center.z - _pos.z));
+    return (disX &lt;= fRange &amp;&amp; disY &lt;= fRange &amp;&amp; disZ &lt;= fRange);
+}</pre>
+
+<div class="note"><span class="label">呼应第 3 篇：</span><code class="inline">_lodDis</code> 数组下标是<strong>八叉树深度</strong>，不是 LOD 层号。第 3 篇讲过八叉树从根（depth 0，size 8192）一路分到叶子（depth 8，size 32），叶子节点正好对应 LOD0 的 chunk（blockSize=1，size=32）。所以 <code class="inline">_lodDis[8]</code> 是 LOD0 的查询距离（近，比如 96 米），<code class="inline">_lodDis[4]</code> 是 LOD4 的查询距离（远，比如 2048 米）。深度越浅→节点越大→距离阈值越大，自然形成"近处用小 chunk、远处用大 chunk"的同心圆。<code class="inline">SetQueryLodDistance</code>（<code class="inline">MCPatch.cs:857</code>）按画质档位（LowMemory/Low/Medium/High/Ultra）填充这 5 个槽位。</div>
+
+<p>八叉树的 <code class="inline">Query</code>（<code class="inline">Octree.cs:335</code>）就是递归调用 <code class="inline">Contain</code>：从根开始，当前节点在范围内才递归子节点；如果某个节点的子节点有被纳入的，就把<strong>同层兄弟节点也都补齐</strong>（保证八叉树某一层要么全选要么不选，避免出现"一个父节点只选了一半孩子"的破洞），最终把命中的叶子层 ChunkEntity 收进结果列表。</p>
+
+<!-- ===================== 3 ===================== -->
+<span class="anchor" id="sec-diff"></span>
+<h2>3. 加载判定：哪些 chunk 该存在</h2>
+
+<p>这是本篇最核心的设计。<strong>重加载不是"把当前的 chunk 全卸了再重装"，而是做一次差集比对</strong>：用当前 Location 重新查询"应该存在的 chunk 集合"，和"当前已加载的 chunk 集合"做对比，只处理两边不一样的部分。</p>
+
+<h3>3.1 差集比对的设计</h3>
+
+<p>逻辑在 <code class="inline">MCPatch.UpdateLod</code>（<code class="inline">MCPatch.cs:408</code>）。它用的是<strong>双缓冲 + 标志位</strong>的技巧，没有显式建两个 HashSet 再求差集，而是用一个 <code class="inline">LoadFlag</code> 标志位配合两个 list 来完成：</p>
+
+<pre class="ascii">本轮扫描前：
+  listBuffer1 = []              ← 准备装本轮扫描结果
+  listBuffer2 = [上一轮的 chunk] ← 每个 chunk 都标着 LoadFlag=true
+
+Step1: m_Octree.Query(m_Query, listBuffer1)
+  listBuffer1 = [本轮该存在的 chunk]  (含上一轮残留的 ChunkEntity + 新建的)
+
+Step2: 遍历 listBuffer1，对每个 chunk:
+  source.SetFlag(LoadFlag, true)   ← 标记"本轮我还在"
+
+  如果之前没标 IsRender（说明是新进的）:
+    → 加入 m_AddEntities (待加载)
+    → SetFlag(IsRender, true)
+
+  如果之前已 IsRender（说明是老朋友）:
+    → 检查是否 NeedRefresh，需要则触发 OnChunkRefresh
+
+Step3: 遍历 listBuffer2（上一轮的 chunk）:
+  对每个 LoadFlag 仍是 false 的（说明本轮没被扫到）:
+    → SetFlag(IsRender, false)
+    → 加入 m_RemoveEntities (待卸载)
+
+Step4: 交换 listBuffer1 ↔ listBuffer2
+  清掉 listBuffer2（现在的旧轮）里 chunk 的 LoadFlag
+  下一轮 listBuffer1 又是空的，listBuffer2 装着本轮结果</pre>
+
+<p>关键代码片段：</p>
+
+<pre class="code">// MCPatch.cs:426 — 设置观察点并查询
+m_Query._pos = ((MCScene)Scene).IsSkiBattle ? scene.Location : PosToChunkCenter(scene.Location);
+m_Octree.Query(m_Query, listBuffer1);
+
+// MCPatch.cs:454 — 本轮扫到的，先标 LoadFlag
+source.SetFlag((byte)ChunkEntityFlag.LoadFlag, true);
+
+// MCPatch.cs:474 — 之前没渲染的 → 新增
+if (!source.CheckFlag((byte)ChunkEntityFlag.IsRender))
+{
+    source.SetFlag((byte)ChunkEntityFlag.IsRender, true);
+    source.LoadingStates = LoadingSessionStates.Loading;
+    source.SetFlag((byte)ChunkEntityFlag.ScanState_Add, true);
+    m_AddEntities.Add(source);
+}
+
+// MCPatch.cs:569 — 旧轮里 LoadFlag 被清的 → 卸载
+if (!source.CheckFlag((byte)ChunkEntityFlag.LoadFlag))
+{
+    if (source.CheckFlag((byte)ChunkEntityFlag.IsRender))
+    {
+        source.SetFlag((byte)ChunkEntityFlag.IsRender, false);
+        source.SetFlag((byte)ChunkEntityFlag.ScanState_Remove, true);
+        source.LoadingStates = LoadingSessionStates.Unloading;
+        m_RemoveEntities.Add(source);
+    }
+}
+
+// MCPatch.cs:654 — 双缓冲交换
+(listBuffer1, listBuffer2) = (listBuffer2, listBuffer1);
+for (int i = 0; i &lt; listBuffer2.Count; i++)
+{
+    ChunkEntity source = listBuffer2[i] as ChunkEntity;
+    if (source != null) source.SetFlag((byte)ChunkEntityFlag.LoadFlag, false);
+}</pre>
+
+<div class="note"><span class="label">设计意图：</span>这个"双缓冲 + LoadFlag"的玩法，本质上就是把<strong>新集合 ∪ 旧集合 → 加载/卸载两边</strong>这个差集运算，摊到了两次遍历里，避免了建 HashSet 做 Except 的开销。ChunkEntity 是常驻对象（项目里常有 17 万个），给它加一个 byte 标志位比维护两个集合便宜得多。注意它<strong>不做 List.Remove</strong>（<code class="inline">MCPatch.cs:459</code> 注释明说"避免消耗"），不可见的 chunk 直接把 list 槽位置 null，下次交换后自然丢掉。</div>
+
+<h3>3.2 距离阈值：5 层 LOD 的同心圆</h3>
+
+<p>"该存在"的判定标准就是 <code class="inline">OctreeQueryByLod.Contain</code> 里的距离比较。各 LOD 有自己的查询距离（<code class="inline">_lodDis</code>），近层距离小、远层距离大，形成<strong>同心圆</strong>：</p>
+
+<pre class="ascii">                _lodDis[4] = 2048  ── LOD4 (blockSize 16, 最远, 最粗)
+           ┌─────────────────────────────────┐
+           │      _lodDis[5] = 992  ── LOD3   │
+           │   ┌───────────────────────────┐  │
+           │   │    _lodDis[6] = 480 ── LOD2│  │
+           │   │  ┌─────────────────────┐   │  │
+           │   │  │  _lodDis[7]=224 LOD1│   │  │
+           │   │  │ ┌───────────────┐   │   │  │
+           │   │  │ │ _lodDis[8]=96 │   │   │  │
+           │   │  │ │   LOD0 精细    │   │   │  │
+           │   │  │ │   ★玩家       │   │   │  │
+           │   │  │ └───────────────┘   │   │  │
+           │   │  └─────────────────────┘   │  │
+           │   └───────────────────────────┘  │
+           └─────────────────────────────────┘
+        (Medium 画质档的数值，来自 MCPatch.cs:888)</pre>
+
+<p>玩家走动时，这个同心圆跟着玩家移动。某个 LOD0 chunk 走出 96 米圈 → 不在 <code class="inline">_lodDis[8]</code> 范围内 → <code class="inline">Contain</code> 返回 false → 本轮没被扫到 → LoadFlag 被清 → 进 <code class="inline">m_RemoveEntities</code>。反之远处一个 LOD4 chunk 走进 2048 米圈 → 被扫到 → 进 <code class="inline">m_AddEntities</code>。这就是"哪些 chunk 该存在"的判定全貌。</p>
+
+<div class="note"><span class="label">网络数据填充只点一下：</span>chunk 的方块数据分两路：本地 TD 文件解压 + 服务器推送合并。本篇讲的是<strong>客户端"判定要加载哪些 chunk"</strong>这条调度链，网络数据怎么来、怎么合到 chunk 里是第 8/10 篇的内容。这里只要知道：chunk 被判定要加载后，<code class="inline">OnChunkAdded</code> 里会触发 <code class="inline">LoadChunkData → Uncompress</code> 把数据填进 MCBlock[]，服务器推送的变更 chunk 通过 <code class="inline">ServerChangedChunks</code> 字典登记、<code class="inline">ProcessNetData</code> 入树（<code class="inline">MCPatch.cs:1867</code>）。</div>
+
+<!-- ===================== 4 ===================== -->
+<span class="anchor" id="sec-load"></span>
+<h2>4. chunk 的加载与数据填充</h2>
+
+<p>一个 chunk 被判定要加载（进了 <code class="inline">m_AddEntities</code>）后，<code class="inline">UpdateLod</code> 末尾会把它派发给主线程执行 <code class="inline">OnChunkAdded</code>（<code class="inline">MCPatch.cs:994</code> → <code class="inline">Manager.OnChunkAdded</code>）。加载流程在 <code class="inline">MCManager.OnChunkAdded</code>（<code class="inline">MCManager.cs:757</code>）：</p>
+
+<pre class="code">// MCManager.cs:757
+public virtual void OnChunkAdded(ChunkEntity source, bool isAuxiliary = false)
+{
+    source.SetFlag((byte)ChunkEntityFlag.Visible, true);
+
+    if (source.Chunk == null)
+    {
+        // Chunk 还没有数据 → 加载
+        source.LoadChunkData(() =&gt; {
+            Scene.ExecuteInThread(new UniversalScene.ThreadTask(source, (obj) =&gt; {
+                (obj as ChunkEntity)?.Uncompress();              // 工作线程解压
+                OnChunkUncompressed(obj as ChunkEntity, ...);    // 回主线程 AddChunk
+            }));
+        });
+    }
+    else
+    {
+        AddChunk(source, source.Chunk);  // 已有数据，直接渲染
+    }
+}</pre>
+
+<h3>4.1 MCBlock[] 从哪来</h3>
+
+<p>第 2 篇讲过 <code class="inline">MCChunk</code> 持有 <code class="inline">MCBlock[] Blocks</code>，长度恒为 32×32×32 = 32768。这个数组<strong>从对象池来</strong>：<code class="inline">MCChunk</code> 构造函数（<code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs:652</code>）调 <code class="inline">MCBlockPool.AllocateMCBlocks()</code> 取一个池化数组，而不是 new 一个新的。</p>
+
+<pre class="code">// MCWorld.cs:652
+public MCChunk(float blockSize, int chunkSize, YKVector3f offset)
+{
+    Blocks = MCBlockPool.AllocateMCBlocks();   // 从池取
+    // ...
+    IsDirty = MCChunkDirtyFlags.ChunkAllDirty; // 首次创建置全脏
+}
+
+// MCWorld.cs:682
+public void Dispose()
+{
+    if (!_isDisposed) {
+        MCBlockPool.RecycleMCBlocks(Blocks);   // 回池
+        _isDisposed = true;
+    }
+}</pre>
+
+<p><code class="inline">MCBlockPool</code>（<code class="inline">MCWorld.cs:458</code>）是个静态 <code class="inline">Queue&lt;MCBlock[]&gt;</code>，默认 512 个数组，低画质 ×0.5（<code class="inline">MCManager.cs:128</code>）。<code class="inline">AllocateMCBlocks</code> 池空了才 new，<code class="inline">RecycleMCBlocks</code> 回收时 <code class="inline">Array.Clear</code> 清零再入队。这样 chunk 频繁进出时不会反复分配 32768 长度的数组，GC 压力大幅降低。</p>
+
+<h3>4.2 数据填充与登记</h3>
+
+<p>解压后的 <code class="inline">MCChunk</code> 通过 <code class="inline">OnChunkUncompressed</code> → <code class="inline">AddChunk</code>（<code class="inline">MCManager.cs:994</code>）登记到 MCWorld：</p>
+
+<ul>
+<li><strong>登记到 <code class="inline">MCWorld.Chunks</code></strong>：LOD0 走 <code class="inline">SetMCWorldChunk</code>（<code class="inline">MCManager.cs:976</code>），把 chunk 按它的 index（<code class="inline">ConvertXYZ_20</code> 编码成 long）塞进 <code class="inline">m_Worlds[0].Chunks</code> 字典。若已有旧 chunk，先 <code class="inline">Dispose</code> 旧的再覆盖。</li>
+<li><strong>置脏标记</strong>：<code class="inline">MCChunk</code> 构造时 <code class="inline">IsDirty = ChunkAllDirty</code>（全脏），意味着这个 chunk 的 mesh 第一次必须完整构建。</li>
+<li><strong>触发渲染</strong>：<code class="inline">chunkEntity.Render(chunk, this)</code> 最终走到 <code class="inline">RendererChunk</code>（<code class="inline">MCManager.cs:1084</code>），<code class="inline">MarkAllDirty()</code> 后构造 <code class="inline">ChunkRenderWrap</code> 丢进图形队列。</li>
+</ul>
+
+<pre class="code">// MCManager.cs:994
+public virtual void AddChunk(ChunkEntity chunkEntity, MCChunk chunk)
+{
+    int index = (int)Mathf.Log(chunkEntity.BlockSize, 2);
+    if (index == 0) SetMCWorldChunk(chunk);   // LOD0 登记进 MCWorld.Chunks
+    chunkEntity.Render(chunk, this);           // 触发 mesh 构建
+}
+
+// MCManager.cs:976
+public void SetMCWorldChunk(MCChunk chunk)
+{
+    long indexLong = NetWorkUtility.ConvertXYZ_20(chunk.Index.x, chunk.Index.y, chunk.Index.z);
+    if (m_Worlds[0].Chunks.TryGetValue(indexLong, out var mcChunk))
+    {
+        if (mcChunk == chunk) return;
+        mcChunk?.Dispose();                    // 旧 chunk 回池
+        MCBlockCollision.SetDirty(indexLong);
+    }
+    m_Worlds[0].Chunks[indexLong] = chunk;     // 登记新 chunk
+}</pre>
+
+<div class="note"><span class="label">为什么 LOD0 才登记进 MCWorld.Chunks：</span>第 3 篇讲过 5 层 MCWorld 各自存各自的 chunk。但<strong>业务查询（<code class="inline">TryGetBlock</code>、<code class="inline">SetBlock</code>）默认走 LOD0</strong>，所以加载时 LOD0 的 chunk 必须登记进 <code class="inline">m_Worlds[0].Chunks</code> 这个字典，业务层才能查到。高层 LOD 的 chunk 主要用于渲染远处的粗略地形，不参与方块级查询，登记与否取决于具体路径（<code class="inline">RendererChunk</code> 里直接走渲染队列，不一定塞 Chunks 字典）。</div>
+
+<!-- ===================== 5 ===================== -->
+<span class="anchor" id="sec-mesh"></span>
+<h2>5. mesh 构建与分帧调度</h2>
+
+<p>chunk 登记完就要建 mesh。但<strong>mesh 构建不能在主线程一次性做完</strong>——一个 chunk 32768 个 block，逐个判定面剔除、合并网格，单 chunk 建完就要几毫秒，玩家移动一下可能要建几十个 chunk，全堆主线程会卡死。所以 mesh 构建被拆到<strong>独立工作线程 + 按 LOD 分队列 + 限流消费</strong>。</p>
+
+<h3>5.1 图形队列 MCGraphicsQueue</h3>
+
+<p><code class="inline">MCGraphicsQueue</code>（<code class="inline">Assets/Scripts/Engine/Graphics/MCGraphicsQueue.cs:17</code>）是 mesh 构建的调度器。它内部有<strong>5 个按 LOD 分的并发队列</strong>，一个独立后台线程：</p>
+
+<pre class="code">// MCGraphicsQueue.cs:42
+private ConcurrentQueue&lt;RenderThreadTask&gt;[] m_ThreadExecuteTask
+    = new ConcurrentQueue&lt;RenderThreadTask&gt;[5];
+
+private const int RENDER_TASK_MAX = 1;   // 每轮最多从队列取几个任务
+
+// MCGraphicsQueue.cs:91 — 后台线程
+m_Thread = new Thread(ThreadRunnable);
+m_Thread.Name = "MC Graphics Thread#" + m_Thread.ManagedThreadId;
+m_Thread.IsBackground = true;
+m_Thread.Start();</pre>
+
+<p>入队入口 <code class="inline">AddTaskQueue</code>（<code class="inline">MCGraphicsQueue.cs:199</code>）按 chunk 的 blockSize 算出 LOD 层号，把任务塞进对应 LOD 的队列：</p>
+
+<pre class="code">// MCGraphicsQueue.cs:199
+public void AddTaskQueue(ChunkRenderWrap chunkRender, Action&lt;object&gt; action, ChunkEntity source)
+{
+    chunkRender.FinishCallBack = action;
+    int lod = (int)Mathf.Log(chunkRender.Chunk.BlockSize, 2);  // blockSize → LOD 层号
+    ExecuteInThread(new RenderThreadTask(CreateRenderData, chunkRender, source), lod);
+}</pre>
+
+<h3>5.2 限流消费：为什么分帧</h3>
+
+<p>后台线程的 <code class="inline">GetRenderTask</code>（<code class="inline">MCGraphicsQueue.cs:144</code>）每轮只取<strong>固定数量</strong>的任务出来执行：</p>
+
+<pre class="code">// MCGraphicsQueue.cs:144
+private void GetRenderTask(ConcurrentQueue&lt;RenderThreadTask&gt; result)
+{
+    // 同时受 RENDER_TASK_MAX 和 mesh 数据缓冲池剩余量双重限制
+    int doRenderCount = Math.Min(RENDER_TASK_MAX, MCBuffersMeshData.MeshRenderDataPoolCount());
+    if (doRenderCount &lt;= 0) return;
+
+    for (int i = 0; i &lt; m_ThreadExecuteTask.Length; i++)
+    {
+        var renderTaskQueue = m_ThreadExecuteTask[i];
+        while (renderTaskQueue.TryDequeue(out var task))
+        {
+            result.Enqueue(task);
+            if (result.Count &gt;= doRenderCount) return;   // 取够就停
+        }
+    }
+}</pre>
+
+<div class="note"><span class="label">双重限流的意图：</span>一是 <code class="inline">RENDER_TASK_MAX</code> 限制单轮构建数量，避免后台线程一口气把堆积的几十个 chunk 全建完（建完还要往主线程推 GameObject，主线程挂对象也是开销）；二是 <code class="inline">MeshRenderDataPoolCount()</code> 限制——如果主线程还没消费掉已建好的 mesh 数据（缓冲池空了），后台就停下不再建，<strong>防止内存炸裂</strong>（注释原话 <code class="inline">MCGraphicsQueue.cs:146</code>）。这两个限流共同把 mesh 构建<strong>摊到多帧</strong>，玩家看到的就是"远处 chunk 一片片逐渐出现"而不是一次性卡顿后全出现。</div>
+
+<h3>5.3 构建执行 BuildMeshEx</h3>
+
+<p>真正建网格在 <code class="inline">MCManager.BuildMeshEx</code>（<code class="inline">MCManager.cs:1144</code>），由后台线程通过 <code class="inline">CreateRenderData</code> 触发：</p>
+
+<pre class="code">// MCManager.cs:1144
+public void BuildMeshEx(object obj)
+{
+    MCChunkRenderData data = (MCChunkRenderData)obj;
+    bool bShow = data.RenderWrap.Source?.CheckFlag((byte)ChunkEntityFlag.IsRender) ?? false;
+
+    if (bShow)
+    {
+        data.RenderWrap.LoadingStates = LoadingSessionStates.Finished;
+        data.BuildMesh(_addGameObjectAction);        // 建网格（图形算法，本篇不展开）
+        if (data.Chunk.BlockSize == 1)               // 只有 LOD0 建异形块
+        {
+            if (data.RenderWrap.IsEntityDirty)        // 仅实体脏时才重建实例
+                data.BuildEntityInstance(_addEntityInstance);
+            Scene.ExecuteInThread(...BuildDecorationEntity);  // 装饰物转到工作线程
+        }
+        data.RenderWrap.Source?.OnRenderTaskFinish(this);
+    }
+    data.RecycleMeshData();
+    if (data.RenderWrap.ReleaseMCChunk) data.RenderWrap.Chunk?.Dispose();
+}</pre>
+
+<p>本篇不深挖 <code class="inline">BuildMesh</code> 里的图形算法（贪婪网格、面剔除这些是渲染话题），只要知道：<strong>后台线程把网格数据建好 → 通过 <code class="inline">ExecuteInUnity</code> 把结果推回主线程 → 主线程挂 GameObject 显示</strong>。<code class="inline">IsEntityDirty</code> 这个判断在第 7 节脏标记里展开——它决定异形块实例要不要重建，是局部刷新的关键之一。</p>
+
+<!-- ===================== 6 ===================== -->
+<span class="anchor" id="sec-unload"></span>
+<h2>6. chunk 的卸载与资源释放</h2>
+
+<p>chunk 移出加载范围后（进 <code class="inline">m_RemoveEntities</code>），<code class="inline">UpdateLod</code> 末尾派发 <code class="inline">OnChunkRemoved</code>（<code class="inline">MCPatch.cs:1002</code> → <code class="inline">Manager.OnChunkRemoved</code>，<code class="inline">MCManager.cs:1384</code>）。卸载比加载更强调<strong>彻底</strong>——chunk 走了，它的 mesh、方块数据、游戏对象、服务器 entity 引用都得干净地回收，否则玩家来回跑会内存泄漏。</p>
+
+<h3>6.1 卸载的几条清理路径</h3>
+
+<pre class="ascii">OnChunkRemoved (MCManager.cs:1384)
+   │
+   ├─ source.OnChunkRemoved(m_Worlds[index])
+   │     └─ chunkEntity.ReleaseMCChunkImplement(world)
+   │           └─ world.RemoveChunk(chunk)     ── 从 MCWorld.Chunks 字典移除
+   │                                              MCChunk.Dispose() → MCBlock[] 回池
+   │
+   ├─ m_OnChunkRemoveAction?.Invoke(source)    ── 外部注册的清理回调
+   │     (WorldSceneSystem 注册的服务器 entity 清理走这条)
+   │
+   └─ RemoveGameObject(chunk) (MCManager.cs:1519)
+         ├─ RemoveChunkEntityObject (仅 LOD0)   ── 异形块/装饰 entity 回收
+         │     └─ entity.OnRelease + scene.RemoveEntity
+         └─ RemoveChunkBlockObject              ── chunk 的 mesh GameObject 回收
+               └─ item.Clear() + StoreMCChunkGameObject (对象池)</pre>
+
+<h3>6.2 MCBlock[] 回池</h3>
+
+<p>第 4.1 节讲过 <code class="inline">MCChunk</code> 的 <code class="inline">Blocks</code> 来自 <code class="inline">MCBlockPool</code>。卸载时 <code class="inline">MCChunk.Dispose</code>（<code class="inline">MCWorld.cs:682</code>）把它 <code class="inline">RecycleMCBlocks</code> 回池。注意 <code class="inline">~MCChunk()</code> 析构函数也调 <code class="inline">Dispose</code>，做兜底——但正常路径应该在卸载时主动调，不依赖 GC。</p>
+
+<h3>6.3 服务器 entity 联动清理</h3>
+
+<p>第 10 篇会展开网络同步，这里点出联动：<code class="inline">WorldSceneSystem.LoadScene</code>（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:185</code>）在场景加载时注册：</p>
+
+<pre class="code">// WorldSceneSystem.cs:185
+Owner.GetSystem&lt;GameWorldServerChunkEntitySystem&gt;().RegisterChunkRemove(m_MCNetManager);
+
+// GameWorldServerChunkEntitySystem.cs:142
+public void RegisterChunkRemove(MCManager mcManager)
+{
+    mcManager.RegisterEvent(null, OnChunkRemoveWithEngine, null);  // 注册到 m_OnChunkRemoveAction
+}
+
+// GameWorldServerChunkEntitySystem.cs:151
+private void OnChunkRemoveWithEngine(ChunkEntity obj)
+{
+    if (obj.BlockSize != 1) return;   // 只关心 LOD0
+    if (m_LastServerChunkEntityMergeAddD.TryGetValue(obj.ChunkIndex, out var serverMergeEntityData))
+    {
+        RemoveChunkEntityData(serverMergeEntityData);   // 把该 chunk 的服务器 entity 数据清掉
+    }
+}</pre>
+
+<p>意思是：<strong>chunk 被引擎卸载时，按 chunk 维护的服务器 entity 数据（树、石头这些物件的合并数据）也要一起清掉</strong>。这就是 <code class="inline">m_OnChunkRemoveAction</code> 这条外部回调链的用途——让业务层能挂在 chunk 卸载事件上做联动清理，而不需要引擎层去懂业务。</p>
+
+<div class="warn"><span class="label">卸载彻底性的要点：</span>玩家来回跑同一片区域时，chunk 反复加载/卸载。如果卸载时漏了任何一环——比如忘了从 <code class="inline">m_Worlds[0].Chunks</code> 移除、忘了把 MCBlock[] 回池、忘了清服务器 entity 引用——每次往返都会留下一份悬挂数据，内存就一点点涨上去。所以卸载路径是<strong>多条清理同时进行</strong>（字典移除 + 数组回池 + GameObject 回收 + 外部回调），任何一条都不能少。代码里 <code class="inline">MCPatch.OnRelease</code>（<code class="inline">MCPatch.cs:1160</code>）和 <code class="inline">OnDestroy</code>（<code class="inline">MCPatch.cs:2065</code>）还做了整 Patch 级别的兜底清理（<code class="inline">RemoveAllChunk</code> + <code class="inline">RemoveAllEntity</code>），保证 Patch 整体卸载时不会留尾巴。</div>
+
+<!-- ===================== 7 ===================== -->
+<span class="anchor" id="sec-dirty"></span>
+<h2>7. 脏标记驱动的局部刷新</h2>
+
+<p>第 2 篇讲了 <code class="inline">MCChunk</code> 有个 <code class="inline">IsDirty</code> byte 位标志，定义在 <code class="inline">MCChunkDirtyFlags</code>（<code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs:557</code>）：</p>
+
+<pre class="code">public static class MCChunkDirtyFlags
+{
+    public const byte ChunkBlockDirty  = 1 &lt;&lt; 0;                 // 0x01 方块数据脏
+    public const byte ChunkEntityDirty = 1 &lt;&lt; 1;                 // 0x02 实体数据脏
+    public const byte ChunkAllDirty    = ChunkBlockDirty | ChunkEntityDirty; // 0x03 全脏
+}
+
+public class MCChunk
+{
+    public byte IsDirty = 0;
+    public bool IsBlockDirty  =&gt; (IsDirty &amp; ChunkBlockDirty) != 0;
+    public bool IsEntityDirty =&gt; (IsDirty &amp; ChunkEntityDirty) != 0;
+    public void MarkBlockDirty()  { IsDirty |= ChunkBlockDirty; }
+    public void MarkEntityDirty() { IsDirty |= ChunkEntityDirty; }
+    public void MarkAllDirty()    { IsDirty |= ChunkAllDirty; }
+    public void ClearAllDirty()   { IsDirty = 0; }
+}</pre>
+
+<p>本篇讲"谁置脏、谁消费脏"，这是体素世界<strong>增量更新</strong>的核心机制。</p>
+
+<h3>7.1 谁置脏</h3>
+
+<p><strong>置脏的本质是"声明这个 chunk 变了，mesh 要重建"</strong>。三个主要置脏源：</p>
+
+<ul>
+<li><strong>SetBlock 改了某个 block</strong>：玩家挖一块、填一块时，<code class="inline">MCManager.SetBlock</code>（<code class="inline">MCManager.cs:402</code>）改完方块后调 <code class="inline">chunk.MarkBlockDirty()</code>。如果新旧方块是异形块（预制体类型），还会 <code class="inline">chunk.MarkEntityDirty()</code>（<code class="inline">MCManager.cs:453</code>）。</li>
+<li><strong>chunk 首次创建</strong>：构造函数里 <code class="inline">IsDirty = ChunkAllDirty</code>（<code class="inline">MCWorld.cs:665</code>），首次渲染必须全建。</li>
+<li><strong>邻居 chunk 受边界 block 变化连带置脏</strong>：见下面 7.3。</li>
+</ul>
+
+<pre class="code">// MCManager.cs:452 (SetBlock 里)
+chunk.MarkBlockDirty();
+if (!chunk.IsEntityDirty)
+{
+    if (IsBlockPrefeb(chunk.Blocks[blockIndex]) || IsBlockPrefeb(block))
+        chunk.MarkEntityDirty();   // 异形块变化要重建实例
+}</pre>
+
+<h3>7.2 谁消费脏</h3>
+
+<p><strong>消费脏的是 <code class="inline">MCManager.Update</code></strong>（<code class="inline">MCManager.cs:1582</code>）。它按帧数模 3 分三件事做，其中 case 2 就是扫脏 chunk：</p>
+
+<pre class="code">// MCManager.cs:1582
+public override void Update()
+{
+    m_FrameCount++;
+    if (!((ILoadingState)Scene).HasLoadingState(LoadingState.ChunkFinish)) return;
+
+    switch (m_FrameCount % 3)
+    {
+        case 0: UpdateSetBlock(); break;        // 把暂存的 SetBlock 落到 chunk + 邻居置脏
+        case 1: UpdateWaitRemove(); break;
+        case 2:                                     // 扫脏 chunk，重建 mesh
+            for (int i = 0; i &lt; m_Worlds.Length; i++)
+            {
+                foreach (var chunk in m_Worlds[i].Chunks.Values)
+                {
+                    if (chunk.IsDirty != 0)
+                        RefreshChunk(chunk, m_Worlds[i]);
+                }
+            }
+            break;
+    }
+}
+
+// MCManager.cs:676
+private void RefreshChunk(MCChunk chunk, MCWorld world)
+{
+    ChunkEntity source = FindChunkEntity(chunk);
+    ChunkRenderWrap wrap = new ChunkRenderWrap(chunk, source, world);
+    chunk.ClearAllDirty();                 // 消费脏：清掉标志
+    Scene.MCGraphicsT.AddChunkRender(wrap, BuildMeshEx);  // 推进图形队列
+}</pre>
+
+<div class="note"><span class="label">设计意图：</span>脏标记是<strong>"增量更新信号"</strong>。没有它，引擎要么每帧全量重建所有 chunk 的 mesh（不可行），要么每次 SetBlock 立刻同步重建那个 chunk 的 mesh（会卡主线程）。有了脏标记，<code class="inline">SetBlock</code> 只负责"改数据 + 标脏"（极快），真正的 mesh 重建交给 <code class="inline">Update</code> 在 case 2 那帧统一扫脏、推进图形队列、由后台线程分帧建。这样<strong>变动被攒成批、摊到多帧、扔到工作线程</strong>，主线程几乎无感。注意 <code class="inline">case 0/1/2</code> 是每三帧轮一次——即同一个 chunk 标脏后，最多等 3 帧才会被扫到重建，这是用"最长 3 帧延迟"换"主线程零卡顿"的取舍。</div>
+
+<h3>7.3 邻居刷新：边界 block 影响 6 邻居</h3>
+
+<p>体素 mesh 构建时要判定每个 block 的六个面<strong>是不是被邻居挡住了</strong>（挡住就不画那个面，这是面剔除的基础）。问题在于：chunk 边界上的 block，它相邻的面可能属于邻居 chunk。如果玩家改了边界上的一个 block，<strong>邻居 chunk 那个面的剔除结果也会变</strong>，所以邻居 chunk 也得重建 mesh。</p>
+
+<pre class="ascii">改一个边界 block 影响哪些邻居 chunk：
+
+         ┌─────┐
+         │ 上  │  (y-1 边界)
+         │chunk│
+   ┌─────┼─────┼─────┐
+   │ 左  │当前 │ 右  │
+   │chunk│chunk│chunk│   (x 边界)
+   └─────┼─────┼─────┘
+         │ 下  │
+         │chunk│  (y+1 边界)
+         └─────┘
+    (z 方向同理，前后各一个)
+
+  排除 8 个角 + 自身 → 最多 18 个方向需要连带置脏
+  (角上的 block 面剔除不依赖斜对角邻居，所以 8 角不算)</pre>
+
+<p>这个逻辑在 <code class="inline">MCManager.CheckRefreshNeighbors</code>（<code class="inline">MCManager.cs:857</code>）：</p>
+
+<pre class="code">// MCManager.cs:857
+public void CheckRefreshNeighbors(MCChunk chunk, int lod, YKVector3d[] dirtyBlockPos)
+{
+    if (lod != 0 || dirtyBlockPos == null) return;   // 只处理 LOD0
+
+    // 用一个 3×3×3 的 bool 数组标记哪些方向需要标脏
+    for (int i = 0; i &lt; dirtyBlockPos.Length; i++)
+    {
+        YKVector3i dirtyBlockOffset = chunk.PositionToIndex(dirtyBlockPos[i]);
+        // 判定这个 block 是不是在 chunk 的 6 个边界上（坐标 0 或 31）
+        // 是边界 → 把对应方向的邻居槽位标 true
+        // (排除 8 个角，因为角 block 的面剔除不依赖斜对角)
+    }
+
+    // 遍历 3×3×3（排除自身和 8 角 = 18 个方向），对标记的邻居 chunk 置脏
+    for (int x = -1; x &lt;= 1; x++)
+    for (int y = -1; y &lt;= 1; y++)
+    for (int z = -1; z &lt;= 1; z++)
+    {
+        if (Math.Abs(x)==1 &amp;&amp; Math.Abs(y)==1 &amp;&amp; Math.Abs(z)==1) continue; // 排除 8 角
+        if (x==0 &amp;&amp; y==0 &amp;&amp; z==0) continue;                              // 排除自身
+        int flagIndex = ((x+1)*3 + (y+1))*3 + (z+1);
+        if (!m_NeighborsChunkRefreshFlags[flagIndex]) continue;
+
+        long chunkIndex = NetWorkUtility.ConvertXYZ_20(chunk.Index.x+x, chunk.Index.y+y, chunk.Index.z+z);
+        if (CheckChunkInQueryRange(chunkIndex, lod) &amp;&amp; m_Worlds[lod].TryGetChunk(chunkIndex, out var neighborChunk))
+            neighborChunk.MarkBlockDirty();   // 邻居置脏
+    }
+}</pre>
+
+<p><code class="inline">UpdateSetBlock</code>（<code class="inline">MCManager.cs:474</code>，case 0 那帧执行）就是消费暂存的 SetBlock 列表，对每个被改的 chunk 调 <code class="inline">CheckRefreshNeighbors</code>，把受影响的邻居 chunk 一并置脏，下一轮 case 2 扫脏时它们会一起重建。</p>
+
+<div class="note"><span class="label">注意 <code class="inline">CheckChunkInQueryRange</code> 这道门：</span>邻居置脏前先判 <code class="inline">CheckChunkInQueryRange</code>（<code class="inline">MCManager.cs:281</code>），即"这个邻居 chunk 当前是否在加载范围内"。不在范围内的 chunk 根本没加载，置脏也没意义（它下次进加载范围时会因首次创建自动全脏重建）。这道判断避免了给已卸载的 chunk 留悬挂的脏标志。</div>
+
+<!-- ===================== 8 ===================== -->
+<span class="anchor" id="sec-summary"></span>
+<h2>8. 把第 1~4 篇串起来</h2>
+
+<p>到这里，前 4 篇拼成了完整的"体素世界动态运转"图景。用一张关系图收束：</p>
+
+<pre class="ascii">第 1 篇 <span class="accent">SetLocation</span>         ── 玩家移动触发重加载的总开关
+   │   (MCScene.cs:849, 距离&gt;32 才触发, 工作线程上扫描)
+   ▼
+第 3 篇 <span class="accent">_lodDis 同心圆</span>      ── 5 层 LOD 各自的查询距离阈值
+   │   (OctreeQueryByLod._lodDis[4..8], 按画质档位填充)
+   ▼
+本篇 <span class="accent">Patch 八叉树查询</span>     ── MCPatch.UpdateLod 用八叉树扫出该存在的 chunk
+   │   (MCPatch.cs:408, OctreeQueryByLod.Contain 按深度取距离)
+   ▼
+本篇 <span class="accent">差集比对</span>            ── 双缓冲 + LoadFlag 算出待加载/待卸载
+   │   (m_AddEntities / m_RemoveEntities, 不做 List.Remove)
+   ▼
+本篇 <span class="accent">数据填充 + mesh 构建</span> ── MCBlock[] 从池来, 解压填数据, 登记进 MCWorld.Chunks
+   │   (MCBlockPool.AllocateMCBlocks, OnChunkAdded → AddChunk)
+   │
+   │   mesh 构建扔工作线程, 按 LOD 分队列, 限流消费
+   │   (MCGraphicsQueue 5 个 ConcurrentQueue, RENDER_TASK_MAX=1)
+   ▼
+第 2 篇 <span class="accent">脏标记局部刷新</span>     ── SetBlock 标脏, Update 每 3 帧扫脏重建
+   │   (MCChunk.IsDirty 位标志, RefreshChunk 清脏推进队列)
+   │
+   │   边界 block 变化连带 18 方向邻居置脏
+   │   (CheckRefreshNeighbors, 排除 8 角和自身)
+   ▼
+本篇 <span class="accent">卸载回池</span>            ── 移出范围 → 字典移除 + MCBlock[] 回池 + GameObject 回收
+       (OnChunkRemoved, MCChunk.Dispose → RecycleMCBlocks)
+       外部 m_OnChunkRemoveAction 联动清理服务器 entity
+       (WorldSceneSystem.RegisterChunkRemove)</pre>
+
+<p>一句话总结：<strong>第 1 篇的 SetLocation 是发令枪，第 3 篇的 _lodDis 是判定标准，本篇的 Patch 差集比对是执行逻辑，第 2 篇的脏标记是增量更新的信号，mesh 分帧构建是性能兜底</strong>。前 4 篇合起来，回答了"体素大世界怎么跟着玩家移动而动态运转"这个问题——静态结构（5 层 MCWorld + chunk/block）在数据层面始终存在，动态加载只是决定<strong>哪些 chunk 当前被实例化、被渲染、被查询</strong>，其余的留在服务器或本地文件里，需要时再加载进来。</p>
+
+<p>但还有几个问题没回答：SetLocation 触发后，<strong>场景到底经历哪些 loading 阶段、什么时机才算"加载完成"可以关闭 loading UI</strong>？登录进游戏的第一帧，chunk 加载和物件加载谁先谁后、怎么协作？这些是第 5 篇<strong>场景加载状态机与登录时序</strong>要讲的——把本篇这套动态加载放进"玩家从登录到看见世界"的完整时序里。</p>
+
+<div class="note"><span class="label">下一篇：</span><a href="#">第 5 篇 · 场景加载状态机与登录时序</a> —— loading 状态机的各个阶段（TilePatchFinish / ChunkFinish / EntityFinish）、SetLocation 的 OnLoaded 回调时序、登录第一帧的加载协作。</div>
+
+</main>
+</div>
+
+<footer class="nav">
+    <div class="prev">
+        <span class="lbl">上一篇</span>
+        <a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 MCManager 的 5 层设计</a>
+    </div>
+    <div class="next">
+        <span class="lbl">下一篇</span>
+        <a href="#">第 5 篇 · 场景加载状态机与登录时序 →</a>
+    </div>
+</footer>
+
+</body>
+</html>

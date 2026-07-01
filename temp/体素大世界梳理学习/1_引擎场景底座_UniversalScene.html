@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第 1 篇 · 引擎场景底座 UniversalScene — 体素大世界系列</title>
+<style>
+:root {
+    --bg: #f7f8fa;
+    --content-bg: #ffffff;
+    --text: #1f2937;
+    --text-light: #4b5563;
+    --text-muted: #6b7280;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --border: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --code-text: #1f2937;
+    --pre-bg: #1e293b;
+    --pre-text: #e2e8f0;
+    --pre-accent: #93c5fd;
+    --tag-bg: #eff6ff;
+    --tag-text: #1d4ed8;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+    --sidebar-bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 顶部标题区 */
+header.top {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    padding: 32px 40px 28px 40px;
+    border-bottom: 1px solid var(--border);
+}
+header.top .badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+header.top h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+header.top .tagline {
+    font-size: 14px;
+    color: #dbeafe;
+    max-width: 900px;
+}
+
+/* 布局 */
+.layout {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+nav.sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px 60px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 13.5px;
+}
+nav.sidebar h3 {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 22px 0 10px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+}
+nav.sidebar h3:first-child { margin-top: 0; }
+nav.sidebar ul { list-style: none; padding: 0; margin: 0; }
+nav.sidebar li { margin: 3px 0; }
+nav.sidebar li a {
+    display: block;
+    color: var(--text-light);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+nav.sidebar li a:hover { background: var(--primary-light); color: var(--primary-dark); text-decoration: none; }
+nav.sidebar li.active a {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 500;
+}
+nav.sidebar li.cur-sec a {
+    color: var(--primary-dark);
+    font-weight: 500;
+    background: var(--tag-bg);
+}
+
+/* 主内容 */
+main {
+    flex: 1;
+    min-width: 0;
+    background: var(--content-bg);
+    padding: 36px 48px 60px 48px;
+    max-width: 920px;
+}
+main h2 {
+    font-size: 22px;
+    color: #111827;
+    margin: 40px 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    font-weight: 600;
+}
+main h2:first-of-type { margin-top: 8px; }
+main h3 {
+    font-size: 17.5px;
+    color: #1e3a8a;
+    margin: 28px 0 10px 0;
+    font-weight: 600;
+}
+main h4 {
+    font-size: 15.5px;
+    color: var(--text);
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+main p { margin: 10px 0; color: var(--text); }
+main ul, main ol { margin: 10px 0 10px 22px; padding: 0; }
+main li { margin: 5px 0; }
+main strong { color: #111827; }
+
+/* 代码块 */
+code.inline {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+}
+pre.code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0;
+}
+pre.ascii {
+    background: var(--pre-bg);
+    color: var(--pre-text);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 14px 0;
+    white-space: pre;
+}
+pre.ascii .accent { color: var(--pre-accent); font-weight: bold; }
+
+/* 提示框 */
+.note {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--text);
+    font-size: 14px;
+}
+.note .label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-right: 6px;
+}
+.warn {
+    background: var(--warn-bg);
+    border-left: 3px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--warn-text);
+    font-size: 14px;
+}
+.warn .label { color: #b45309; font-weight: 600; margin-right: 6px; }
+
+/* 表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 13.5px;
+}
+table th, table td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+table th { background: var(--tag-bg); color: var(--primary-dark); font-weight: 600; }
+table tr:nth-child(even) td { background: #fafbfc; }
+
+/* 锚点定位偏移 */
+.anchor { display: block; position: relative; top: -20px; visibility: hidden; }
+
+/* 页脚 */
+footer.nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    background: var(--content-bg);
+    font-size: 14px;
+}
+footer.nav .prev, footer.nav .next {
+    flex: 1;
+    max-width: 46%;
+}
+footer.nav .next { text-align: right; }
+footer.nav .lbl { color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 2px; }
+footer.nav a { font-weight: 500; }
+
+@media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+    <div class="badge">第 1 篇 / 共 12 篇 · 体素大世界梳理学习</div>
+    <h1>引擎场景底座 UniversalScene</h1>
+    <div class="tagline">体素大世界的"地基"：一个能加载卸载、自带工作线程、用组件组织能力、用 SetLocation 驱动重加载的场景基类。本篇把它这一层讲透，不涉及上层 MC 体素细节。</div>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+    <h3>系列目录</h3>
+    <ul>
+        <li><a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a></li>
+        <li class="active"><a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a></li>
+        <li><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a></li>
+        <li><a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</a></li>
+        <li><a href="4_Chunk动态加载与释放.html">第 4 篇 · Chunk 动态加载与释放</a></li>
+        <li><a href="#">第 5 篇 · 场景加载状态机与登录时序</a></li>
+        <li><a href="#">第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</a></li>
+        <li><a href="#">第 7 篇 · 物件模型 LOD 与实体显隐</a></li>
+        <li><a href="#">第 8 篇 · Voxel 占位 · Placeholder 与 Collision</a></li>
+        <li><a href="#">第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</a></li>
+        <li><a href="#">第 10 篇 · 大世界网络数据流</a></li>
+        <li><a href="#">第 11 篇 · 玩家传送与场景切换</a></li>
+    </ul>
+
+    <h3>本篇锚点</h3>
+    <ul>
+        <li><a href="#sec-what">1. 这一层是干什么的</a></li>
+        <li><a href="#sec-class">2. 类定义与基本结构</a></li>
+        <li><a href="#sec-component">3. SceneComponent 组件化</a></li>
+        <li><a href="#sec-thread">4. 工作线程与任务分发</a></li>
+        <li><a href="#sec-setlocation">5. SetLocation 驱动重加载</a></li>
+        <li><a href="#sec-manager">6. UniversalSceneManager</a></li>
+        <li><a href="#sec-objects">7. SceneObjectManager 定位</a></li>
+        <li><a href="#sec-summary">8. 小结与下一站</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<!-- ===================== 1 ===================== -->
+<span class="anchor" id="sec-what"></span>
+<h2>1. 这一层是干什么的</h2>
+
+<p>体素大世界最终要落到一个具体的场景类上，这个类就是 <code class="inline">MCScene</code>。但 <code class="inline">MCScene</code> 不是凭空开始的，它继承自一个更底层的基类 <code class="inline">UniversalScene</code>。本篇只讲这个基类。</p>
+
+<p>先看它的定义（<code class="inline">Assets/Scripts/Engine/UniversalScene/UniversalScene.cs:21</code>）：</p>
+
+<pre class="code">public class UniversalScene : MonoBehaviour, ILoadingStateSwitch, IRefreshable</pre>
+
+<p>它是一个 <strong>MonoBehaviour</strong>（所以它挂在 GameObject 上，能收到 Unity 的 <code class="inline">Awake/Start/Update/OnEnable/OnDisable</code> 生命周期），同时实现了两个接口：</p>
+<ul>
+    <li><code class="inline">ILoadingStateSwitch</code>：能切换"加载中/加载完成"两种状态（定义在 <code class="inline">Assets/Scripts/Engine/UniversalScene/Components/SceneObjects/Entity/Interface/ILoadingState.cs:105</code>，只有一个方法 <code class="inline">SwitchToLoadingState(bool)</code>）。加载中时调度器会改变每帧加载上限，让资源抢着进来；加载完成后恢复常态。</li>
+    <li><code class="inline">IRefreshable</code>：能被通知"刷新一次"（断线重连后用），定义在 <code class="inline">Assets/Scripts/Engine/UniversalScene/Features/IRefreshable.cs:6</code>。</li>
+</ul>
+
+<h3>它解决了什么问题</h3>
+
+<p>体素大世界和普通场景不一样：它没有"一整块烘焙好的地图"，而是<strong>围绕一个中心点动态加载/卸载一堆 chunk 和物件</strong>。这就要求场景类本身具备几项通用能力：</p>
+
+<ul>
+    <li><strong>可加载、可卸载</strong>：场景有自己的配置文件、资源、生命周期，能创建出来也能干净地拆掉。</li>
+    <li><strong>自带一个工作线程</strong>：chunk 的网格构建、数据解压等耗时计算不能卡 Unity 主线程，要丢到后台线程跑。</li>
+    <li><strong>用组件组织能力</strong>：物件管理、MC 管理、遮挡剔除……这些都是独立模块，应该像挂组件一样挂到场景上，而不是全堆在场景类里。</li>
+    <li><strong>有 LOD 更新入口</strong>：每帧根据相机位置更新物件的 LOD 级别。</li>
+    <li><strong>有加载状态机</strong>：能记录"chunk 数据好了没、物件好了没、地形 patch 好了没"，全好了才通知上层"场景加载完成"。</li>
+    <li><strong>有一个"扫描中心"概念</strong>：接收一个坐标，判断要不要触发新一轮重加载。</li>
+</ul>
+
+<p><code class="inline">UniversalScene</code> 把这些能力统一下沉到基类，让上层的 <code class="inline">MCScene</code> 只关心"体素"那一摊事（chunk、block、MCWorld），不用再操心线程、组件、加载状态这些基础设施。这就是"场景基类"这个抽象的价值。</p>
+
+<div class="note"><span class="label">一句话定位：</span>UniversalScene = 一个自带工作线程、用组件拼装、按中心点驱动重加载的 MonoBehaviour 场景骨架。MCScene 在它之上长出体素能力。</div>
+
+<!-- ===================== 2 ===================== -->
+<span class="anchor" id="sec-class"></span>
+<h2>2. 类定义与基本结构</h2>
+
+<p>先建立一个整体印象。把 <code class="inline">UniversalScene</code> 的关键字段和方法列出来（<code class="inline">Assets/Scripts/Engine/UniversalScene/UniversalScene.cs</code>）：</p>
+
+<table>
+<tr><th>类别</th><th>成员</th><th>行号</th><th>作用</th></tr>
+<tr><td>组件容器</td><td><code class="inline">m_Components: Dictionary&lt;Type, SceneComponent&gt;</code></td><td>48</td><td>按类型存所有挂载的组件</td></tr>
+<tr><td>线程状态</td><td><code class="inline">m_IsThreadRunning / m_IsThreadExit</code></td><td>49-50</td><td>volatile 标记，控制工作线程启停</td></tr>
+<tr><td>线程模式</td><td><code class="inline">m_EnableThreadMode</code></td><td>51</td><td>是否启用后台线程（默认 true）</td></tr>
+<tr><td>任务队列</td><td><code class="inline">m_ThreadExecuteSyncBuffer</code></td><td>52</td><td>后台线程消费的任务队列</td></tr>
+<tr><td>任务队列</td><td><code class="inline">m_UnityExecuteSyncBuffer</code></td><td>53</td><td>主线程消费的任务队列</td></tr>
+<tr><td>调度器</td><td><code class="inline">Scheduler: TiledScheduler</code></td><td>55</td><td>分块调度器，驱动 ISchedulable 组件扫描 patch</td></tr>
+<tr><td>扫描中心</td><td><code class="inline">m_Location: YKVector3d</code></td><td>100</td><td>当前扫描中心坐标（双精度，世界很大所以用 double）</td></tr>
+<tr><td>关键组件</td><td><code class="inline">m_SceneObjectManager / m_MCManager / m_MCOCManager</code></td><td>119-127</td><td>物件总管、MC 总管、遮挡剔除总管（子类赋值）</td></tr>
+<tr><td>核心方法</td><td><code class="inline">SetLocation(...)</code></td><td>114</td><td>接收新扫描中心，驱动重加载（基类只赋值，子类重写）</td></tr>
+<tr><td>核心方法</td><td><code class="inline">ExecuteInThread / ExecuteInUnity</code></td><td>434-442</td><td>任务入队，分别丢后台 / 丢主线程</td></tr>
+<tr><td>核心方法</td><td><code class="inline">Update()</code></td><td>304</td><td>主线程每帧：消费主线程任务 → 跑组件 Update → Scheduler.Update</td></tr>
+<tr><td>核心方法</td><td><code class="inline">ThreadRunnable()</code></td><td>241</td><td>工作线程主循环</td></tr>
+</table>
+
+<p>这里有几个设计细节值得点一下：</p>
+
+<ul>
+    <li><strong>用 double 存坐标</strong>：<code class="inline">m_Location</code> 是 <code class="inline">YKVector3d</code>（double3）。体素大世界尺度极大，单精度 float 在远离原点处会出现精度抖动，所以扫描中心用 double。初始值是 <code class="inline">Double.MinValue</code> 三件套，用来表示"还没设过"。</li>
+    <li><strong>三个 Manager 字段是子类赋值的</strong>：<code class="inline">UniversalScene</code> 自己只声明了 <code class="inline">m_SceneObjectManager</code>（在 <code class="inline">Initialize</code> 里注册），<code class="inline">m_MCManager / m_MCOCManager</code> 留给 <code class="inline">MCScene</code> 在它自己的 <code class="inline">Initialize</code> 里注册。基类只提供"持有 + 暴露"的载体。</li>
+    <li><strong><code class="inline">new</code> 关键字修饰 <code class="inline">GetComponent&lt;T&gt;</code></strong>（行 162）：因为 <code class="inline">MonoBehaviour</code> 本身就有个 <code class="inline">GetComponent</code>，这里用 <code class="inline">new</code> 隐藏掉父类那个，改成查自己的组件字典。所以场景上调用 <code class="inline">scene.GetComponent&lt;SceneObjectManager&gt;()</code> 拿的是 SceneComponent 体系里的组件，不是 Unity 的 Component。</li>
+</ul>
+
+<!-- ===================== 3 ===================== -->
+<span class="anchor" id="sec-component"></span>
+<h2>3. SceneComponent 组件化机制</h2>
+
+<h3>3.1 SceneComponent 是什么</h3>
+
+<p><code class="inline">SceneComponent</code> 是一个<strong>抽象普通类，不是 MonoBehaviour</strong>（<code class="inline">Assets/Scripts/Engine/UniversalScene/SceneComponent.cs:3</code>）。它不挂在 GameObject 上，而是被场景持有：</p>
+
+<pre class="code">public abstract class SceneComponent
+{
+    public UniversalScene Scene { get; }
+
+    protected SceneComponent(UniversalScene scene)
+    {
+        Scene = scene;
+    }
+
+    public virtual void Start() { }
+    public virtual void Update() { }
+    public virtual void OnEnable() { }
+    public virtual void OnDisable() { }
+    public virtual void OnDestroy() { }
+    public virtual void OnDrawGizmos() { }
+}</pre>
+
+<p>它通过构造函数把"我属于哪个场景"拿进来（<code class="inline">Scene</code> 属性只读），并且仿照 Unity 的生命周期提供了一组虚方法。注意这些方法<strong>不是 Unity 自动调的</strong>（因为它不是 MonoBehaviour），而是 <code class="inline">UniversalScene</code> 在自己的 Unity 生命周期里手动转发给每个组件的。</p>
+
+<h3>3.2 注册与获取</h3>
+
+<p>组件存在 <code class="inline">m_Components</code> 这个 <code class="inline">Dictionary&lt;Type, SceneComponent&gt;</code> 里，key 是组件类型。注册和获取两个方法很轻（行 154-170）：</p>
+
+<pre class="code">public T RegisterComponent&lt;T&gt;() where T : SceneComponent
+{
+    SceneComponent component = SceneUtils.CreateInstance&lt;T&gt;(this);  // 反射创建，把 this 传进构造
+    m_Components.Add(typeof(T), component);
+    return (T)component;
+}
+
+public new T GetComponent&lt;T&gt;() where T : SceneComponent
+{
+    if (m_Components.TryGetValue(typeof(T), out var component))
+        return (T)component;
+    return null;
+}</pre>
+
+<p><code class="inline">SceneUtils.CreateInstance&lt;T&gt;(this)</code> 本质是 <code class="inline">Activator.CreateInstance(typeof(T), this)</code>（<code class="inline">Assets/Scripts/Engine/UniversalScene/Utils/SceneUtils.cs:13</code>），即用反射调用 <code class="inline">SceneComponent</code> 子类的构造，把当前场景传进去。所以每个 <code class="inline">SceneComponent</code> 子类的构造必须接收一个 <code class="inline">UniversalScene</code> 参数，例如 <code class="inline">SceneObjectManager</code>（<code class="inline">Assets/Scripts/Engine/UniversalScene/Components/SceneObjects/SceneObjectManager.cs:67</code>）：</p>
+
+<pre class="code">public SceneObjectManager(UniversalScene scene) : base(scene)
+{
+    SceneEntity.OnUpdateTransform -= UpdateTransformAndQuadTree;
+    SceneEntity.OnUpdateTransform += UpdateTransformAndQuadTree;
+}</pre>
+
+<div class="warn"><span class="label">注意：</span>同一个类型只能注册一次（用的是 <code class="inline">Dictionary.Add</code>，重复注册会抛异常）。组件以类型为 key，所以"场景上只有一个 SceneObjectManager"是靠字典结构保证的。</div>
+
+<h3>3.3 生命周期怎么和 Scene 绑定</h3>
+
+<p><code class="inline">UniversalScene</code> 在自己的 Unity 生命周期里逐个转发调用给组件。几处关键转发：</p>
+
+<pre class="code">// Assets/Scripts/Engine/UniversalScene/UniversalScene.cs
+protected void Start()                          // 行 207
+{
+    foreach (var component in m_Components.Values)
+        component.Start();
+}
+
+public virtual void Update()                    // 行 304
+{
+    RefreshThreadTask(m_UnityExecuteSyncBuffer); // 先跑主线程任务
+    ...
+    foreach (var component in m_Components.Values)
+        component.Update();                      // 再跑每个组件的 Update
+    Scheduler.Update();
+    ...
+}
+
+protected virtual void OnEnable()  / OnDisable() // 行 288 / 296 —— 同样遍历转发</pre>
+
+<p>卸载时则逆序销毁（行 344 <code class="inline">UnLoad</code>）：</p>
+
+<pre class="code">var components = m_Components.Values.ToList();
+for (int i = components.Count - 1; i &gt;= 0; i--)
+{
+    try { components[i].OnDestroy(); }
+    catch (Exception e) { Debug.LogError("场景卸载失败:" + components[i].GetType() + "\n" + e); }
+}
+m_Components.Clear();</pre>
+
+<p>逆序是为了让后注册的组件（更上层的）先销毁，避免底层组件先被拆掉导致上层引用空。每个组件的 <code class="inline">OnDestroy</code> 包了 try-catch，单个组件销毁失败不会阻塞其它组件和场景卸载。</p>
+
+<h3>3.4 谁是 SceneComponent</h3>
+
+<p>看 <code class="inline">MCScene.Initialize</code>（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:34</code>）注册了哪些组件，就知道这一层是怎么"拼"出来的：</p>
+
+<pre class="code">m_MCManager = RegisterComponent&lt;MCManager&gt;();        // 或 MCNetworkManager / MCModifyManager
+m_MCBlockDecalManager = RegisterComponent&lt;MCBlockDecalManager&gt;();
+RegisterComponent&lt;ClientScannerManager&gt;();
+RegisterComponent&lt;SalePartnerScannerManager&gt;();
+m_StaticSceneOcclusionCullingManager = RegisterComponent&lt;StaticSceneOcclusionCullingManager&gt;();
+m_MCOCManager = RegisterComponent&lt;MCOCManager&gt;();
+base.Initialize(args);   // 基类里还会注册 SceneObjectManager</pre>
+
+<p>而 <code class="inline">UniversalScene.Initialize</code> 自己注册的是物件总管（行 186）：</p>
+
+<pre class="code">m_SceneObjectManager = RegisterComponent&lt;SceneObjectManager&gt;();</pre>
+
+<p>所以一个 MCScene 实例上挂着这些组件：SceneObjectManager、MCManager（或其网络/修改变体）、MCBlockDecalManager、ClientScannerManager、SalePartnerScannerManager、StaticSceneOcclusionCullingManager、MCOCManager。每个组件各管一摊，场景类只负责把它们串起来、转发生命周期。</p>
+
+<div class="note"><span class="label">小结：</span>SceneComponent 是一套自建的轻量组件体系，不走 Unity 的 MonoBehaviour。好处是创建/销毁/转发都自己控制，方便在工作线程里统一驱动（见下一节），也不需要每个组件都挂 GameObject。</div>
+
+<!-- ===================== 4 ===================== -->
+<span class="anchor" id="sec-thread"></span>
+<h2>4. 自有工作线程与线程任务分发（重点）</h2>
+
+<p>这是 <code class="inline">UniversalScene</code> 最关键的设计之一，要讲透。</p>
+
+<h3>4.1 为什么体素大世界要单独开线程</h3>
+
+<p>体素大世界每时每刻都在做大量计算：玩家一移动，围绕新中心点要扫描该加载哪些 chunk、要解压 chunk 数据、要构建 chunk 的网格、要把物件塞进四叉树……这些操作数据量大、计算密集。如果全在 Unity 主线程做，主线程每帧只有十几毫秒，根本扛不住，画面会卡死。</p>
+
+<p>所以 <code class="inline">UniversalScene</code> 自己起了一个<strong>后台工作线程</strong>（不是 Unity 主线程），把那些"不需要碰 Unity API 的纯数据/纯计算"活儿丢过去跑，主线程只负责"需要 Unity API 的那部分"（创建 GameObject、挂材质、改 Transform 等）和最终渲染。</p>
+
+<h3>4.2 线程的启动与停止</h3>
+
+<p>工作线程在场景资源加载完成时启动。调用链是 <code class="inline">OnLoad → Load → ThreadStart</code>（行 680-688）：</p>
+
+<pre class="code">// UniversalScene.cs:680
+protected virtual void Load()
+{
+    if (m_EnableThreadMode)
+        ThreadStart();
+}
+
+// UniversalScene.cs:217
+private void ThreadStart()
+{
+    if (!m_IsThreadRunning)
+    {
+        m_IsThreadExit = false;
+        m_IsThreadRunning = true;
+        Thread t = new Thread(ThreadRunnable);
+        t.Name = "Universal Scene Worker Thread#" + t.ManagedThreadId;
+        t.Start();
+    }
+}</pre>
+
+<p>停止在 <code class="inline">UnLoad</code> 里调用 <code class="inline">ThreadEnd</code>（行 229）：</p>
+
+<pre class="code">protected virtual void ThreadEnd()
+{
+    if (m_IsThreadRunning)
+    {
+        m_IsThreadRunning = false;          // 先把循环条件翻成 false
+        while (!m_IsThreadExit)              // 等工作线程自己跑出循环、把 m_IsThreadExit 置 true
+            Thread.Yield();
+    }
+}</pre>
+
+<p>这是个标准的"标志位 + 自旋等待"停线程方式：<code class="inline">m_IsThreadRunning</code> 和 <code class="inline">m_IsThreadExit</code> 都是 <code class="inline">volatile</code>，保证主线程写、子线程读的可见性。主线程设 <code class="inline">m_IsThreadRunning = false</code> 后就 <code class="inline">Thread.Yield()</code> 等子线程自己也跑完最后一轮、把 <code class="inline">m_IsThreadExit</code> 置 <code class="inline">true</code>，再继续往下销毁，避免销毁时子线程还在跑导致访问已释放的数据。</p>
+
+<h3>4.3 工作线程主循环</h3>
+
+<pre class="code">// UniversalScene.cs:241
+protected virtual void ThreadRunnable()
+{
+    while (m_IsThreadRunning)
+    {
+        try { ThreadUpdate(); }
+        catch (Exception e)
+        {
+            ExecuteInUnity(new ThreadTask(e, exception =&gt; { Debug.LogError(e); }));
+        }
+        Thread.Sleep(ThreadTriggerInterval);   // 默认 100ms 跑一轮
+    }
+    m_IsThreadExit = true;
+}</pre>
+
+<p>循环体很简单：每轮跑一次 <code class="inline">ThreadUpdate()</code>，然后睡 100ms（<code class="inline">THREAD_TRIGGER_INTERVAL_TIME = 100</code>，行 56）。子线程里如果抛异常，不直接 <code class="inline">Debug.LogError</code>（因为 <code class="inline">Debug.Log</code> 在子线程虽然能调但有些 Unity API 不行），而是把异常包成一个任务丢回主线程打印。</p>
+
+<p><code class="inline">MCScene</code> 重写了这个方法（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:413</code>），区别是：场景还在加载中时用 <code class="inline">Thread.Yield()</code> 代替 <code class="inline">Thread.Sleep</code>，让工作线程尽量满负荷跑，加快首帧加载。</p>
+
+<h3>4.4 ThreadUpdate 做什么</h3>
+
+<pre class="code">// UniversalScene.cs:270
+protected void ThreadUpdate()
+{
+    RefreshThreadTask(m_ThreadExecuteSyncBuffer);   // 1. 执行后台任务队列里的任务
+
+    foreach (var component in m_Components.Values)
+    {
+        if (component is ISchedulable schedulable)  // 2. 让调度器驱动"可调度"组件扫描 patch
+            Scheduler.Execute(schedulable);
+
+        if (component is IThreadRunnable threadRunnable)  // 3. 让"可线程运行"组件跑自己的后台逻辑
+            threadRunnable.ThreadUpdate();
+    }
+}</pre>
+
+<p>三件事：</p>
+<ol>
+    <li><strong>消费后台任务队列</strong>：把别人通过 <code class="inline">ExecuteInThread</code> 丢进来的任务跑掉。</li>
+    <li><strong>调度器驱动</strong>：实现了 <code class="inline">ISchedulable</code> 的组件（比如 MCManager）交给 <code class="inline">TiledScheduler.Execute</code>，让它根据当前 <code class="inline">m_Location</code> 扫描该加载/卸载哪些 patch（<code class="inline">Assets/Scripts/Engine/UniversalScene/Scheduler/TiledScheduler.cs:49</code>，注释里写明 <code class="inline">Executed in scene worker thread</code>）。</li>
+    <li><strong>组件后台 tick</strong>：实现了 <code class="inline">IThreadRunnable</code> 的组件（比如 SceneObjectManager）调它的 <code class="inline">ThreadUpdate()</code> 跑后台逻辑。<code class="inline">IThreadRunnable</code> 接口只有一个 <code class="inline">ThreadUpdate()</code> 方法（<code class="inline">Assets/Scripts/Engine/UniversalScene/Features/IThreadRunnable.cs:3</code>）。</li>
+</ol>
+
+<h3>4.5 ExecuteInThread / ExecuteInUnity —— 两个队列与双缓冲</h3>
+
+<p>这是这对 API 的核心。它们都是"入队"操作，本身不阻塞、不切线程，只是把一个任务塞进队列，等对应线程下一轮来取（行 434-442）：</p>
+
+<pre class="code">public void ExecuteInThread(ThreadTask task)   // 丢给后台线程跑
+{
+    m_ThreadExecuteSyncBuffer.Enqueue(task);
+}
+
+public void ExecuteInUnity(ThreadTask task)    // 丢回主线程跑
+{
+    m_UnityExecuteSyncBuffer.Enqueue(task);
+}</pre>
+
+<p>两个队列都是 <code class="inline">YoukiaEngineCore.ConcurrentQueue&lt;ThreadTask&gt;</code>（线程安全的并发队列）。消费端用了一个"双缓冲切换"的小技巧（行 261）：</p>
+
+<pre class="code">private void RefreshThreadTask(YoukiaEngineCore.ConcurrentQueue&lt;ThreadTask&gt; tasks)
+{
+    Queue&lt;ThreadTask&gt; syncBuffer = tasks.Switch();  // 把生产端正在写的队列和消费端要读的队列整体交换
+    while (syncBuffer.Count &gt; 0)
+        syncBuffer.Dequeue().Execute();
+}</pre>
+
+<p><code class="inline">tasks.Switch()</code> 的语义是：把队列内部"正在被生产者入队"的那一半和"准备给消费者读"的那一半整体对调，返回消费者这一半。这样消费者逐个 <code class="inline">Dequeue</code> 执行时，生产者仍然可以往新的"入队半边"写，互不阻塞。比起每取一个都加锁，切换一次开销小得多，适合"批量入队、批量消费"的场景。</p>
+
+<p>两个队列分别在两个线程被消费：</p>
+
+<pre class="code">// 主线程 Update 里（UniversalScene.cs:307）消费"回主线程"队列
+public virtual void Update()
+{
+    RefreshThreadTask(m_UnityExecuteSyncBuffer);   // 跑 ExecuteInUnity 丢进来的任务
+    ...
+}
+
+// 工作线程 ThreadUpdate 里（UniversalScene.cs:272）消费"去后台"队列
+protected void ThreadUpdate()
+{
+    RefreshThreadTask(m_ThreadExecuteSyncBuffer);  // 跑 ExecuteInThread 丢进来的任务
+    ...
+}</pre>
+
+<p>所以一个任务到底在哪个线程跑，完全取决于你把它塞进哪个队列。</p>
+
+<h3>4.6 ThreadTask 是什么</h3>
+
+<p><code class="inline">ThreadTask</code> 是 <code class="inline">UniversalScene</code> 内部定义的 struct（行 444），本质是"一个参数 + 一个 <code class="inline">Action&lt;object&gt;</code>"的包装：</p>
+
+<pre class="code">public struct ThreadTask
+{
+    private Action&lt;object&gt; m_Action;
+    private object m_Param;
+
+    public void Execute() { m_Action(m_Param); }
+
+    public ThreadTask(object param, Action&lt;object&gt; action) { ... }       // (param, action)
+    public ThreadTask(Action&lt;object&gt; action, params object[] param) { ... } // (action, params)
+}</pre>
+
+<p>两个构造重载允许 <code class="inline">(param, action)</code> 或 <code class="inline">(action, params)</code> 两种写法。用 struct 而不是 class 是为了避免每个任务一次堆分配，在线程高频交互场景下减少 GC 压力。</p>
+
+<h3>4.7 真实用法：嵌套切线程</h3>
+
+<p>最典型的用法是"丢后台算 → 算完切回主线程处理结果"的嵌套。来看一个<strong>真实在用</strong>的例子，MCManager 加载完一个 patch 后处理网络数据（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCManager.cs:181</code>）：</p>
+
+<pre class="code">public virtual void OnPatchLoad(TiledPatch patch, Action&lt;TiledPatch&gt; callback)
+{
+    MCPatch mcPatch = (MCPatch)patch;
+    mcPatch._asyncCombiner.AddCompletionCall(() =&gt;
+    {
+        Scene.ExecuteInThread(new UniversalScene.ThreadTask(patch, (obj) =&gt;     // ① 丢到后台线程
+        {
+            ((MCPatch)obj).ProcessNetData();                                    //   后台：解析网络数据（纯 CPU，不碰 Unity）
+
+            Scene.ExecuteInUnity(new UniversalScene.ThreadTask(obj, (obj2) =&gt;   // ② 再丢回主线程
+            {
+                callback((MCPatch)obj2);                                        //   主线程：回调上层、更新加载状态
+                ((ILoadingState)Scene).RemoveLoadingTilePatch(((MCPatch)obj2).UV.ID);
+            }));
+        }));
+    });
+    ...
+}</pre>
+
+<p>这里的嵌套结构是关键：</p>
+
+<pre class="ascii">主线程调用 OnPatchLoad
+        │
+        │  AsyncCombiner 完成回调（可能在主线程）
+        ▼
+┌─────────────────────────────────────────────┐
+│ ExecuteInThread( 任务A )                     │   入 m_ThreadExecuteSyncBuffer
+└─────────────────────────────────────────────┘
+        │
+        ▼  （稍后）工作线程 ThreadUpdate 取出任务A 执行
+┌─────────────────────────────────────────────┐
+│ ProcessNetData()    ← 后台线程，纯数据计算    │
+│                                             │
+│   ExecuteInUnity( 任务B )   入 m_UnityExecuteSyncBuffer  │
+└─────────────────────────────────────────────┘
+        │
+        ▼  （下一帧）主线程 Update 取出任务B 执行
+┌─────────────────────────────────────────────┐
+│ callback(patch)     ← 主线程，可碰 Unity API  │
+│ RemoveLoadingTilePatch(...)   更新加载状态    │
+└─────────────────────────────────────────────┘</pre>
+
+<p>这样就把"耗 CPU 但不碰 Unity"的活留在后台、"要碰 Unity 或要改加载状态"的活切回主线程，两边各司其职。</p>
+
+<p>另一个常见的真实用法是"批量修改某个组件的内部状态"。比如 <code class="inline">SceneObjectManager.AddOcclusionMask</code>（<code class="inline">Assets/Scripts/Engine/UniversalScene/Components/SceneObjects/SceneObjectManager.cs:101</code>）——主线程调用，但实际往 <code class="inline">OcclusionMasks</code> 列表里加数据的动作丢到后台线程去做，因为这个列表在工作线程也会读，统一在后台线程改避免冲突：</p>
+
+<pre class="code">public void AddOcclusionMask(SceneEntityOcclusionMask mask)
+{
+    Scene.ExecuteInThread(new UniversalScene.ThreadTask((null), (obj) =&gt;
+    {
+        OcclusionMasks.Add(mask);
+    }));
+}</pre>
+
+<h3>4.8 线程安全注意点</h3>
+
+<p>这套机制定下了一条隐含的分工红线：</p>
+
+<table>
+<tr><th>类型</th><th>可以在哪个线程做</th><th>例子</th></tr>
+<tr><td>Unity API（创建 GameObject、改 Transform、挂组件、Debug.Log 大多数情况）</td><td>必须主线程</td><td>ExecuteInUnity 丢回主线程后的 callback</td></tr>
+<tr><td>纯数据计算（解压、网格构建、四叉树插入、坐标换算）</td><td>后台线程</td><td>ExecuteInThread 任务体、IThreadRunnable.ThreadUpdate</td></tr>
+<tr><td>改加载状态（SetLoadingState / RemoveLoadingTilePatch 等）</td><td>可在后台线程（用 ConcurrentDictionary + lock 保证安全）</td><td>MCScene 的 m_LoadingChunks / m_LoadingTilePatchs 都是 ConcurrentDictionary</td></tr>
+<tr><td>读组件共享字段</td><td>看具体情况，跨线程读写必须用 volatile / lock / 并发容器</td><td>m_Location 用 volatile 保护，m_IsThreadRunning/Exit 同理</td></tr>
+</table>
+
+<div class="warn"><span class="label">易错点：</span>不是所有"看起来像数据"的操作都能丢后台。任何会触发 Unity 内部状态变更的调用（哪怕是间接的）都必须在主线程。写新功能时，拿不准就一律走 <code class="inline">ExecuteInUnity</code>，宁可慢一点也不要崩。</div>
+
+<!-- ===================== 5 ===================== -->
+<span class="anchor" id="sec-setlocation"></span>
+<h2>5. SetLocation —— 驱动重加载的总开关（重点）</h2>
+
+<h3>5.1 它是什么</h3>
+
+<p><code class="inline">SetLocation</code> 是 <code class="inline">UniversalScene</code> 的 virtual 方法，<code class="inline">MCScene</code> 重写了它。它是整个大世界"中心点移动 → 触发重新加载"的入口。基类版本很朴素（行 114）：</p>
+
+<pre class="code">public virtual void SetLocation(YKVector3d location, Action callBack = null)
+{
+    m_Location = location;
+}</pre>
+
+<p>基类只更新坐标，不触发任何加载。真正有逻辑的是 <code class="inline">MCScene.SetLocation</code>（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:849</code>）。</p>
+
+<h3>5.2 MCScene.SetLocation 的完整流程</h3>
+
+<p>先把代码贴出来再拆解：</p>
+
+<pre class="code">// Assets/Scripts/Core/MCCore/Scene/MCScene.cs:849
+public override void SetLocation(YKVector3d location, Action callBack = null)
+{
+    if (IsSceneInLoading &amp;&amp; location != m_Location &amp;&amp; m_Location != new YKVector3d(Double.MinValue, ...))
+        Log.Debug("Scene In Loading but SetLocation be call| ...");
+
+    if (m_SetLocationCallBack == null)                       // 当前没有正在跑的 SetLocation
+    {
+        double dis = (location - m_Location).Magnitude;      // 新中心和老中心的距离
+        m_Location = location;
+        if (callBack != null)
+        {
+            if (dis &gt; 32)                                   // ① 距离大于 32，触发重加载
+            {
+                m_SetLocationCallBack = callBack;
+                FinishLoadingCondition = SceneLoadedCondition.NearbyLod0_Finish;
+                SwitchToLoadingState(true);                  // 进入"加载中"状态，提高线程优先级
+                Application.backgroundLoadingPriority = ThreadPriority.Normal;
+                QualitySettings.asyncUploadBufferSize = 16;
+                QualitySettings.asyncUploadTimeSlice = 2;
+
+                ExecuteInThread(new UniversalScene.ThreadTask(null, (obj) =&gt;   // ② 丢后台线程
+                {
+                    if (this is ILoadingState loadingState)
+                        loadingState.ResetLoadingState();                     //   清空加载状态机
+
+                    SetOnLoadedAction(() =&gt;                                    // ③ 注册"加载完成"回调
+                    {
+                        Vector4 pos = new Vector4((float)m_Location.x - 5000, ...);
+                        UniversalRenderPipeline.asset.environmentData.RefetchGroundVegeAtPos(pos); // 更新草地
+
+                        if (m_HasWaitSetLocation)                              // 有排队的 SetLocation，接着跑
+                            SetLocation(m_WaitLocation, m_WaitSetLocationCallBack);
+
+                        m_WaitSetLocationCallBack = null;
+                        m_HasWaitSetLocation = false;
+
+                        m_SetLocationCallBack?.Invoke();                       // 通知本次的 callBack
+                        m_SetLocationCallBack = null;
+                    });
+                }));
+            }
+            else                                             // ④ 距离 ≤ 32，场景无变化，直接回调
+            {
+                callBack?.Invoke();
+            }
+        }
+    }
+    else                                                     // 当前已有 SetLocation 在跑，这次请求排队
+    {
+        m_WaitLocation = location;
+        m_WaitSetLocationCallBack = callBack;
+        m_HasWaitSetLocation = true;
+    }
+}</pre>
+
+<h3>5.3 流程图</h3>
+
+<pre class="ascii">                    SetLocation(location, callBack)
+                              │
+                              ▼
+            ┌───────────────────────────────────┐
+            │ 当前是否已有 SetLocation 在跑？     │
+            │ (m_SetLocationCallBack != null?)   │
+            └───────────────────────────────────┘
+                  │                   │
+                 是                   否
+                  ▼                   ▼
+        ┌─────────────────┐   ┌───────────────────────────┐
+        │ 缓存到 Wait      │   │ 计算 dis = |location - m_Location|  │
+        │ m_WaitLocation  │   │ 更新 m_Location = location          │
+        │ m_HasWait=true  │   │ 有 callBack?                        │
+        └─────────────────┘   └───────────────────────────┘
+                                        │     │
+                                       无    有
+                                        │     │
+                                        ▼     ▼
+                                     直接返回  ┌──────────────┐
+                                              │ dis &gt; 32 ?    │
+                                              └──────────────┘
+                                                │         │
+                                               是         否
+                                                ▼         ▼
+                                ┌──────────────────┐  ┌────────────────┐
+                                │ <span class="accent">触发重加载</span>        │  │ 直接 callBack() │
+                                │ SwitchToLoading  │  │ 不重加载         │
+                                │ State(true)      │  └────────────────┘
+                                │ ExecuteInThread  │
+                                │  → ResetLoading  │
+                                │    State()       │
+                                │  → SetOnLoaded   │
+                                │    Action(完成回调)│
+                                └──────────────────┘
+                                        │
+                                        ▼
+                            （后台线程清状态 + 主线程后续更新）
+                                        │
+                                        ▼
+                            加载完成后 OnLoaded 回调被触发：
+                              - 更新草地
+                              - 若有排队的 Wait，递归跑 SetLocation
+                              - 调本次的 callBack
+                              - 清 m_SetLocationCallBack</pre>
+
+<h3>5.4 关键设计点逐条说明</h3>
+
+<h4>阈值 32 是什么意思</h4>
+
+<p><code class="inline">dis &gt; 32</code> 就是重加载阈值，单位是 block（方块）坐标距离。意思是：新中心和老中心移动距离超过 32 个方块，才认为"玩家走到了一个新区域"，需要重新扫描加载周围的 chunk 和物件；否则场景内容基本没变，直接回调啥也不干。这个阈值避免了原地小碎步移动反复触发重加载。</p>
+
+<div class="warn"><span class="label">核实说明：</span>前期探查提到"距离 &gt; 32 触发重加载"，代码确认无误。但要注意阈值是 <strong>&gt; 32</strong>（严格大于），不是 &gt;=。距离正好 32 时不触发，走"直接回调"分支。</div>
+
+<h4>为什么用 ExecuteInThread 包 ResetLoadingState</h4>
+
+<p><code class="inline">ResetLoadingState</code> 会清空 <code class="inline">m_LoadingState</code> 标记和 <code class="inline">m_LoadingTilePatchs / m_LoadingChunks / LoadingEntitys</code> 这些集合（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:465</code>）。这些容器在工作线程也会读写，所以清空动作也得放到工作线程去做，和后台扫描逻辑在同一线程，避免一边清一边写的竞争。这就是为什么明明 <code class="inline">SetLocation</code> 是主线程调进来的，<code class="inline">ResetLoadingState</code> 却要绕一圈 <code class="inline">ExecuteInThread</code>。</p>
+
+<h4>SetOnLoadedAction 注册的完成回调</h4>
+
+<p><code class="inline">SetOnLoadedAction</code>（行 479）把一个 Action 存到 <code class="inline">OnLoadedAction</code> 字段。等整个场景加载状态机跑完（<code class="inline">LoadingState == All</code>），<code class="inline">OnSceneLoadingFinish</code>（行 912）会调 <code class="inline">Loaded()</code>，<code class="inline">Loaded()</code>（行 693）就触发这个 <code class="inline">OnLoadedAction</code>。所以这个回调本质是"本次重加载全部完成"的通知。</p>
+
+<p>回调里三件事：更新草地（因为中心移动了，草地采样区要跟着挪）、处理排队的下一个 SetLocation、调本次的 callBack。</p>
+
+<h4>并发请求排队</h4>
+
+<p>场景重加载是个异步过程，没跑完时如果又来一个 <code class="inline">SetLocation</code>，不能直接拒，也不能并发跑两个（状态机会乱）。所以用一个单槽缓冲：把后来的请求存到 <code class="inline">m_WaitLocation / m_WaitSetLocationCallBack</code>，标记 <code class="inline">m_HasWaitSetLocation = true</code>。等当前重加载完成、OnLoaded 回调触发时，检查这个标记，如果有排队就把排队的 <code class="inline">SetLocation</code> 递归调一次。也就是说<strong>同一时刻最多有一个 SetLocation 在跑，多余的排成一个长度为 1 的队列</strong>。</p>
+
+<h3>5.5 谁在喂坐标给 SetLocation</h3>
+
+<p>这是"谁在驱动大世界中心移动"的答案。答案在 <code class="inline">WorldSceneSystem</code>（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:111</code>）。它的 <code class="inline">Update</code> 每帧调 <code class="inline">SetScanCenterLocation</code>：</p>
+
+<pre class="code">// WorldSceneSystem.cs:111
+internal override void Update()
+{
+    base.Update();
+    if (IsInitScene)
+    {
+        SetScanCenterLocation();   // 每帧把"扫描中心"喂给 MCScene.SetLocation
+        UpdateLodInfo();
+        SetLoadingProgress();
+    }
+}
+
+// WorldSceneSystem.cs:270
+public void SetScanCenterLocation()
+{
+    switch (m_ScanType)
+    {
+        case ScanType.Role:
+            if (m_MainPlayer != null)
+                MCScene.SetLocation(m_MainPlayer.Position);      // 跟主角
+            break;
+        case ScanType.Camera:
+            MCScene.SetLocation(m_CameraTransform.position.ToVector3d()); // 跟相机
+            break;
+        case ScanType.Location:
+            MCScene.SetLocation(m_ScanLocaton);                  // 跟固定坐标
+            break;
+    }
+}</pre>
+
+<p><code class="inline">ScanType</code> 是个枚举（行 26），三种模式：</p>
+
+<table>
+<tr><th>ScanType</th><th>值</th><th>扫描中心取自</th><th>用在哪</th></tr>
+<tr><td><code class="inline">Role</code></td><td>1</td><td>主角 <code class="inline">m_MainPlayer.Position</code></td><td>正常游戏，主角已入场。加载场景完成、主角入场后 <code class="inline">MainPlayerJoin</code> 调 <code class="inline">ChangeScanTypeToRole</code> 切到这个模式（行 219）</td></tr>
+<tr><td><code class="inline">Camera</code></td><td>2</td><td>场景相机位置</td><td>默认值（<code class="inline">m_ScanType = ScanType.Camera</code>，行 57）。特殊场景跟相机走</td></tr>
+<tr><td><code class="inline">Location</code></td><td>3</td><td>固定坐标 <code class="inline">m_ScanLocaton</code></td><td>刚登录还没主角时。<code class="inline">LoadScene</code>（行 171）会先 <code class="inline">ChangeScanTypeToLocation(px,py,pz)</code> 把服务器给的主角坐标先当扫描中心，等场景加载完、主角真的进来了再切 Role</td></tr>
+</table>
+
+<p>所以整体节奏是：<strong>登录 → 用服务器给的主角坐标当 Location 模式加载场景 → 主角入场后切 Role 模式，之后每帧跟主角</strong>。中间如果某些玩法需要跟相机，可以 <code class="inline">ChangeScanType(ScanType.Camera)</code> 切过去。</p>
+
+<h3>5.6 关于 JumpToPosition 里的注释用法</h3>
+
+<p>前期线索提到 <code class="inline">WorldSceneSystem.JumpToPosition</code> 里有 <code class="inline">ExecuteInThread → SetLocation → ExecuteInUnity</code> 的嵌套用法。核实后确认：<strong>整段逻辑当前被 <code class="inline">/* ... */</code> 注释掉了，方法直接 <code class="inline">return false</code></strong>（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:314-365</code>）。也就是说这个跳转分支目前未启用。它的写法确实能说明"后台改坐标 → 主线程挪主角"的思路，但作为真实在用的例子，不如第 4.7 节 <code class="inline">MCManager.OnPatchLoad</code> 那个来得可靠。本篇以真实在用的为准。</p>
+
+<!-- ===================== 6 ===================== -->
+<span class="anchor" id="sec-manager"></span>
+<h2>6. UniversalSceneManager —— 场景的创建与管理</h2>
+
+<p><code class="inline">UniversalSceneManager</code> 是一个<strong>静态工具类</strong>（<code class="inline">static class</code>，<code class="inline">Assets/Scripts/Engine/UniversalScene/UniversalSceneManager.cs:11</code>），namespace 同样是 <code class="inline">UnityEngine.Scene.Universal</code>。它管三样东西：</p>
+
+<pre class="code">private static GameObject m_SceneRoot;                                          // 所有场景的根节点
+private static Dictionary&lt;string, UniversalScene&gt; m_Scenes = new Dictionary&lt;...&gt;(); // 所有活着的场景，key 是 scenePath
+private static UniversalScene m_MainScene;                                      // 当前主场景</pre>
+
+<h3>6.1 CreateScene&lt;T&gt; —— 创建一个带配置的场景</h3>
+
+<p>这是正式加载大世界用的方法（行 380）：</p>
+
+<pre class="code">public static T CreateScene&lt;T&gt;(string scenePath, Action&lt;T&gt; callback,
+                                bool autoLoad = true, params object[] args)
+    where T : UniversalScene</pre>
+
+<p>步骤：</p>
+<ol>
+    <li>确保场景根节点 <code class="inline">m_SceneRoot</code> 存在（没有就 <code class="inline">new GameObject("UniversalSceneRoot")</code>，编辑器模式下还挂个 <code class="inline">ApplicationQuit</code> 组件用于退出时清理）。</li>
+    <li>查字典，如果这个 scenePath 已经在场景里了，报错并返回已有那个。</li>
+    <li>否则 <code class="inline">new GameObject</code> 挂到 <code class="inline">m_SceneRoot</code> 下，<code class="inline">AddComponent&lt;T&gt;()</code> 把场景类作为 MonoBehaviour 挂上去。</li>
+    <li>设 <code class="inline">MainScene = t</code>、<code class="inline">t.ScenePath = scenePath</code>，加进字典。</li>
+    <li>调 <code class="inline">t.Initialize(args)</code>（场景的初始化，注册组件就在这里）。</li>
+    <li><code class="inline">autoLoad = true</code> 时调 <code class="inline">t.OnLoad(() =&gt; callback(t))</code>，加载完成后回调外部；<code class="inline">autoLoad = false</code> 直接回调，让外部自己控制加载时机。</li>
+</ol>
+
+<p>真实调用点在 <code class="inline">WorldSceneSystem.LoadScene</code>（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:176</code>）：</p>
+
+<pre class="code">public void LoadScene(string path, float px, float py, float pz, bool isNet = true)
+{
+    ChangeScanTypeToLocation(px, py, pz);
+    bool isNetManager = isNet;
+    m_McScene = UniversalSceneManager.CreateScene&lt;MCScene&gt;(path, scene =&gt; { OnLoadingFinishAction(); }, true, isNetManager);
+    MCScene.LoadingType = LoadingType.Login;
+    m_MCNetManager = m_McScene.MCManager;
+    IsInitScene = true;
+    MCScene.SetLodInfo(m_LodInfo);
+    SetScanCenterLocation();
+    ...
+}</pre>
+
+<p>注意第四个参数 <code class="inline">isNetManager</code> 通过 <code class="inline">args</code> 传进 <code class="inline">MCScene.Initialize</code>，<code class="inline">Initialize</code> 里根据它决定注册 <code class="inline">MCNetworkManager</code>（联机）还是 <code class="inline">MCManager</code>（单机/编辑器）还是 <code class="inline">MCModifyManager</code>（修改器模式），见 <code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:37-52</code>。同一个 MCScene 类，靠这个参数切出三种不同的"MC 管理器"实现。</p>
+
+<h3>6.2 CreateEmptyScene&lt;T&gt; —— 创建空场景</h3>
+
+<p>不需要从磁盘加载配置、直接给个默认空配置的场景（行 50）。和 <code class="inline">CreateScene</code> 的区别是：它不传 scenePath，用 <code class="inline">CreateEmptySceneConfig()</code> 造一份默认 <code class="inline">YKSceneConfig</code>（含一组默认 ScanGroup，行 124 那段内置 JSON），用场景名（<code class="inline">EmptyScene_{hash}</code>）作字典 key，并且 <code class="inline">Initialize(false)</code>（非网络模式）+ 立即 <code class="inline">OnLoad(null)</code>。用在不需要真实地形数据的场合。</p>
+
+<h3>6.3 还有几个辅助 API</h3>
+
+<table>
+<tr><th>方法</th><th>行号</th><th>作用</th></tr>
+<tr><td><code class="inline">CreateModifyScene&lt;T&gt;(tdIo, callback, autoLoad, args)</code></td><td>78</td><td>创建只带 td 路径、用默认配置的场景（修改器/创意工坊用）</td></tr>
+<tr><td><code class="inline">UnloadScene(scenePath)</code></td><td>436</td><td>按路径卸载单个场景：调它的 UnLoad 再从字典移除</td></tr>
+<tr><td><code class="inline">IsInScene(scenePath)</code></td><td>454</td><td>某路径的场景是否已存在</td></tr>
+<tr><td><code class="inline">AddMainScene / RemoveMainScene</code></td><td>459 / 465</td><td>手动维护主场景字典项</td></tr>
+</table>
+
+<h3>6.4 ClearAll —— 关闭时清理一切</h3>
+
+<p>游戏关闭或切场景时调（行 471）：<code class="inline">WorldSceneSystem.Shutdown</code> 里就会调它（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:137</code>）：</p>
+
+<pre class="code">public static void ClearAll()
+{
+    if (m_SceneRoot != null)
+        UnityEngine.Object.Destroy(m_SceneRoot.gameObject);   // 销毁场景根节点（连带所有子场景 GameObject）
+    m_SceneRoot = null;
+    foreach (var temp in m_Scenes)
+        temp.Value.UnLoad();                                  // 逐个场景走 UnLoad（停线程、销毁组件、清资源）
+    m_Scenes.Clear();
+    m_MainScene = null;
+    SceneAssemblerManager.Instance.ClearAll();                // 清理各种全局 Manager
+    RegionMapManager.Instance.Release();
+    VFXEffectManager.Clear();
+    GraphInteractionObjectPool.Clear();
+    PostProcessDrawManager.Instance.Dispose();
+}</pre>
+
+<p>注意它既 <code class="inline">Destroy(m_SceneRoot)</code> 又遍历 <code class="inline">UnLoad</code>，是因为 <code class="inline">UnLoad</code> 里除了销毁 GameObject 还做了停线程、清组件、释放资源等善后，光靠 Unity 销毁 GameObject 不会触发这些（<code class="inline">UniversalScene</code> 没有把清理放在 <code class="inline">OnDestroy</code> 里，而是放在公开的 <code class="inline">UnLoad()</code> 方法里，需要主动调）。</p>
+
+<div class="note"><span class="label">架构提示：</span>UniversalSceneManager 只管"场景实例的生与死 + 字典索引"，不碰场景内部逻辑。场景内部能力由 SceneComponent 拼装，场景的加载/卸载细节由 UniversalScene/MCScene 自己负责。这是个职责很干净的拆分。</div>
+
+<!-- ===================== 7 ===================== -->
+<span class="anchor" id="sec-objects"></span>
+<h2>7. SceneObjectManager —— 场景物件的总管（定位介绍）</h2>
+
+<p>它是 <code class="inline">UniversalScene</code> 上负责"物件"的组件，本篇只做定位，细节留到第 6 篇展开。</p>
+
+<p>定义在 <code class="inline">Assets/Scripts/Engine/UniversalScene/Components/SceneObjects/SceneObjectManager.cs:10</code>：</p>
+
+<pre class="code">public class SceneObjectManager : SceneComponent, IThreadRunnable, ILoadingStateSwitch</pre>
+
+<p>它是个 <code class="inline">SceneComponent</code>（所以挂场景上、跟场景生命周期绑定），同时实现了 <code class="inline">IThreadRunnable</code>（有后台 <code class="inline">ThreadUpdate</code>，参与工作线程的四叉树维护等）和 <code class="inline">ILoadingStateSwitch</code>（加载状态切换时它会跟着调整）。</p>
+
+<p>它的职责是管理场景里所有 <code class="inline">SceneEntity</code>（场景物件）的组织方式，包括：</p>
+
+<ul>
+    <li><strong>LOD 分组</strong>：把物件按 LOD 级别分组管理（<code class="inline">SceneObjectLodGroup[]</code>）。</li>
+    <li><strong>四叉树</strong>：用四叉树按空间位置组织物件，方便按区域查询（<code class="inline">m_AllQuadTreeEntity</code>）。</li>
+    <li><strong>激活集合</strong>：维护当前帧"激活/可见"的物件列表 <code class="inline">m_ActiveEntitys</code>（一个 <code class="inline">DynamicArray&lt;SceneEntity&gt;</code>）。</li>
+    <li><strong>遮挡 mask</strong>：维护遮挡剔除用的 mask 列表 <code class="inline">OcclusionMasks</code>。</li>
+</ul>
+
+<p>对外最常用的两个入口：</p>
+
+<pre class="code">// 行 368：根据相机视距和位置，更新所有激活物件的 LOD 级别
+public void UpdateLod(float baseVPHeight, Vector3 cameraPos)
+
+// 行 521：初始化
+public void Init()</pre>
+
+<p><code class="inline">UpdateLod</code> 由 <code class="inline">MCScene.UpdateLod</code> 调用（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCScene.cs:262</code>），每帧根据 <code class="inline">LodInfo</code>（相机 fov/aspect/position）算出 <code class="inline">baseVPHeight</code> 喂进来。这就是物件 LOD 跟相机走的入口。</p>
+
+<p><code class="inline">MCScene.SceneObjectManager</code> 这个属性（<code class="inline">Assets/Scripts/Engine/UniversalScene/UniversalScene.cs:120</code>）就是它，外部（包括 <code class="inline">WorldSceneSystem</code> 的大量封装接口）都通过 <code class="inline">MCScene.SceneObjectManager</code> 来访问物件层能力。物件的四叉树、LOD 分组、激活集合、mask 具体怎么运作，是第 6 篇的主题。</p>
+
+<!-- ===================== 8 ===================== -->
+<span class="anchor" id="sec-summary"></span>
+<h2>8. 小结与下一站</h2>
+
+<h3>本篇要点回顾</h3>
+
+<ol>
+    <li><strong>UniversalScene 是 MonoBehaviour 场景基类</strong>，把"可加载卸载、自带工作线程、组件化、LOD 更新、加载状态机、扫描中心"这些通用能力下沉到一层，让 MCScene 专注体素逻辑。</li>
+    <li><strong>SceneComponent 是自建的轻量组件体系</strong>（非 MonoBehaviour），用 <code class="inline">Dictionary&lt;Type, SceneComponent&gt;</code> 管理，<code class="inline">RegisterComponent&lt;T&gt;</code> 反射创建、<code class="inline">GetComponent&lt;T&gt;</code> 查表，生命周期由场景转发。</li>
+    <li><strong>工作线程是核心设计</strong>：<code class="inline">ExecuteInThread</code> 入后台队列、<code class="inline">ExecuteInUnity</code> 入主线程队列，双缓冲 <code class="inline">ConcurrentQueue.Switch()</code> 交换消费。耗 CPU 不碰 Unity 的活丢后台、要碰 Unity 的活切回主线程，可嵌套。</li>
+    <li><strong>SetLocation 是重加载总开关</strong>：MCScene 重写，<code class="inline">dis &gt; 32</code> 触发重加载（<code class="inline">SwitchToLoadingState(true)</code> + 后台 <code class="inline">ResetLoadingState</code> + 注册 OnLoaded 回调），否则直接回调。并发请求单槽排队。<code class="inline">WorldSceneSystem.SetScanCenterLocation</code> 每帧按 ScanType（Role/Camera/Location）喂坐标。</li>
+    <li><strong>UniversalSceneManager 是静态工具类</strong>，管 SceneRoot、场景字典、MainScene，提供 <code class="inline">CreateScene&lt;T&gt;</code> / <code class="inline">CreateEmptyScene&lt;T&gt;</code> / <code class="inline">ClearAll</code> 等。</li>
+    <li><strong>SceneObjectManager 是物件总管组件</strong>，管 LOD 分组、四叉树、激活集合、遮挡 mask，细节第 6 篇展开。</li>
+</ol>
+
+<h3>承上启下</h3>
+
+<p>这一层搭好了"场景骨架 + 工作线程 + 组件 + 重加载驱动"。下一篇我们走进 <code class="inline">MCScene</code> 真正的体素世界内部，讲它的核心数据结构——MCWorld、MCChunk、MCBlock 这些概念是什么、怎么用整数坐标和 PID 编码体素位置。那是体素大世界的"数据底座"，和本篇的"场景底座"一起构成整个系统的两层地基。</p>
+
+<div class="note"><span class="label">下一篇：</span><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a> —— MCWorld / MCChunk / MCBlock 与体素坐标编码。</div>
+
+</main>
+</div>
+
+<footer class="nav">
+    <div class="prev">
+        <span class="lbl">上一篇</span>
+        <a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a>
+    </div>
+    <div class="next">
+        <span class="lbl">下一篇</span>
+        <a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock →</a>
+    </div>
+</footer>
+
+</body>
+</html>

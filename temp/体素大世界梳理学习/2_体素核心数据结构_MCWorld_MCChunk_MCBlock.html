@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第 2 篇 · 体素核心数据结构 MCWorld / MCChunk / MCBlock — 体素大世界系列</title>
+<style>
+:root {
+    --bg: #f7f8fa;
+    --content-bg: #ffffff;
+    --text: #1f2937;
+    --text-light: #4b5563;
+    --text-muted: #6b7280;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --border: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --code-text: #1f2937;
+    --pre-bg: #1e293b;
+    --pre-text: #e2e8f0;
+    --pre-accent: #93c5fd;
+    --tag-bg: #eff6ff;
+    --tag-text: #1d4ed8;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+    --sidebar-bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 顶部标题区 */
+header.top {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    padding: 32px 40px 28px 40px;
+    border-bottom: 1px solid var(--border);
+}
+header.top .badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+header.top h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    font-weight: 600;
+}
+header.top .tagline {
+    font-size: 14px;
+    color: #dbeafe;
+    max-width: 900px;
+}
+
+/* 布局 */
+.layout {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+nav.sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px 60px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 13.5px;
+}
+nav.sidebar h3 {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 22px 0 10px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+}
+nav.sidebar h3:first-child { margin-top: 0; }
+nav.sidebar ul { list-style: none; padding: 0; margin: 0; }
+nav.sidebar li { margin: 3px 0; }
+nav.sidebar li a {
+    display: block;
+    color: var(--text-light);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+nav.sidebar li a:hover { background: var(--primary-light); color: var(--primary-dark); text-decoration: none; }
+nav.sidebar li.active a {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 主内容 */
+main {
+    flex: 1;
+    min-width: 0;
+    background: var(--content-bg);
+    padding: 36px 48px 60px 48px;
+    max-width: 920px;
+}
+main h2 {
+    font-size: 22px;
+    color: #111827;
+    margin: 40px 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    font-weight: 600;
+}
+main h2:first-of-type { margin-top: 8px; }
+main h3 {
+    font-size: 17.5px;
+    color: #1e3a8a;
+    margin: 28px 0 10px 0;
+    font-weight: 600;
+}
+main h4 {
+    font-size: 15.5px;
+    color: var(--text);
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+main p { margin: 10px 0; color: var(--text); }
+main ul, main ol { margin: 10px 0 10px 22px; padding: 0; }
+main li { margin: 5px 0; }
+main strong { color: #111827; }
+
+/* 代码块 */
+code.inline {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+}
+pre.code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0;
+}
+pre.ascii {
+    background: var(--pre-bg);
+    color: var(--pre-text);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 14px 0;
+    white-space: pre;
+}
+pre.ascii .accent { color: var(--pre-accent); font-weight: bold; }
+
+/* 提示框 */
+.note {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--text);
+    font-size: 14px;
+}
+.note .label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-right: 6px;
+}
+.warn {
+    background: var(--warn-bg);
+    border-left: 3px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--warn-text);
+    font-size: 14px;
+}
+.warn .label { color: #b45309; font-weight: 600; margin-right: 6px; }
+
+/* 表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 13.5px;
+}
+table th, table td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+table th { background: var(--tag-bg); color: var(--primary-dark); font-weight: 600; }
+table tr:nth-child(even) td { background: #fafbfc; }
+
+/* 锚点定位偏移 */
+.anchor { display: block; position: relative; top: -20px; visibility: hidden; }
+
+/* 页脚 */
+footer.nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    background: var(--content-bg);
+    font-size: 14px;
+}
+footer.nav .prev, footer.nav .next {
+    flex: 1;
+    max-width: 46%;
+}
+footer.nav .next { text-align: right; }
+footer.nav .lbl { color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 2px; }
+footer.nav a { font-weight: 500; }
+
+@media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+    <div class="badge">第 2 篇 / 共 12 篇 · 体素大世界梳理学习</div>
+    <h1>体素核心数据结构 MCWorld / MCChunk / MCBlock</h1>
+    <div class="tagline">体素大世界的"数据底座"：一个 3D 网格怎么用一维字典 + 32³ 数组存起来，世界坐标怎么一步步落到某个方块上。本篇只讲"方块怎么存"，不涉及动态加载、LOD 调度、网络那些上层话题。</div>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+    <h3>系列目录</h3>
+    <ul>
+        <li><a href="0_总览_大世界分层与系统骨架.html">第 0 篇 · 总览 · 大世界分层与系统骨架</a></li>
+        <li><a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a></li>
+        <li class="active"><a href="2_体素核心数据结构_MCWorld_MCChunk_MCBlock.html">第 2 篇 · 体素核心数据结构 MCWorld/MCChunk/MCBlock</a></li>
+        <li><a href="3_多LOD体素世界_MCManager的5层设计.html">第 3 篇 · 多 LOD 体素世界 · MCManager 的 5 层设计</a></li>
+        <li><a href="4_Chunk动态加载与释放.html">第 4 篇 · Chunk 动态加载与释放</a></li>
+        <li><a href="#">第 5 篇 · 场景加载状态机与登录时序</a></li>
+        <li><a href="#">第 6 篇 · 物件系统 · SceneEntity / SceneObjectManager</a></li>
+        <li><a href="#">第 7 篇 · 物件模型 LOD 与实体显隐</a></li>
+        <li><a href="#">第 8 篇 · Voxel 占位 · Placeholder 与 Collision</a></li>
+        <li><a href="#">第 9 篇 · 客户端扫描 AOI · ClientScannerSystem</a></li>
+        <li><a href="#">第 10 篇 · 大世界网络数据流</a></li>
+        <li><a href="#">第 11 篇 · 玩家传送与场景切换</a></li>
+    </ul>
+
+    <h3>本篇锚点</h3>
+    <ul>
+        <li><a href="#sec-overview">1. 存储模型总览</a></li>
+        <li><a href="#sec-block">2. MCBlock —— 一个方块是什么</a></li>
+        <li><a href="#sec-chunk">3. MCChunk —— 32³ 的方块组</a></li>
+        <li><a href="#sec-world">4. MCWorld —— 一层 LOD 的 chunk 容器</a></li>
+        <li><a href="#sec-query">5. 从世界坐标到方块的完整查询链</a></li>
+        <li><a href="#sec-summary">6. 小结与下一站</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<!-- ===================== 1 ===================== -->
+<span class="anchor" id="sec-overview"></span>
+<h2>1. 存储模型总览</h2>
+
+<p>体素大世界本质上就是一个"用 3D 网格存方块"的世界。整个世界被切成一个巨大的立方体网格，每个网格单元存一个方块（block）。方块数量极大，不可能用一个无限大的三维数组铺满整个世界，所以项目用的是一个<strong>三层嵌套</strong>的存储模型：</p>
+
+<pre class="ascii">世界 (MCManager)
+   │
+   │  持有 5 个 MCWorld（5 层 LOD，每层 block 实际大小不同）
+   │  ← 本篇只讲"单个 MCWorld 内部怎么存"，5 层为什么这么设计在第 3 篇
+   ▼
+单层 MCWorld
+   │
+   │  持有 Dictionary&lt;long, MCChunk&gt; Chunks
+   │  按 chunkIndex(long) 索引每个 chunk，<strong>稀疏</strong>存放（只有玩家附近的 chunk 才存在）
+   ▼
+MCChunk（一个 32×32×32 的方块组）
+   │
+   │  持有 MCBlock[] Blocks，长度 = 32³ = 32768
+   │  chunk 实际覆盖的世界边长 = BlockSize × ChunkSize
+   ▼
+MCBlock（一个方块，struct，6 字节）
+     Type(ushort) + BlockMask(ushort) + CuttingType(byte)
+</pre>
+
+<p>三层的包含关系是：<strong>世界 → 多层 MCWorld → 每层一堆 MCChunk → 每个 chunk 是 32³ 个 MCBlock</strong>。从大到小，每一层都用不同的数据结构，各自解决一个核心问题：</p>
+
+<table>
+<tr><th>层</th><th>数据结构</th><th>解决什么问题</th></tr>
+<tr><td>MCBlock</td><td>struct（值类型）</td><td>方块数量巨大，要内存紧凑、无 GC、缓存友好</td></tr>
+<tr><td>MCChunk</td><td><code class="inline">MCBlock[32768]</code> 一维数组</td><td>把 32³ 个方块连续摆放，用"坐标 → 数组下标"换算访问</td></tr>
+<tr><td>MCWorld</td><td><code class="inline">Dictionary&lt;long, MCChunk&gt;</code></td><td>大世界稀疏且动态加载，只有玩家附近的 chunk 才存在</td></tr>
+</table>
+
+<div class="note"><span class="label">一句话定位：</span>本篇讲的是"单层 MCWorld 内部怎么存方块"。MCManager 持有 5 个 MCWorld，每层 block 实际大小不同（1/2/4/8/16），但<strong>单个 MCWorld 的存储结构是一样的</strong>。5 层为什么这么设计、怎么调度，留到第 3 篇展开。</div>
+
+<p>这一层的全部代码集中在一个文件里：<code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs</code>（namespace <code class="inline">MCCore</code>）。MCWorld、MCChunk、MCBlock、MCBlockPool 四个类型都挤在这一个文件，因为它们是一个不可分割的"存储四件套"。下面从最小的 MCBlock 开始往上讲。</p>
+
+<!-- ===================== 2 ===================== -->
+<span class="anchor" id="sec-block"></span>
+<h2>2. MCBlock —— 一个方块是什么</h2>
+
+<p>MCBlock 是体素世界的最小单元，定义在 <code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs:388</code>：</p>
+
+<pre class="code">[Serializable, StructLayout(LayoutKind.Explicit, Pack = 1)]
+public struct MCBlock
+{
+    public static MCBlock Empty { get; }
+
+    public const ushort BREAKABLE_MASK = 0x1;        // 是否可破坏
+    public const ushort CROSS_MASK = 0x2;            // 是否可穿越（用于开关门）
+    public const ushort GRAPHICS_CLOSE_MASK = 0x4;   // 是否关闭渲染
+    public const ushort COLOR_MASK = 0b_11111111000; // 颜色站位区间
+
+    [FieldOffset(0)] public ushort Type;         // 类型，ArtId（美术 Id）。Type == 0 表示空块
+    [FieldOffset(2)] public ushort BlockMask;    // 格子属性，位标志组合
+    [FieldOffset(4)] public byte   CuttingType;  // 切割类型（三角形朝向等）
+
+    public int  Color           => (BlockMask & COLOR_MASK) >> 3;
+    public bool IsClosedGraphics => (BlockMask & GRAPHICS_CLOSE_MASK) != 0;
+    public bool IsCross         => Type == 0 || (BlockMask & CROSS_MASK) != 0;
+}</pre>
+
+<h3>2.1 三个字段各是什么</h3>
+
+<table>
+<tr><th>字段</th><th>类型</th><th>偏移</th><th>含义</th></tr>
+<tr><td><code class="inline">Type</code></td><td>ushort</td><td>0</td><td>方块的美术 Id（ArtId），决定渲染成什么样子。<strong>Type == 0 表示这是一个空块</strong>（注释原文："Type '0' is inactivated block"）。上层判断空块用 <code class="inline">MCObjectUtils.IsEmptyBlock(type)</code>（<code class="inline">Assets/Scripts/Game/GameUtils/MCObjectUtils.cs:167</code>），运行时就是判 <code class="inline">type == 0</code>。</td></tr>
+<tr><td><code class="inline">BlockMask</code></td><td>ushort</td><td>2</td><td>方块属性位标志，把"可破坏 / 可穿越 / 关闭渲染 / 颜色"挤在一个 ushort 里。注释里的布局是 <code class="inline">{[5]预留 [8]颜色 [1]可破坏 [1]可穿越 [1]关闭渲染}</code>。改它必须用位运算（<code class="inline">&amp;</code> <code class="inline">|</code>），不能直接 <code class="inline">=</code> 赋值，否则会覆盖其它位。</td></tr>
+<tr><td><code class="inline">CuttingType</code></td><td>byte</td><td>4</td><td>切割类型，描述非完整方块的形状。两种情况：三角形块旋转方向（<code class="inline">&amp;3</code> 得 0↓/1→/2↑/3←），或正方形块切割方向（23↓/20←/21↑/22→）。具体是哪种由 ObjectInfoConfig 配置决定。</td></tr>
+</table>
+
+<p>三个字段加起来 <strong>6 字节</strong>。文件顶部有一行明确警告（<code class="inline">MCWorld.cs:386</code>）："增减结构体成员变量，或者改变成员的 Type，请注意结构体内存布局排紧"。也就是说这 6 字节的布局是刻意压紧的，改字段类型或顺序要同步检查内存布局。</p>
+
+<h3>2.2 为什么用 struct 不用 class（重点）</h3>
+
+<p>这是体素世界最底层的一个关键设计决策。一个 chunk 就有 32³ = 32768 个方块，玩家周围同时存在几十上百个 chunk，方块总量轻易上百万。如果 MCBlock 是 class：</p>
+
+<ul>
+    <li>每个方块都是堆上的一个对象，百万级对象光是引用就占几十 MB。</li>
+    <li>每个对象有对象头开销（类型指针、同步块），实际数据 6 字节但对象本身可能占 16+ 字节。</li>
+    <li>对象分散在堆各处，<strong>访问时缓存命中差</strong>——遍历一个 chunk 的方块要反复跳内存地址。</li>
+    <li>创建/销毁产生大量 GC 压力。</li>
+</ul>
+
+<p>改成 struct 之后，<code class="inline">MCBlock[] Blocks</code> 就是一段<strong>连续的、紧凑的值类型内存</strong>：32768 个方块紧紧挨着，每个 6 字节，整段数组约 192 KB。遍历时 CPU 缓存能成片地预取，访问相邻方块几乎不掉缓存；赋值是值拷贝，没有对象分配，没有 GC。这就是"用 struct 存方块"的全部意图——<strong>让海量方块在内存里连续、紧凑、零 GC</strong>。</p>
+
+<h3>2.3 StructLayout 显式布局</h3>
+
+<p><code class="inline">[StructLayout(LayoutKind.Explicit, Pack = 1)]</code> 配合每个字段的 <code class="inline">[FieldOffset(n)]</code>，是手动指定每个字段在 struct 里的精确字节偏移：</p>
+
+<pre class="ascii">偏移:   0      1      2      3      4      5
+       ┌──────────────┬──────────────┬──────┐
+       │  Type(ushort)│ BlockMask    │Cut   │
+       │              │  (ushort)    │(byte)│
+       └──────────────┴──────────────┴──────┘
+       └───────────── 6 字节，Pack=1 不留空隙 ─────────────┘</pre>
+
+<p><code class="inline">Pack = 1</code> 让字段间不按默认对齐留空隙（ushort 默认会 2 字节对齐，这里强制 1 字节对齐）。<code class="inline">LayoutKind.Explicit</code> 还允许字段重叠（虽然这里没用上重叠，但留了将来把多个小字段压进同一段空间的可能）。这套写法的目的就是<strong>把 struct 压到最小、布局完全可控</strong>，让百万方块的内存占用可预测。</p>
+
+<h3>2.4 MCBlock.Empty 是什么</h3>
+
+<p><code class="inline">public static MCBlock Empty { get; }</code> 是一个静态只读属性，返回一个所有字段都是默认值（Type=0、BlockMask=0、CuttingType=0）的 MCBlock。因为 struct 默认值就是全零，这里相当于 <code class="inline">default(MCBlock)</code>。它的作用是<strong>给查询失败时一个统一的"空块"返回值</strong>——比如 <code class="inline">MCWorld.TryGetBlock</code> 找不到 chunk 时就返回 <code class="inline">MCBlock.Empty</code>（见 <code class="inline">MCWorld.cs:69</code> 和 <code class="inline">:82</code>），调用方拿到 Type==0 就知道"这里没方块"。</p>
+
+<div class="note"><span class="label">特殊类型块：</span>Type 还有一批高位预留值（<code class="inline">MCBlockTypeLEDefine</code>，<code class="inline">MCWorld.cs:353</code>）：AIRWALLBLOCK(65401) 空气墙、VOIDBLOCK(65501)/DVOIDBLOCK(65502) 非空占位块。编辑器下 <code class="inline">IsEmptyBlock</code> 会把 VOID 也当空块对待，运行时只认 Type==0。这些是给关卡编辑器用的特殊占位，正常游戏方块走 1~65500 的正常 ArtId 区间。</div>
+
+<!-- ===================== 3 ===================== -->
+<span class="anchor" id="sec-chunk"></span>
+<h2>2. MCChunk —— 一个 32³ 的方块组</h2>
+
+<p>MCChunk 把 32768 个方块打包成一组，定义在 <code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs:575</code>。它是个 class，实现 IDisposable：</p>
+
+<pre class="code">public class MCChunk : IDisposable
+{
+    public readonly MCBlock[] Blocks;   // 长度 32³ = 32768
+
+    public YKVector3f Offset;   // chunk 在世界中的左下角坐标
+    public YKVector3i Index;    // chunk 的整数索引（三个分量可正可负）
+    public byte BlockSize;      // 每个 block 的实际边长（1/2/4/8/16）
+    public byte ChunkSize;      // 每边 32 个 block（固定 32）
+
+    public byte IsDirty = 0;    // 脏标记，位标志 MCChunkDirtyFlags
+    // ...
+}</pre>
+
+<p>几个字段的几何关系要理清：<code class="inline">Offset</code> 是这个 chunk 在世界坐标系里的<strong>左下角</strong>坐标（float3）；<code class="inline">Index</code> 是 chunk 的整数编号（用来压成 long 当字典 key，下一节讲）；<code class="inline">BlockSize</code> 是单个方块的实际边长，<code class="inline">ChunkSize</code> 是每边多少个方块（恒为 32）。所以一个 chunk 实际覆盖的世界边长是：</p>
+
+<pre class="ascii">chunk 世界边长 = BlockSize × ChunkSize
+
+  BlockSize = 1  → chunk 边长 32    （LOD0，最细）
+  BlockSize = 2  → chunk 边长 64    （LOD1）
+  BlockSize = 4  → chunk 边长 128   （LOD2）
+  BlockSize = 8  → chunk 边长 256   （LOD3）
+  BlockSize = 16 → chunk 边长 512   （LOD4，最粗）</pre>
+
+<p>注意 <code class="inline">BlockSize</code> 和 <code class="inline">ChunkSize</code> 都被特意声明成 <code class="inline">byte</code> 而不是 int/float。代码注释（<code class="inline">MCWorld.cs:584-585</code>）写明原因：<strong>ChunkEntity 常驻内存大概有 17 万个，积少成多</strong>，把这两个小整数压成 byte 能省下不少内存。Offset 也从 double 改成了 float（<code class="inline">MCWorld.cs:579</code> 注释"从 double 改为 float，减少 4 字节分配"）。这些都是百万级对象场景下的刻意抠内存。</p>
+
+<h3>3.1 坐标 ↔ 数组下标换算（重点）</h3>
+
+<p>这是 MCChunk 最核心的方法。一个世界坐标怎么落到这个 chunk 里的某个方块上？答案在 <code class="inline">PositionToArrayIndex</code>（<code class="inline">MCWorld.cs:712</code>）：</p>
+
+<pre class="code">public int PositionToArrayIndex(float worldX, float worldY, float worldZ)
+{
+    float blockSizeInverse = 1.0f / BlockSize;
+    int x = (int)Math.Floor((worldX - Offset.x) * blockSizeInverse);
+    int y = (int)Math.Floor((worldY - Offset.y) * blockSizeInverse);
+    int z = (int)Math.Floor((worldZ - Offset.z) * blockSizeInverse);
+
+    return (x * ChunkSize + y) * ChunkSize + z;
+}</pre>
+
+<p>拆成两步：</p>
+
+<ol>
+    <li><strong>世界坐标 → chunk 内 block 索引 (x, y, z)</strong>：先减去 chunk 左下角 <code class="inline">Offset</code>，得到"在这个 chunk 内的相对坐标"；再除以 <code class="inline">BlockSize</code>（乘倒数避免除法），向下取整，得到三个 0~31 的整数索引。<code class="inline">Math.Floor</code> 保证负坐标也正确（比如相对坐标 -0.5 会取到 -1，对应越界，由上层保证不进来）。</li>
+    <li><strong>三维索引 (x,y,z) → 一维数组下标</strong>：<code class="inline">(x * ChunkSize + y) * ChunkSize + z</code>。这是一个标准的"行主序"展开，把 32×32×32 的三维空间铺平成 0~32767 的一维下标。</li>
+</ol>
+
+<p>下标展开公式的几何含义：</p>
+
+<pre class="ascii">一维下标 = (x * 32 + y) * 32 + z
+         = x * 1024 + y * 32 + z
+
+  x 走一格  → 下标跳 1024（一整层 yz 平面，32×32=1024 个）
+  y 走一格  → 下标跳 32   （一整行 z，32 个）
+  z 走一格  → 下标跳 1    （连续相邻）
+
+  所以 Blocks 数组在内存里是按 "x 最外层、y 中层、z 最内层" 排列的。
+  沿 z 方向遍历是连续内存访问，缓存最友好。</pre>
+
+<p>MCChunk 还提供了一对索引器配合这个下标（<code class="inline">MCWorld.cs:777-791</code>）：<code class="inline">this[YKVector3i index]</code>、<code class="inline">this[int x,y,z]</code>、<code class="inline">this[int index]</code>。其中 <code class="inline">this[int x,y,z]</code> 和 <code class="inline">this[int index]</code> 返回的是 <code class="inline">ref MCBlock</code>——<strong>按引用返回</strong>，这样上层可以直接 <code class="inline">chunk[x,y,z] = newBlock</code> 原地改写方块，不用拆开 struct 再拷回去。这是 struct 方块能被修改的关键。</p>
+
+<h3>3.2 脏标记设计</h3>
+
+<p>MCChunk 用一个 <code class="inline">byte IsDirty</code> 字段配合一组位标志（<code class="inline">MCChunkDirtyFlags</code>，<code class="inline">MCWorld.cs:557</code>）记录"这个 chunk 哪里变了，需要上层处理"：</p>
+
+<table>
+<tr><th>标志</th><th>值</th><th>含义</th></tr>
+<tr><td><code class="inline">ChunkBlockDirty</code></td><td>0x01</td><td>方块数据脏——方块类型/属性变了，mesh 需要重建</td></tr>
+<tr><td><code class="inline">ChunkEntityDirty</code></td><td>0x02</td><td>实体数据脏——异形块/装饰物变了，entity 需要刷新</td></tr>
+<tr><td><code class="inline">ChunkAllDirty</code></td><td>0x03</td><td>全脏，同时标记方块和实体</td></tr>
+</table>
+
+<p>对应一组标记/清除方法：<code class="inline">MarkBlockDirty()</code> / <code class="inline">MarkEntityDirty()</code> / <code class="inline">MarkAllDirty()</code> / <code class="inline">ClearBlockDirty()</code> / <code class="inline">ClearEntityDirty()</code> / <code class="inline">ClearAllDirty()</code>，以及两个只读判断 <code class="inline">IsBlockDirty</code> / <code class="inline">IsEntityDirty</code>。实现都是位运算（<code class="inline">IsDirty |= flag</code>、<code class="inline">IsDirty &amp; ~flag</code>）。</p>
+
+<p>本篇只讲<strong>标记本身是什么、谁写它</strong>：</p>
+
+<ul>
+    <li>方块被修改时调 <code class="inline">MarkBlockDirty()</code>，告诉上层"这个 chunk 的方块数据变了，mesh 要重建"。</li>
+    <li>异形块/装饰物变化时调 <code class="inline">MarkEntityDirty()</code>，告诉上层"这个 chunk 的实体列表要刷新"。</li>
+    <li>chunk <strong>首次创建时直接置全脏</strong>：<code class="inline">IsDirty = MCChunkDirtyFlags.ChunkAllDirty</code>（<code class="inline">MCWorld.cs:665</code>），确保首次渲染会执行所有构建逻辑。</li>
+</ul>
+
+<p>上层怎么响应这些脏标记（重建 mesh、刷新 entity）是第 4 篇的主题，本篇不展开。这里只需记住：<strong>脏标记是 chunk 向上层传递"我需要被处理"的信号</strong>，用位标志把"方块脏"和"实体脏"两条独立通道挤进一个 byte。</p>
+
+<h3>3.3 MCBlock[] 怎么来、怎么回池 —— MCBlockPool</h3>
+
+<p>chunk 的 <code class="inline">Blocks</code> 数组长度固定 32768，会随着 chunk 反复创建/销毁而频繁分配回收。直接 <code class="inline">new MCBlock[32768]</code> 的问题是：数组本身是大对象，频繁分配压 GC，而且新数组内容是全零（即全空块），如果复用旧数组还能省一次清零。所以项目搞了 <code class="inline">MCBlockPool</code>（<code class="inline">MCWorld.cs:458</code>）专门池化这种 32768 长度的数组：</p>
+
+<pre class="code">public static class MCBlockPool
+{
+    static Queue&lt;MCBlock[]&gt; BlocksPool = new Queue&lt;MCBlock[]&gt;(1024);
+    public static int BlockLength = 32 * 32 * 32;   // 32768
+
+    public static void InitMCBlockPool(int poolSize = 512);  // 预分配 poolSize 个数组入池
+    public static MCBlock[] AllocateMCBlocks();              // 取：池里有就出队，没有才 new
+    public static void RecycleMCBlocks(MCBlock[] Blocks);    // 还：Array.Clear 清零后入队
+}</pre>
+
+<p>设计意图很直接：<strong>用对象池复用 32768 长度的数组，避免反复分配</strong>。chunk 构造时 <code class="inline">Blocks = MCBlockPool.AllocateMCBlocks()</code>（<code class="inline">MCWorld.cs:654</code>），chunk 销毁时 <code class="inline">Dispose()</code> 把数组 <code class="inline">RecycleMCBlocks</code> 还回池里（<code class="inline">MCWorld.cs:689</code>）。回收时会 <code class="inline">Array.Clear</code> 把数组清成全空块，下次拿出来直接就是干净状态。</p>
+
+<p>池大小由画质决定：<code class="inline">MCManager</code> 构造时调 <code class="inline">MCBlockPool.InitMCBlockPool(512)</code>，低画质档再乘 0.5（<code class="inline">Assets/Scripts/Core/MCCore/Scene/MCManager.cs:128-135</code>）。有个全局开关 <code class="inline">MCWorld.EnableMCBlockPool = true</code>（<code class="inline">MCWorld.cs:17</code>），关掉就退回直接 <code class="inline">new</code>。池操作都加了 <code class="inline">lock(_synLock)</code>，因为 chunk 可能在工作线程创建/销毁。</p>
+
+<div class="warn"><span class="label">注意：</span>MCChunk 有个析构函数 <code class="inline">~MCChunk() { Dispose(); }</code>（<code class="inline">MCWorld.cs:695</code>），兜底防止 chunk 没被显式 Dispose 时数组没回池。但析构时机不可控，正常流程都应显式调 Dispose。另外构造函数有个重载可以外部传入 <code class="inline">MCBlock[] blocks</code>，这种情况 <code class="inline">_isDisposed = true</code>（<code class="inline">MCWorld.cs:678</code>），Dispose 时不会把这个外部数组回池——因为这块内存不属于池。</div>
+
+<!-- ===================== 4 ===================== -->
+<span class="anchor" id="sec-world"></span>
+<h2>4. MCWorld —— 一层 LOD 的 chunk 容器</h2>
+
+<p>MCWorld 是一层 LOD 里所有 chunk 的容器，定义在 <code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs:8</code>：</p>
+
+<pre class="code">public class MCWorld
+{
+    public readonly float BlockSize = 1;     // 每个 block 的实际边长
+    public readonly int ChunkSize = 32;      // 每边 32 个 block
+
+    // 性能优化：预算好的乘积和倒数，避免每次查询都算
+    private readonly float ChunkSizeMulBlockSize;        // = ChunkSize * BlockSize
+    private readonly float ChunkSizeMulBlockSizeInverse; // = 1 / (ChunkSize * BlockSize)
+
+    public static readonly bool EnableMCBlockPool = true;
+
+    public Dictionary&lt;long, MCChunk&gt; Chunks = new Dictionary&lt;long, MCChunk&gt;();
+
+    public MCWorld(float blockSize, int chunkSize) { ... }
+}</pre>
+
+<p>核心就是一个 <code class="inline">Dictionary&lt;long, MCChunk&gt; Chunks</code>，按 <code class="inline">chunkIndex</code>（一个 long）存 chunk。两个只读属性 <code class="inline">BlockSize</code> 和 <code class="inline">ChunkSize</code> 决定这一层的几何尺度。构造时还预算了两个派生量 <code class="inline">ChunkSizeMulBlockSize</code>（一个 chunk 的世界边长）和它的倒数，存起来给后面的坐标换算用，避免每次查询都重复算乘除——这也是百万级查询场景下的小优化。</p>
+
+<h3>4.1 为什么用 Dictionary&lt;long, MCChunk&gt; 而不是 3D 数组（重点）</h3>
+
+<p>这是 MCWorld 这一层最关键的设计决策。最直观的存法是开一个三维数组 <code class="inline">MCChunk[,,]</code> 按 chunk 的 (x,y,z) 索引存。但体素大世界有两个特性让 3D 数组不可行：</p>
+
+<ul>
+    <li><strong>世界极大</strong>：地图尺度动辄几万甚至几十万 block，对应的 chunk 数量在三个方向上都是上千甚至上万，三维数组要 <code class="inline">10^9</code> 量级的槽位，根本开不出来。</li>
+    <li><strong>稀疏且动态</strong>：玩家某一时刻只站在世界的一个点，只有玩家附近的 chunk 需要存在；远处的 chunk 没加载、不存在。绝大多数 chunk 槽位是空的。</li>
+</ul>
+
+<p>用 3D 数组意味着要为"整个世界的所有 chunk 位置"预分配内存，其中 99% 是空槽，纯粹浪费。而 <code class="inline">Dictionary&lt;long, MCChunk&gt;</code> 只存<strong>实际存在的 chunk</strong>：玩家走到哪，就把附近的 chunk 塞进字典；走远了，就把远处的 chunk 从字典移除、数组回池。字典的 key 是 chunk 的唯一编号（long），value 是 chunk 实例。这样：</p>
+
+<pre class="ascii">3D 数组方案（弃用）：
+  ┌─────────────────────────────────────┐
+  │ 固定大小的立方体网格，绝大多数槽位空 │  ← 必须为整个世界预分配，不可行
+  │   玩家附近少数有 chunk，其余全是 null │
+  └─────────────────────────────────────┘
+
+Dictionary&lt;long, MCChunk&gt; 方案（采用）：
+  Chunks = { chunkIndex₁ → chunk₁,
+             chunkIndex₂ → chunk₂,
+             chunkIndex₃ → chunk₃, ... }    ← 只存实际加载的 chunk
+  玩家移动 → 加新 chunk 进字典、移除远的 chunk  ← 按需加载/释放，不受总尺寸限制</pre>
+
+<p>代价是查询时要算一次 chunkIndex 再查字典（O(1) 哈希查找），而不是数组那种直接下标寻址。但相比"开不出内存"和"绝大多数空槽"，这点哈希开销完全可接受。这就是"用一维字典存 3D 网格"的设计意图：<strong>稀疏 + 动态加载，用字典按需存取，不受世界总尺寸限制</strong>。</p>
+
+<h3>4.2 chunkIndex 这个 long 怎么编码（重点）</h3>
+
+<p>字典的 key 是 <code class="inline">long</code>，它把 chunk 的三维整数索引 (x, y, z) 压成一个 64 位整数。编码在 <code class="inline">NetWorkUtility.ConvertXYZ_20</code>（<code class="inline">Packages/com.unity.mccore/Runtime/Utils/NetWorkUtility.cs:202</code>）：</p>
+
+<pre class="code">public static long ConvertXYZ_20(int x, int y, int z)
+{
+    long convertNum = (CompressWithServerNum_20(x)) &lt;&lt; 40
+                    | (CompressWithServerNum_20(y)) &lt;&lt; 20
+                    | (CompressWithServerNum_20(z));
+    return convertNum;
+}
+
+// 单个分量压缩：20 位，1-19 位是数值绝对值，第 20 位（0x80000）是符号位
+public static long CompressWithServerNum_20(long pNumber)
+{
+    bool isMinus = pNumber &lt; 0;
+    if (isMinus)
+    {
+        pNumber = Math.Abs(pNumber);
+        pNumber = pNumber | 0x80000;   // 第 20 位置 1 表示负
+    }
+    return pNumber;
+}</pre>
+
+<p>把 64 位 long 拆成三段，每段 20 位，分别装 x、y、z：</p>
+
+<pre class="ascii">  bit:  63                    40 39                    20 19                     0
+       ┌─────────────────────────┬─────────────────────────┬─────────────────────────┐
+       │      x（20 位）         │      y（20 位）         │      z（20 位）         │
+       └─────────────────────────┴─────────────────────────┴─────────────────────────┘
+
+  每段 20 位内部：
+    bit 19        bit 18 ... bit 0
+    ┌──────┬─────────────────────┐
+    │ 符号 │  数值绝对值 (19 位)  │
+    │ 0正  │  0 ~ 524287         │
+    │ 1负  │                     │
+    └──────┴─────────────────────┘
+
+  → 单个方向支持 -524287 ~ +524287，三段合起来正好占 60 位，落在 long(64位) 里。</pre>
+
+<p>所以 <code class="inline">chunkIndex = (compressX &lt;&lt; 40) | (compressY &lt;&lt; 20) | compressZ</code>。三个分量各自带符号位，解码时按段拆开再还原符号即可。这套编码是<strong>客户端与服务器交互约定</strong>（文件注释原话），网络包里传 chunk 坐标用的也是它，字典 key 复用同一套编码省得再转一次。</p>
+
+<p>MCWorld 里所有需要 chunkIndex 的地方都走这条链：要么直接调 <code class="inline">NetWorkUtility.ConvertXYZ_20(x,y,z)</code>，要么调 <code class="inline">YKVector3i</code> 的扩展方法 <code class="inline">Convert_20()</code>（<code class="inline">NetWorkUtility.cs:62</code>，内部就是转发到 <code class="inline">ConvertXYZ_20</code>）。例如 <code class="inline">TryGetChunk(YKVector3i index)</code>（<code class="inline">MCWorld.cs:210</code>）就是 <code class="inline">long index_17 = index.Convert_20(); return Chunks.TryGetValue(index_17, out chunk);</code>。</p>
+
+<div class="warn"><span class="label">核实发现的注释不一致：</span>方法名后缀 <code class="inline">_20</code> 表示"每段 20 位"，代码也确实是 20 位（符号位 0x80000 = 1&lt;&lt;19，占第 20 位）。但同文件里 <code class="inline">CompressWithServerNum_20</code> 上方的注释写的是"xyz 分别用 17 位表达"（<code class="inline">NetWorkUtility.cs:143</code>），这是<strong>过时注释</strong>——历史上可能用过 17 位（MCWorld.cs 里还有一组 <code class="inline">CompressWithNum_17</code> / <code class="inline">ToVector3_17</code> 的遗留辅助函数，<code class="inline">MCWorld.cs:266</code> 起，目前 chunk 字典 key 没在用）。以实际代码为准：当前 chunkIndex 编码是 <strong>20 位/段，共 60 位</strong>。</div>
+
+<h3>4.3 世界坐标 → chunkIndex 的换算</h3>
+
+<p>有了编码方式，再看 MCWorld 怎么从一个世界坐标算出 chunkIndex。核心方法是 <code class="inline">PositionToIndex(float, float, float, out long chunkIndex, out int blockIndex)</code>（<code class="inline">MCWorld.cs:182</code>）：</p>
+
+<pre class="code">public void PositionToIndex(float worldX, float worldY, float worldZ,
+                            out long chunkIndex, out int blockIndex)
+{
+    // 1. 世界坐标 → chunk 整数索引（三个分量）
+    int x = (int)Math.Floor(worldX * ChunkSizeMulBlockSizeInverse);
+    int y = (int)Math.Floor(worldY * ChunkSizeMulBlockSizeInverse);
+    int z = (int)Math.Floor(worldZ * ChunkSizeMulBlockSizeInverse);
+
+    // 2. 三个 int 压成 long，作为字典 key
+    chunkIndex = NetWorkUtility.ConvertXYZ_20(x, y, z);
+
+    // 3. 查字典拿到 chunk，再让 chunk 算 block 在数组里的下标
+    blockIndex = -1;
+    if (Chunks.TryGetValue(chunkIndex, out var chunk))
+    {
+        blockIndex = chunk.PositionToArrayIndex(worldX, worldY, worldZ);
+    }
+}</pre>
+
+<p>这里的 <code class="inline">ChunkSizeMulBlockSizeInverse = 1 / (ChunkSize × BlockSize)</code>，也就是"一个 chunk 世界边长的倒数"。世界坐标乘它再向下取整，直接得到 chunk 的整数索引——因为一个 chunk 边长就是 <code class="inline">ChunkSize × BlockSize</code>，世界坐标除以这个边长就是"第几个 chunk"。</p>
+
+<p>注意这一步除的是<strong> chunk 边长</strong>（32×BlockSize），不是 BlockSize。这一点容易混：<code class="inline">MCWorld.PositionToIndex</code> 算的是 chunk 索引（除以 chunk 边长），<code class="inline">MCChunk.PositionToArrayIndex</code> 算的是 chunk 内 block 索引（除以 BlockSize）。两个尺度不同，分工明确：</p>
+
+<pre class="ascii">世界坐标 (worldX, worldY, worldZ)
+   │
+   │  ÷ (ChunkSize × BlockSize) = ÷ chunk 边长   ← MCWorld 这一层做
+   ▼
+chunk 整数索引 (x, y, z)   →  ConvertXYZ_20  →  chunkIndex (long)  →  字典查 chunk
+   │
+   │  chunk 内部：(worldPos - Offset) ÷ BlockSize   ← MCChunk 这一层做
+   ▼
+block 数组下标 (0 ~ 32767)  →  chunk[blockIndex]  →  MCBlock</pre>
+
+<p>如果 chunk 不在字典里（没加载），<code class="inline">blockIndex</code> 返回 -1，调用方就知道"这个坐标当前没数据"。</p>
+
+<h3>4.4 MCWorld 提供的查询接口</h3>
+
+<table>
+<tr><th>方法</th><th>行号</th><th>作用</th></tr>
+<tr><td><code class="inline">PositionToIndex(float×3, out long, out int)</code></td><td>182</td><td>世界坐标 → chunkIndex + blockIndex，不返回 block</td></tr>
+<tr><td><code class="inline">TryGetBlock(float×3, out MCBlock)</code></td><td>73</td><td>世界坐标 → block，找不到返回 <code class="inline">MCBlock.Empty</code></td></tr>
+<tr><td><code class="inline">TryGetBlock(YKVector3d, out MCBlock)</code></td><td>60</td><td>同上，入参用 double3</td></tr>
+<tr><td><code class="inline">TryGetChunk(long, out MCChunk)</code></td><td>216</td><td>按 chunkIndex 直接取 chunk</td></tr>
+<tr><td><code class="inline">TryGetChunk(YKVector3i, out MCChunk)</code></td><td>210</td><td>按三维索引取 chunk（内部转 long）</td></tr>
+<tr><td><code class="inline">SetChunk(MCChunk, bool)</code></td><td>226</td><td>把 chunk 加进字典（按 chunk.Index 转 long 作 key）</td></tr>
+<tr><td><code class="inline">RemoveChunk(MCChunk)</code></td><td>235</td><td>从字典移除 chunk</td></tr>
+<tr><td><code class="inline">IsExistBlockInPos(float×3)</code></td><td>43</td><td>查某点位是否存在非空块</td></tr>
+</table>
+
+<p>这组接口覆盖了"按坐标查 block / 按 key 查 chunk / 增删 chunk"三类操作。注意 <code class="inline">SetChunk</code> 用的是 <code class="inline">Chunks.Add</code>（<code class="inline">MCWorld.cs:231</code>），重复加同一个 key 会抛异常——chunk 的复用由上层保证不会重复加。</p>
+
+<!-- ===================== 5 ===================== -->
+<span class="anchor" id="sec-query"></span>
+<h2>5. 从世界坐标到方块的完整查询链</h2>
+
+<p>前三节分别讲了 MCBlock、MCChunk、MCWorld。这一节把它们串成一条完整的查询链：给一个世界坐标，怎么一步步拿到那个方块。这是本篇的收束点。</p>
+
+<h3>5.1 完整流程图</h3>
+
+<pre class="ascii">调用方 (WorldSceneSystem)
+   │
+   │  给一个世界坐标 (worldX, worldY, worldZ)
+   ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ MCScene.MCManager.CurrentMCWorld                                 │
+│   （取当前 LOD0 的 MCWorld，即 m_Worlds[0]）                      │
+└──────────────────────────────────────────────────────────────────┘
+   │
+   │  PositionToIndex(worldX, worldY, worldZ, out chunkIndex, out blockIndex)
+   ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ ① worldPos ÷ (ChunkSize×BlockSize) 取整 → chunk 索引 (x,y,z)     │
+│ ② ConvertXYZ_20(x,y,z) → chunkIndex (long)                       │
+│ ③ Chunks.TryGetValue(chunkIndex, out chunk)                      │
+│    ├─ 没找到 → block = MCBlock.Empty，返回 false                  │
+│    └─ 找到  → chunk.PositionToArrayIndex(worldPos) → blockIndex   │
+└──────────────────────────────────────────────────────────────────┘
+   │
+   ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ chunk.Blocks[blockIndex]  →  MCBlock (struct，值拷贝出来)        │
+│    Type / BlockMask / CuttingType                                │
+└──────────────────────────────────────────────────────────────────┘
+   │
+   │  IsEmptyBlock(block.Type)?  →  空：返回 false / 非空：返回 true + block
+   ▼</pre>
+
+<p>三步走：<strong>选层（CurrentMCWorld） → 算 chunkIndex + 查字典拿 chunk → 算 blockIndex + 取数组元素</strong>。每一步只解决一个问题，层层递进。</p>
+
+<h3>5.2 WorldSceneSystem.TryGetBlockInternal —— 不带缓存的版本</h3>
+
+<p>业务侧最基础的查询入口在 <code class="inline">WorldSceneSystem.TryGetBlockInternal</code>（<code class="inline">Assets/Scripts/Game/GameWorld/Game/OpenWorldGameSystem/WorldSceneSystem.cs:605</code>）：</p>
+
+<pre class="code">private bool TryGetBlockInternal(float x, float y, float z, out MCBlock block)
+{
+    if (MCScene == null || MCScene.MCManager == null || MCScene.MCManager.CurrentMCWorld == null)
+    {
+        block = MCBlock.Empty;
+        return false;
+    }
+    if (MCScene.MCManager.CurrentMCWorld.TryGetBlock(x, y, z, out block))
+    {
+        return !MCObjectUtils.IsEmptyBlock(block.Type);   // 字典里拿到 chunk，但 block 可能是空块
+    }
+    block = MCBlock.Empty;
+    return false;
+}</pre>
+
+<p>它直接调 <code class="inline">MCWorld.TryGetBlock</code>，把"算 chunkIndex → 查字典 → 算 blockIndex → 取 block"全包在 <code class="inline">TryGetBlock</code> 里。最后用 <code class="inline">IsEmptyBlock</code> 再判一次，是因为 chunk 里也可能存着 Type==0 的空块——字典命中不等于有实际方块。</p>
+
+<h3>5.3 TryGetBlockUseCache —— 带缓存的版本（重点）</h3>
+
+<p>体素查询有个特点：<strong>调用方往往连续查同一片区域的方块</strong>（比如构建一个 chunk 的 mesh 时要遍历它周围所有方块、或者射线检测沿一条线逐格查）。这些查询大概率落在同一个 chunk 内，每次都走一遍"算 chunkIndex → 字典查找"有点浪费，因为 chunkIndex 算出来一样、字典查出来的还是同一个 chunk。</p>
+
+<p>于是 <code class="inline">WorldSceneSystem.TryGetBlockUseCache</code>（<code class="inline">WorldSceneSystem.cs:634</code>）加了一层单 chunk 缓存：</p>
+
+<pre class="code">// 三个字段都是 WorldSceneSystem 的成员
+private long m_ChunkIndexCache;       // 上次查的 chunkIndex
+private MCChunk m_McChunkCache;       // 上次查到的 chunk
+
+public bool TryGetBlockUseCache(ref YKVector3d ckPos, ref MCBlock block)
+{
+    if (MCScene == null || MCScene.MCManager == null || MCScene.MCManager.CurrentMCWorld == null)
+    {
+        block = MCBlock.Empty;
+        return false;
+    }
+    // 每次都要算 chunkIndex（这步避不开）
+    MCScene.MCManager.CurrentMCWorld.PositionToIndex(ckPos, out long chunkIndex, out int blockIndex);
+
+    if (m_McChunkCache != null &amp;&amp; chunkIndex == m_ChunkIndexCache)
+    {
+        // 命中缓存：同一个 chunk，直接用缓存的 chunk 取 block，跳过字典查找
+        block = ref m_McChunkCache[blockIndex];
+        return !MCObjectUtils.IsEmptyBlock(block.Type);
+    }
+    else
+    {
+        // 未命中：查字典拿 chunk，并更新缓存
+        if (MCScene.MCManager.CurrentMCWorld.TryGetChunk(chunkIndex, out m_McChunkCache))
+        {
+            m_ChunkIndexCache = chunkIndex;
+            block = ref m_McChunkCache[blockIndex];
+            return !MCObjectUtils.IsEmptyBlock(block.Type);
+        }
+    }
+    block = MCBlock.Empty;
+    return false;
+}</pre>
+
+<p>缓存逻辑很简单：</p>
+
+<ol>
+    <li>每次都算 <code class="inline">chunkIndex</code> 和 <code class="inline">blockIndex</code>（这步避不开，因为要靠 chunkIndex 判断是否命中）。</li>
+    <li>如果上次缓存的 chunk 不为空 <strong>且</strong> 这次算出的 chunkIndex 和上次一样 → 命中，直接用 <code class="inline">m_McChunkCache</code> 取 block，<strong>跳过 <code class="inline">TryGetChunk</code> 的字典查找</strong>。</li>
+    <li>否则未命中，走 <code class="inline">TryGetChunk</code> 查字典，查到后把 chunk 和 chunkIndex 都缓存下来，给下次用。</li>
+</ol>
+
+<p>为什么这个缓存有效？因为体素查询天然有<strong>局部性</strong>：遍历一个 chunk 的 32768 个方块时，它们的 chunkIndex 全相同，只有 blockIndex 变，缓存命中率几乎 100%；跨 chunk 边界时才 miss 一次重新加载。对"按 chunk 批量处理方块"这种高频场景，省下的字典查找开销很可观。</p>
+
+<p>有两个约束要记住：</p>
+
+<ul>
+    <li><strong>单线程使用</strong>：代码注释三处都写明"带缓存的 block 查询器，单线程使用"（<code class="inline">WorldSceneSystem.cs:622-630</code>）。<code class="inline">m_McChunkCache</code> 和 <code class="inline">m_ChunkIndexCache</code> 是普通字段，没有任何同步保护，多线程并发用会互相覆盖缓存。实际调用都在主线程或确定单线程的路径上。</li>
+    <li><strong>只缓存"最近一个 chunk"</strong>：这是个单槽缓存，不是 LRU。一旦跨到别的 chunk，旧缓存立刻被覆盖。所以它对"来回跳着查两个 chunk"的场景没有加速效果——但体素查询通常不会这么用。</li>
+</ul>
+
+<div class="note"><span class="label">为什么用 ref 返回 block：</span>注意 <code class="inline">block = ref m_McChunkCache[blockIndex]</code> 用了 <code class="inline">ref</code>。因为 MCBlock 是 struct，不用 ref 的话这里会做一次值拷贝；用 ref 返回的是数组里那个方块的<strong>引用</strong>，调用方既能读也能直接改。配合 <code class="inline">ref</code> 参数签名，整个查询是零拷贝的。</div>
+
+<h3>5.4 两个版本怎么选</h3>
+
+<table>
+<tr><th>方法</th><th>缓存</th><th>适用场景</th></tr>
+<tr><td><code class="inline">TryGetBlockInternal</code></td><td>无</td><td>偶尔查一次、查完就走的场景（比如 Lua 侧问"这个坐标有方块吗"）</td></tr>
+<tr><td><code class="inline">TryGetBlockUseCache</code></td><td>单 chunk</td><td>批量、连续查同一片区域的场景（mesh 构建、射线检测、邻居查询）</td></tr>
+</table>
+
+<p>这就是本篇的完整闭环：从"一个世界坐标"到"那个方块的字段"，中间穿过 MCWorld 的字典、MCChunk 的数组、MCBlock 的 struct 布局，每一步都有明确的数据结构和换算关系。</p>
+
+<!-- ===================== 6 ===================== -->
+<span class="anchor" id="sec-summary"></span>
+<h2>6. 小结与下一站</h2>
+
+<h3>本篇要点回顾</h3>
+
+<ol>
+    <li><strong>三层存储模型</strong>：世界 → 多层 MCWorld → 每层一堆 MCChunk → 每个 chunk 是 32³ 个 MCBlock。本篇只讲"单层 MCWorld 内部怎么存"，5 层 LOD 设计第 3 篇展开。全部代码在 <code class="inline">Packages/com.unity.mccore/Runtime/MCWorld.cs</code>。</li>
+    <li><strong>MCBlock 是 struct</strong>（6 字节，<code class="inline">LayoutKind.Explicit</code> + <code class="inline">Pack=1</code>）：Type(ushort) + BlockMask(ushort) + CuttingType(byte)。用 struct 是为了让海量方块内存连续、紧凑、零 GC、缓存友好。Type==0 是空块，<code class="inline">MCBlock.Empty</code> 是查询失败的统一返回值。</li>
+    <li><strong>MCChunk 持有 MCBlock[32768]</strong>，坐标→下标换算用 <code class="inline">(x*32 + y)*32 + z</code>（行主序，z 最内层连续）。脏标记用一个 byte 的位标志，分"方块脏"和"实体脏"两条通道。MCBlock[] 走 <code class="inline">MCBlockPool</code> 对象池复用，避免反复分配 32768 长度的数组。</li>
+    <li><strong>MCWorld 用 Dictionary&lt;long, MCChunk&gt;</strong>，因为大世界稀疏且动态加载，3D 数组开不出内存。chunkIndex 把三维索引压成 long，每段 20 位（符号位+19 位数值），共 60 位，编码方式是客户端/服务器约定。</li>
+    <li><strong>完整查询链</strong>：CurrentMCWorld → PositionToIndex 算 chunkIndex+blockIndex → 字典查 chunk → chunk[blockIndex] 取 block。<code class="inline">TryGetBlockUseCache</code> 加了一层单 chunk 缓存，利用体素查询的局部性跳过字典查找，但只能单线程用。</li>
+</ol>
+
+<h3>承上启下</h3>
+
+<p>这一篇把"方块怎么存"讲透了：MCBlock 是最小单元、MCChunk 是 32³ 的方块组、MCWorld 是稀疏字典容器，三者用 struct 数组 + 一维字典 + 坐标编码串起来。但这只是<strong>静态的存储结构</strong>——一个 chunk 什么时候被创建出来塞进字典、什么时候被移除、5 层 MCWorld 怎么协作、玩家移动时谁来调度这些，都还没讲。</p>
+
+<p>下一篇我们就走进 <strong>MCManager</strong>，看它怎么持有这 5 个 MCWorld、每层的 BlockSize 为什么按 1/2/4/8/16 递增、5 层之间怎么配合给出"近处精细、远处粗略"的 LOD 效果。那是体素大世界从"数据底座"走向"动态世界"的第一步。</p>
+
+<div class="note"><span class="label">下一篇：</span><a href="#">第 3 篇 · 多 LOD 体素世界 MCManager 的 5 层设计</a> —— 5 层 MCWorld 怎么组织、怎么按玩家距离分层调度。</div>
+
+</main>
+</div>
+
+<footer class="nav">
+    <div class="prev">
+        <span class="lbl">上一篇</span>
+        <a href="1_引擎场景底座_UniversalScene.html">第 1 篇 · 引擎场景底座 UniversalScene</a>
+    </div>
+    <div class="next">
+        <span class="lbl">下一篇</span>
+        <a href="#">第 3 篇 · 多 LOD 体素世界 MCManager 的 5 层设计 →</a>
+    </div>
+</footer>
+
+</body>
+</html>
